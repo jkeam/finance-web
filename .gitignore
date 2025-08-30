@@ -17,3 +17,7 @@
 .DS_Store
 
 ignore/*
+jon/*
+
+storage/test.sqlite3
+storage/development.sqlite3

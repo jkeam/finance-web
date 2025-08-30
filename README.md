@@ -9,3 +9,9 @@ The way I'm doing forensics on my spending.
 ## Data Format
 
 All data imported MUST follow the Apple Card export schema.
+
+### Import
+
+```shell
+rails db:seed:custom
+```
