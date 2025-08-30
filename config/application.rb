@@ -33,7 +33,11 @@ module FinanceWeb
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.time_zone = 'Eastern Time (US & Canada)'
+    config.default_currency = :usd
+    Money.locale_backend = :i18n
+    Money.rounding_mode = BigDecimal::ROUND_HALF_UP
+    I18n.locale = :en
   end
 end
