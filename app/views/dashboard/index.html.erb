@@ -1,0 +1,16 @@
+<section class="hero is-small is-link">
+  <div class="hero-body">
+    <p class="title">Dashboard</p>
+    <p class="subtitle">All the reports</p>
+  </div>
+</section>
+
+<section class="section">
+  <h1 class="title">
+    Report 1
+  </h1>
+  <h2 class="subtitle">
+    Number of Transactions
+  </h2>
+  <%= pie_chart Transaction.group(:category).count %>
+</section>
