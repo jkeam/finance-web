@@ -20,11 +20,11 @@ class DashboardController < ApplicationController
     @sigother = (params[:sigother] || '').strip == 'true'
 
     @startdate = nil
-    if params[:startdate].strip != ''
+    if ((params[:startdate] || '').strip != '')
       @startdate = Date.strptime(params[:startdate], "%Y-%m-%d")
     end
     @endddate = nil
-    if params[:enddate].strip != ''
+    if ((params[:enddate] || '').strip != '')
       @enddate = Date.strptime(params[:enddate], "%Y-%m-%d")
     end
 

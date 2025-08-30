@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :banks, only: [:index]
+  resources :transactions, only: [:index]
   get "dashboard/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

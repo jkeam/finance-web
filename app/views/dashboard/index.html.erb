@@ -1,49 +1,5 @@
-<section class="hero is-small is-link">
-  <div class="hero-body">
-    <p class="title">Dashboard</p>
-    <p class="subtitle">All the reports</p>
-  </div>
-</section>
-
-<section class="section" id="contenttohide" style="display: none;">
-  <h1 class="title">
-    Filter
-  </h1>
-  <form action="/" method="GET">
-    <div class="field">
-      <label for="startdate" class="label">Start Date</label>
-      <div class="control">
-        <input class="input" type="date" name="startdate" value="<%= @startdate.to_s %>">
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="enddate" class="label">End Date</label>
-      <div class="control">
-        <input class="input" type="date" name="enddate" value="<%= @enddate.to_s %>">
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="control">
-        <label class="checkbox">
-          <input type="checkbox" name="sigother" value="true" <%- if @sigother %>checked="checked"<%- end %>>
-          Include Significant Other
-        </label>
-      </div>
-    </div>
-
-    <div class="field is-grouped">
-      <div class="control">
-        <button class="button is-link" type="submit">Submit</button>
-      </div>
-    </div>
-  </form>
-</section>
-
-<section class="" style="padding-top: 1rem;">
-  <button class="button is-primary" id="togglefilterbutton">Toggle Filter</button>
-</section>
+<%= render partial: 'shared/header', locals: { title: 'Dashboard', subtitle: 'All the reports' } %>
+<%= render partial: 'shared/date_filter' %>
 
 <section class="section">
   <h1 class="title">
@@ -75,16 +31,3 @@
   <%= column_chart @all_transactions.where(category: :category_restaurants).group(:merchant).sum(:amount_cents) %>
 </section>
 
-
-<script>
-  const toggleButton = document.getElementById('togglefilterbutton');
-  const contentToToggle = document.getElementById('contenttohide');
-
-  toggleButton.addEventListener('click', () => {
-    if (contentToToggle.style.display === 'none') {
-      contentToToggle.style.display = 'block';
-    } else {
-      contentToToggle.style.display = 'none';
-    }
-  });
-</script>

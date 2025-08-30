@@ -40,12 +40,9 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-# chart tool
 gem 'chartkick'
-
 gem 'csv'
-
-# money
+gem 'pagy'
 gem 'money-rails'
 gem 'monetize'
 

@@ -1,0 +1,72 @@
+<%= render partial: 'shared/header', locals: { title: 'Transaction', subtitle: 'All the transactions' } %>
+
+<section class="section">
+  <h1 class="title">
+    Listing
+  </h1>
+  <h2 class="subtitle">
+    All transactions
+  </h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th><abbr title="Id">Id</abbr></th>
+        <th><abbr title="Transaction Date">Transaction Date</abbr></th>
+        <th><abbr title="Cleared Date">Cleared Date</abbr></th>
+        <th><abbr title="Description">Description</abbr></th>
+        <th><abbr title="Merchant">Merchant</abbr></th>
+        <th><abbr title="Category">Category</abbr></th>
+        <th><abbr title="Type">Type</abbr></th>
+        <th><abbr title="Amount">Amount</abbr></th>
+        <th><abbr title="Purchased By">Purchased By</abbr></th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th><abbr title="Id">Id</abbr></th>
+        <th><abbr title="Transaction Date">Transaction Date</abbr></th>
+        <th><abbr title="Cleared Date">Cleared Date</abbr></th>
+        <th><abbr title="Description">Description</abbr></th>
+        <th><abbr title="Merchant">Merchant</abbr></th>
+        <th><abbr title="Category">Category</abbr></th>
+        <th><abbr title="Type">Type</abbr></th>
+        <th><abbr title="Amount">Amount</abbr></th>
+        <th><abbr title="Purchased By">Purchased By</abbr></th>
+      </tr>
+    </tfoot>
+    <tbody>
+      <%- @transactions.each do |b| %>
+      <tr>
+        <th><%= b.id %></th>
+        <td>
+          <%= b.transaction_date %>
+        </td>
+        <td>
+          <%= b.clearing_date %>
+        </td>
+        <td>
+          <%= b.description %>
+        </td>
+        <td>
+          <%= b.merchant %>
+        </td>
+        <td>
+          <%= b.category %>
+        </td>
+        <td>
+          <%= b.transaction_type %>
+        </td>
+        <td>
+          <%= b.amount %>
+        </td>
+        <td>
+          <%= b.purchased_by %>
+        </td>
+      </tr>
+      <%- end %>
+    </tbody>
+  </table>
+  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+</section>
+

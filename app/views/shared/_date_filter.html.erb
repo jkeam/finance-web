@@ -1,0 +1,59 @@
+<section class="" style="padding-top: 1rem;">
+  <button class="button is-primary" id="togglefilterbutton">Toggle Filter</button>
+</section>
+
+<section class="section" id="contenttohide" style="display: none;">
+  <h1 class="title">
+    Filter
+  </h1>
+  <form method="GET">
+    <div class="field">
+      <label for="startdate" class="label">Start Date</label>
+      <div class="control">
+        <input class="input" type="date" name="startdate" value="<%= @startdate.to_s %>">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="enddate" class="label">End Date</label>
+      <div class="control">
+        <input class="input" type="date" name="enddate" value="<%= @enddate.to_s %>">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="checkbox">
+          <input type="checkbox" name="sigother" value="true" <%- if @sigother %>checked="checked"<%- end %>>
+          Include Significant Other
+        </label>
+      </div>
+    </div>
+
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-link" type="submit">Submit</button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<script>
+  const toggleButton = document.getElementById('togglefilterbutton');
+  const contentToToggle = document.getElementById('contenttohide');
+
+  toggleButton.addEventListener('click', () => {
+    if (contentToToggle.style.display === 'none') {
+      contentToToggle.style.display = 'block';
+    } else {
+      contentToToggle.style.display = 'none';
+    }
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+    alert('ready');
+  });
+  document.addEventListener('turbolinks:load', () => {
+    alert('turbolinks load');
+  });
+</script>
