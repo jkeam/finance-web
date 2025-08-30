@@ -4,27 +4,34 @@ class Transaction < ApplicationRecord
     category_payment: 1,
     category_installment: 2,
     category_interest: 3,
-    category_deposit: 4,
-    category_withdrawl: 5,
-    category_income: 6,
-    category_dividend: 7,
-    category_shopping: 8,
-    category_restaurants: 9,
-    category_services: 10,
-    category_grocery: 11,
-    category_travel: 12,
-    category_health: 13,
-    category_investment: 14,
-    category_rent: 15,
-    category_rental_property: 16,
-    category_significant_other: 17
+    category_credit: 4,
+    category_debit: 5,
+    category_deposit: 6,
+    category_withdrawl: 7,
+    category_income: 8,
+    category_dividend: 9,
+    category_shopping: 10,
+    category_restaurants: 11,
+    category_services: 12,
+    category_grocery: 13,
+    category_travel: 14,
+    category_transportation: 15,
+    category_health: 16,
+    category_alcohol: 17,
+    category_entertainment: 18,
+    category_investment: 19,
+    category_rent: 20,
+    category_rental_property: 21,
+    category_significant_other: 22,
+    category_software: 23
   }
   enum :transaction_type, {
     type_purchase: 0,
     type_payment: 1,
     type_installment: 2,
     type_interest: 3,
-    type_credit: 4
+    type_credit: 4,
+    type_debit: 5
   }
   monetize :amount_cents
   belongs_to :bank

@@ -43,6 +43,8 @@ gem "thruster", require: false
 # chart tool
 gem 'chartkick'
 
+gem 'csv'
+
 # money
 gem 'money-rails'
 gem 'monetize'

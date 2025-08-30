@@ -29,6 +29,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_30_014041) do
     t.text "notes"
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "USD", null: false
+    t.boolean "positive", default: false
     t.integer "bank_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

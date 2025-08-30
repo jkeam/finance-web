@@ -14,6 +14,7 @@ class CreateBanksAndTransactions < ActiveRecord::Migration[8.0]
       t.string :purchased_by, null: true, limit: 255
       t.text :notes, null: true
       t.monetize :amount, null: false
+      t.boolean :positive, default: false
       t.references :bank, null: false, foreign_key: true
 
       t.timestamps
