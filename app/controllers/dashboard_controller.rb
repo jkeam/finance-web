@@ -39,6 +39,7 @@ class DashboardController < ApplicationController
       @all_transactions = @all_transactions.where('transaction_date >= ?', @startdate)
     end
     if @enddate != nil
+      @transactions = @transactions.where('transaction_date <= ?', @enddate)
       @all_transactions = @all_transactions.where('transaction_date <= ?', @enddate)
     end
   end
