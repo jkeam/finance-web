@@ -1,5 +1,5 @@
 <%= render partial: 'shared/header', locals: { title: 'Dashboard', subtitle: 'All the reports' } %>
-<%= render partial: 'shared/date_filter' %>
+<%= render partial: 'shared/date_filter', locals: {startdate: @startdate, enddate: @enddate, sigother: @sigother} %>
 
 <section class="section">
   <h1 class="title">
