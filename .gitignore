@@ -1,0 +1,19 @@
+# Ignore log files, temp files, and dependencies
+/log/
+/tmp/
+.bundle/
+/node_modules/
+ 
+# Manually added
+# Ignore editor & environment-specific configs
+.vscode/
+ 
+# Ignore deployment configs
+.kamal/
+ 
+# Ignore personal GitHub configs (if applicable)
+.github/
+
+.DS_Store
+
+ignore/*

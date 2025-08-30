@@ -1,0 +1,23 @@
+one:
+  transaction_date: 2025-08-29
+  clearing_date: 2025-08-29
+  description: Costco
+  merchant: Costco
+  category: 11
+  transaction_type: 0
+  purchased_by: Jon Keam
+  notes: I bought some chicken
+  amount_cents: 100000
+  bank: one
+
+two:
+  transaction_date: 2025-08-29
+  clearing_date: 2025-08-29
+  description: Taco Bell
+  merchant: Taco Bell
+  category: 9
+  transaction_type: 0
+  purchased_by: Jon Keam
+  notes: Taco dinner
+  amount_cents: 20000
+  bank: two
