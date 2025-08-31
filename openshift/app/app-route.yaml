@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: finance-web
+  labels:
+    app: finance-web
+spec:
+  path: /
+  to:
+    kind: Service
+    name: finance-web
+    weight: 100
+  port:
+    targetPort: port3000
+  tls:
+    termination: edge

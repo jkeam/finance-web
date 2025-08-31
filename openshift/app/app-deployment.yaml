@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-web
+  labels:
+    app: finance-web
+    app.kubernetes.io/part-of: finance
+    app.openshift.io/runtime: ruby
+    app.openshift.io/runtime-version: '3.4'
+    app.kubernetes.io/name: 'finance-web'
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"db"}]'
+    app.openshift.io/vcs-uri: 'https://github.com/jkeam/finance-web.git'
+    app.openshift.io/vcs-ref: 'main'
+spec:
+  selector:
+    matchLabels:
+      app: finance-web
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: finance-web
+    spec:
+      containers:
+      - name: finance-web
+        image: quay.io/jkeam/finance-web
+        imagePullPolicy: Always
+        env:
+        - name: DB_NAME
+          value: "finance-web"
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "adminpassword"
+        - name: DB_HOST
+          value: "db"
+        - name: DB_PORT
+          value: "5432"
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: CSRF_TRUSTED_ORIGINS
+          value: "*"
+        ports:
+        - containerPort: 3330
+          name: theport
+        command: ["/bin/sh"]
+        args: ["-c", "bundle exec rails server -b 0.0.0.0"]
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+            httpHeaders:
+            - name: Accept
+              value: application/json
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+            httpHeaders:
+            - name: Accept
+              value: application/json
+          initialDelaySeconds: 2
+          periodSeconds: 2
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+            httpHeaders:
+            - name: Accept
+              value: application/json
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 10
+      restartPolicy: Always

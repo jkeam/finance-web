@@ -1,0 +1,13 @@
+apiVersion: console.openshift.io/v1
+kind: ConsoleLink
+metadata:
+  name: finance-web
+  labels:
+    app: finance-web
+spec:
+  href: 'https://finance-web.finance.apps.clustername.domainname.com'
+  location: ApplicationMenu
+  text: Finance
+  applicationMenu:
+    section: "Custom Apps"
+    imageURL: ""
