@@ -29,3 +29,10 @@
 .pagy.nav a:hover {
   background-color: rgb(66, 88, 255);
 }
+
+.chart h1 {
+  padding-bottom: 0rem;
+}
+.chart h2 {
+  padding-top: 2rem;
+}

@@ -1,37 +1,43 @@
 <%= render partial: 'shared/header', locals: { title: 'Dashboard', subtitle: 'All the reports' } %>
 <%= render partial: 'shared/date_filter', locals: {startdate: @startdate, enddate: @enddate, sigother: @sigother} %>
 
-<section class="section">
+<section class="section chart">
   <h1 class="title">
-    Number of transactions
+    Total Count
   </h1>
   <h2 class="subtitle">
-    Total
+    Transactions
   </h2>
   <%= pie_chart @transactions.group(:category).count %>
-</section>
-
-<section class="section">
-  <h1 class="title">
-    Spend per category
-  </h1>
   <h2 class="subtitle">
-    Total
+    Spend
   </h2>
-  <%= column_chart @spend %>
+  <%= pie_chart @spend %>
 </section>
 
-<section class="section">
+<section class="section chart">
   <h1 class="title">
-    Spend per category
+    Per Month
   </h1>
   <h2 class="subtitle">
-    Per month
+    Income
+  </h2>
+  <%= column_chart @income_per_month %>
+  <h2 class="subtitle">
+    Spending
+  </h2>
+  <%= column_chart @spend_per_month %>
+  <h2 class="subtitle">
+    Spend per category
   </h2>
   <%= line_chart @spending_by_category_per_month %>
+  <h2 class="subtitle">
+    Income and spending
+  </h2>
+  <%= line_chart @income_and_spending %>
 </section>
 
-<section class="section">
+<section class="section chart">
   <h1 class="title">
     Restaurants
   </h1>
@@ -39,12 +45,6 @@
     Total (over $100)
   </h2>
   <%= column_chart @restaurants %>
-</section>
-
-<section class="section">
-  <h1 class="title">
-    Restaurants
-  </h1>
   <h2 class="subtitle">
     Times (over 5)
   </h2>
@@ -56,7 +56,7 @@
     Grocery
   </h1>
   <h2 class="subtitle">
-    Total
+    Total (over $100)
   </h2>
   <%= column_chart @grocery %>
 </section>
@@ -68,35 +68,9 @@
   <h2 class="subtitle">
     Total
   </h2>
+  <%= column_chart @all_services %>
+  <h2 class="subtitle">
+    Total (over $100)
+  </h2>
   <%= column_chart @services %>
-</section>
-
-<section class="section">
-  <h1 class="title">
-    Income
-  </h1>
-  <h2 class="subtitle">
-    Per month
-  </h2>
-  <%= column_chart @income_per_month %>
-</section>
-
-<section class="section">
-  <h1 class="title">
-    Spending
-  </h1>
-  <h2 class="subtitle">
-    Per month
-  </h2>
-  <%= column_chart @spend_per_month %>
-</section>
-
-<section class="section">
-  <h1 class="title">
-    Income and spending
-  </h1>
-  <h2 class="subtitle">
-    Per month
-  </h2>
-  <%= line_chart @income_and_spending %>
 </section>

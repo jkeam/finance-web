@@ -57,13 +57,24 @@ class DashboardController < ApplicationController
       .count
 
     # grocery per merchant
-    @grocery = @all_transactions.where(category: :category_grocery).group(:merchant).sum(:amount_cents)
+    @grocery = @all_transactions.where(category: :category_grocery)
+      .group(:merchant)
+      .having('sum(amount_cents) > 10000')
+      .sum(:amount_cents)
     @grocery.each do |k, v|
       @grocery[k] = v / 100
     end
 
-    # services per merchant
-    @services = @all_transactions.where(category: :category_services).group(:merchant).sum(:amount_cents)
+    @all_services = @all_transactions.where(category: :category_services)
+      .group(:merchant)
+      .sum(:amount_cents)
+    @all_services.each do |k, v|
+      @all_services[k] = v / 100
+    end
+    @services = @all_transactions.where(category: :category_services)
+      .group(:merchant)
+      .having('sum(amount_cents) > 10000')
+      .sum(:amount_cents)
     @services.each do |k, v|
       @services[k] = v / 100
     end
