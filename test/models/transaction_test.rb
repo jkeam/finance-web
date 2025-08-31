@@ -5,7 +5,7 @@ class TransactionTest < ActiveSupport::TestCase
     t = Transaction.create()
     refute t.persisted?
 
-    t.transaction_date = Date.today
+    t.transaction_date = Date.today()
     t.save
     refute t.persisted?
 
