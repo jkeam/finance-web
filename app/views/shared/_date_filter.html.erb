@@ -34,16 +34,34 @@
       <div class="control">
         <button class="button is-link" type="submit">Submit</button>
       </div>
+      <div class="control">
+        <button class="button is-link is-light" type="button" id="clearbutton">Clear</button>
+      </div>
     </div>
   </form>
 </section>
 <script>
+  document.getElementById('clearbutton').addEventListener('click', () => {
+    try {
+      document.getElementsByName('startdate')[0].value = '';
+      document.getElementsByName('enddate')[0].value = '';
+      const checkbox = document.getElementsByName('sigother')[0];
+      checkbox.removeAttribute('checked');
+      checkbox.checked = false;
+    } catch(e) {
+      console.error(e);
+    }
+  });
   document.getElementById('togglefilterbutton').addEventListener('click', () => {
-    const contentToToggle = document.getElementById('contenttohide');
-    if (contentToToggle.style.display === 'none') {
-      contentToToggle.style.display = 'block';
-    } else {
-      contentToToggle.style.display = 'none';
+    try {
+      const contentToToggle = document.getElementById('contenttohide');
+      if (contentToToggle.style.display === 'none') {
+        contentToToggle.style.display = 'block';
+      } else {
+        contentToToggle.style.display = 'none';
+      }
+    } catch (e) {
+      console.error(e);
     }
   });
 </script>
