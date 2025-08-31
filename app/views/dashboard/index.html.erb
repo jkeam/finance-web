@@ -36,9 +36,39 @@
     Restaurants
   </h1>
   <h2 class="subtitle">
-    Total
+    Total (over $100)
   </h2>
   <%= column_chart @restaurants %>
+</section>
+
+<section class="section">
+  <h1 class="title">
+    Restaurants
+  </h1>
+  <h2 class="subtitle">
+    Times (over 5)
+  </h2>
+  <%= column_chart @restaurant_times %>
+</section>
+
+<section class="section">
+  <h1 class="title">
+    Grocery
+  </h1>
+  <h2 class="subtitle">
+    Total
+  </h2>
+  <%= column_chart @grocery %>
+</section>
+
+<section class="section">
+  <h1 class="title">
+    Services
+  </h1>
+  <h2 class="subtitle">
+    Total
+  </h2>
+  <%= column_chart @services %>
 </section>
 
 <section class="section">

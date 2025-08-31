@@ -30,25 +30,44 @@ class DashboardController < ApplicationController
       @all_transactions = @all_transactions.where('transaction_date <= ?', @enddate)
     end
 
-    # charts
     @income_per_month = @all_transactions.where(category: :category_income).group_by_month(:transaction_date).sum(:amount_cents)
     @income_per_month.each do |k, v|
       @income_per_month[k] = (v * -1) / 100
     end
 
-    # spend
+    # spend per category
     @spend = @transactions.group(:category).sum(:amount_cents)
     @spend.each do |k, v|
       @spend[k] = v / 100
     end
 
-    # restaurants
-    @restaurants = @all_transactions.where(category: :category_restaurants).group(:merchant).sum(:amount_cents)
+    # restaurants per merchant
+    @restaurants = @all_transactions.where(category: :category_restaurants)
+      .group(:merchant)
+      .having('sum(amount_cents) > 10000')
+      .sum(:amount_cents)
     @restaurants.each do |k, v|
       @restaurants[k] = v / 100
     end
 
-    # spend per month
+    # restaurant times
+    @restaurant_times = @all_transactions.where(category: :category_restaurants)
+      .group(:merchant)
+      .having('count(merchant) > 5')
+      .count
+
+    # grocery per merchant
+    @grocery = @all_transactions.where(category: :category_grocery).group(:merchant).sum(:amount_cents)
+    @grocery.each do |k, v|
+      @grocery[k] = v / 100
+    end
+
+    # services per merchant
+    @services = @all_transactions.where(category: :category_services).group(:merchant).sum(:amount_cents)
+    @services.each do |k, v|
+      @services[k] = v / 100
+    end
+
     @spend_per_month = @transactions.group_by_month(:transaction_date).sum(:amount_cents)
     @spend_per_month.each do |k, v|
       @spend_per_month[k] = v / 100
