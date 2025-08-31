@@ -59,14 +59,14 @@ class DashboardController < ApplicationController
       {name: 'Spend', data: @spend_per_month}
     ]
 
-    restaurants_per_month = @all_transactions.where(category: :category_restaurants)
-      .group_by_month(:merchant)
-      .sum(:amount_cents)
-    restaurants_per_month.each do |k, v|
-      restaurants_per_month[k] = v / 100
-    end
     @spending_by_category_per_month = [
-      {name: 'Restaurants', data: restaurants_per_month}
+      {name: 'Restaurants', data: spending_category_by_month(@all_transactions, :category_restaurants)},
+      {name: 'Services', data: spending_category_by_month(@all_transactions, :category_services)},
+      {name: 'Grocery', data: spending_category_by_month(@all_transactions, :category_grocery)},
+      {name: 'Utilities', data: spending_category_by_month(@all_transactions, :category_utility)},
+      {name: 'Shopping', data: spending_category_by_month(@all_transactions, :category_shopping)},
+      {name: 'Travel', data: spending_category_by_month(@all_transactions, :category_travel)},
+      {name: 'Transportation', data: spending_category_by_month(@all_transactions, :category_transportation)}
     ]
   end
 end
