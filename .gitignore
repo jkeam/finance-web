@@ -4,10 +4,6 @@
 .bundle/
 /node_modules/
  
-# Manually added
-# Ignore editor & environment-specific configs
-.vscode/
- 
 # Ignore deployment configs
 .kamal/
  

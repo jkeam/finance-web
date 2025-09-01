@@ -1,0 +1,9 @@
+{
+  "name": "Rails server",
+  "type": "Ruby",
+  "request": "launch",
+  "program": "${workspaceRoot}/bin/rails",
+  "args": [
+    "server"
+  ]
+}
