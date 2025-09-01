@@ -30,50 +30,48 @@ spec:
         env:
         - name: DB_NAME
           value: "finance-web"
-        - name: DB_USER
+        - name: DB_USERNAME
           value: "postgres"
         - name: DB_PASSWORD
           value: "adminpassword"
         - name: DB_HOST
           value: "db"
-        - name: DB_PORT
-          value: "5432"
-        - name: ALLOWED_HOSTS
-          value: "*"
-        - name: CSRF_TRUSTED_ORIGINS
-          value: "*"
+        - name: RAILS_ENV
+          value: production
+        - name: SECRET_KEY_BASE
+          value: "2cafcc9bcf39cda432c9a30cb12592282f9cc952feb67a31a1b4d52c336fa9834a2b3d9ed5f8c061768a61548bc726245cf8ea19c3260736a56c7c77f555095d"
         ports:
-        - containerPort: 3330
+        - containerPort: 3000
           name: theport
         command: ["/bin/sh"]
         args: ["-c", "bundle exec rails server -b 0.0.0.0"]
         startupProbe:
           httpGet:
-            path: /healthz
+            path: /up
             port: 3000
             httpHeaders:
             - name: Accept
-              value: application/json
+              value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 10
         livenessProbe:
           httpGet:
-            path: /healthz
+            path: /up
             port: 3000
             httpHeaders:
             - name: Accept
-              value: application/json
-          initialDelaySeconds: 2
-          periodSeconds: 2
-          failureThreshold: 10
+              value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 20
         readinessProbe:
           httpGet:
-            path: /healthz
+            path: /up
             port: 3000
             httpHeaders:
             - name: Accept
-              value: application/json
+              value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 10

@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: finance
 
 images:
-- name: quay.io/jkeam/djangotodos
+- name: quay.io/jkeam/finance-web
   digest: sha256:badd6314966d4773b652b4722026627418313c95352c9ce98466e84d53702bb0
 
 resources:
