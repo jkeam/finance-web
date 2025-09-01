@@ -2,7 +2,7 @@
 service: finance_web
 
 # Name of the container image.
-image: your-user/finance_web
+image: jkeam/finance_web
 
 # Deploy to these servers.
 servers:

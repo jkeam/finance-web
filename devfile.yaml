@@ -1,0 +1,72 @@
+schemaVersion: 2.2.0
+metadata:
+  name: finance-web
+components:
+  - name: tools
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi8-latest
+      endpoints:
+        - exposure: public
+          name: finance-web
+          targetPort: 3000
+          protocol: https
+      memoryLimit: 512Mi
+      cpuLimit: 500m
+      memoryRequest: 256Mi
+      cpuRequest: 100m
+      mountSources: true
+
+commands:
+  - id: setup
+    exec:
+      label: "Setup project"
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "bundle install"
+      group:
+        kind: build
+
+  - id: build-database
+    exec:
+      label: "Build database"
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "rails db:create"
+      group:
+        kind: build
+
+  - id: migrate
+    exec:
+      label: "Migrate database"
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "rails db:migrate"
+      group:
+        kind: build
+
+  - id: test
+    exec:
+      label: "Test"
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "rails test"
+      group:
+        kind: test
+
+  - id: run
+    exec:
+      label: "Run the server"
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "bundle exec rails server -b 0.0.0.0"
+      group:
+        kind: run
+
+  - id: debug
+    exec:
+      label: "Run the server in debug mode"
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: "RUBY_DEBUG_OPEN=true bundle exec rails server -b 0.0.0.0"
+      group:
+        kind: debug
