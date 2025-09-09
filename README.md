@@ -6,11 +6,17 @@ The way I'm doing forensics on my spending.
 
 1. Ruby 3.4.5+
 
-## Data Format
+## Running
+
+After building the container, you need to pass in the environment variable of `SECRET_KEY_BASE`
+
+## Data
+
+### Format
 
 All data imported MUST follow the Apple Card export schema.
 
-### Import
+### Importing data
 
 1. Look over `csv` example files in `import` dir, when done delete those
 
