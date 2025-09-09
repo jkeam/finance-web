@@ -72,13 +72,24 @@
 # CMD ["./bin/thrust", "./bin/rails", "server"]
 
 # Mine
-FROM registry.redhat.io/ubi10/ruby-33:10.0
+FROM quay.io/fedora/ruby-33
 
-# Install dependencies
-COPY ./Gemfile* .
+# Install lib
+USER 0
+RUN dnf install libyaml-devel -y
+
+# Install deps
+USER 1001
+COPY --chown=1001:0 ./Gemfile* .
 RUN gem install bundler && bundle
 
 # Copy code
-COPY . .
+COPY --chown=1001:0 . .
 
-CMD ["bundle", "exec", "rails", "-b", "0.0.0.0"]
+# Precompile assets
+RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
+
+ENV PORT="8080"
+ENV TARGET_PORT="8080"
+ENTRYPOINT ["bin/docker-entrypoint"]
+CMD ["./bin/thrust", "./bin/rails", "server", "-b", "0.0.0.0"]
