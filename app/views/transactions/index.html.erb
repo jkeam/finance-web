@@ -21,6 +21,7 @@
         <th><abbr title="Type">Type</abbr></th>
         <th><abbr title="Amount">Amount</abbr></th>
         <th><abbr title="Purchased By">Purchased By</abbr></th>
+        <th><abbr title="Bank">Bank</abbr></th>
       </tr>
     </thead>
     <tfoot>
@@ -34,6 +35,7 @@
         <th><abbr title="Type">Type</abbr></th>
         <th><abbr title="Amount">Amount</abbr></th>
         <th><abbr title="Purchased By">Purchased By</abbr></th>
+        <th><abbr title="Bank">Bank</abbr></th>
       </tr>
     </tfoot>
     <tbody>
@@ -63,6 +65,9 @@
         </td>
         <td>
           <%= b.purchased_by %>
+        </td>
+        <td>
+          <%= b.bank.name %>
         </td>
       </tr>
       <%- end %>
