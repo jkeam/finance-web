@@ -76,7 +76,7 @@ FROM quay.io/fedora/ruby-33
 
 # Install lib
 USER 0
-RUN dnf install libyaml-devel -y
+RUN dnf install libyaml-devel jemalloc-devel -y
 
 # Install deps
 USER 1001
@@ -94,5 +94,6 @@ RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
 
 ENV PORT="8080"
 ENV TARGET_PORT="8080"
+ENV LD_PRELOAD="/usr/lib64/libjemalloc.so.2"
 ENTRYPOINT ["bin/docker-entrypoint"]
 CMD ["./bin/thrust", "./bin/rails", "server", "-b", "0.0.0.0"]
