@@ -1,0 +1,4 @@
+transaction_date,clearing_date,desc,merchant,category,transaction_type,amount,purchased_by
+08/01/2025,08/01/2025,URBANOUTFITTERS.COM URBANOUTFITTE PA,Urban Outfitters,Shopping,Purchase,53,Jonathan Keam
+08/01/2025,08/01/2025,ANNUAL MEMBERSHIP FEE,Chase,Services,Purchase,95,Jonathan Keam
+08/05/2025,08/05/2025,Payment Thank You - Web,Chase,Payment,Payment,-208.94,Jonathan Keam

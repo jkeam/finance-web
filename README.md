@@ -12,6 +12,12 @@ All data imported MUST follow the Apple Card export schema.
 
 ### Import
 
-```shell
-rails db:seed:custom
-```
+1. Look over example files in `import` dir, when done delete those
+
+2. Put your import files into the `import` dir, matching the same schema
+
+3. Import
+
+    ```shell
+    rails db:seed:custom
+    ```

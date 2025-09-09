@@ -1,0 +1,5 @@
+transaction_date,clearing_date,desc,merchant,category,transaction_type,amount,purchased_by
+08/01/2025,08/01/2025,Paid To - Verizon Paymentrec Chk,Verizon,Utility,Payment,-44.99,Jonathan Keam
+08/01/2025,08/01/2025,Deposit - ACH Paid From TheEmployer Direct Dep,TheEmployer,Income,Credit,1000.00,Jonathan Keam
+08/06/2025,08/06/2025,Paid To - Chase Credit Crd Epay Chk,Chase Credit Crd,Transfer,Transfer,-208.94,Jonathan Keam
+08/31/2025,08/31/2025,,TheBank,Dividend,Credit,75.11,Jonathan Keam
