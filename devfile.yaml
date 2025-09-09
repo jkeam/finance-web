@@ -8,7 +8,7 @@ components:
       endpoints:
         - exposure: public
           name: finance-web
-          targetPort: 3000
+          targetPort: 8080
           protocol: https
       memoryLimit: 512Mi
       cpuLimit: 500m

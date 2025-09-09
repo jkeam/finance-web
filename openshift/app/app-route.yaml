@@ -11,6 +11,6 @@ spec:
     name: finance-web
     weight: 100
   port:
-    targetPort: port3000
+    targetPort: port8080
   tls:
     termination: edge

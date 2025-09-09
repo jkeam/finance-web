@@ -28,6 +28,10 @@ spec:
         image: quay.io/jkeam/finance-web
         imagePullPolicy: Always
         env:
+        - name: PORT
+          value: "8080"
+        - name: SOLID_QUEUE_IN_PUMA
+          value: "true"
         - name: DB_NAME
           value: "finance-web"
         - name: DB_USERNAME
@@ -37,18 +41,18 @@ spec:
         - name: DB_HOST
           value: "db"
         - name: RAILS_ENV
-          value: production
+          value: "production"
         - name: SECRET_KEY_BASE
           value: "2cafcc9bcf39cda432c9a30cb12592282f9cc952feb67a31a1b4d52c336fa9834a2b3d9ed5f8c061768a61548bc726245cf8ea19c3260736a56c7c77f555095d"
         ports:
-        - containerPort: 3000
+        - containerPort: 8080
           name: theport
         command: ["/bin/sh"]
         args: ["-c", "bundle exec rails server -b 0.0.0.0"]
         startupProbe:
           httpGet:
             path: /up
-            port: 3000
+            port: 8080
             httpHeaders:
             - name: Accept
               value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
@@ -58,7 +62,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /up
-            port: 3000
+            port: 8080
             httpHeaders:
             - name: Accept
               value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
@@ -68,11 +72,18 @@ spec:
         readinessProbe:
           httpGet:
             path: /up
-            port: 3000
+            port: 8080
             httpHeaders:
             - name: Accept
               value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 10
+        volumeMounts:
+          - mountPath: /opt/app-root/src/storage
+            name: finance-storage
+      volumes:
+      - name: finance-storage
+        PersistentVolumeClaim:
+          claimName: finance-storage
       restartPolicy: Always
