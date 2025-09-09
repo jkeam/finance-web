@@ -86,6 +86,9 @@ RUN gem install bundler && bundle
 # Copy code
 COPY --chown=1001:0 . .
 
+# Compile bootsnap
+RUN bundle exec bootsnap precompile app/ lib/
+
 # Precompile assets
 RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
 
