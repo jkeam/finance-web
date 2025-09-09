@@ -62,7 +62,7 @@ Bank.destroy_all
 name_to_bank = File.readlines(Rails.root.join('import/banks.txt')).map(&:strip).to_h do |bank_name|
   [bank_name, Bank.find_or_create_by!(name: bank_name)]
 end
-flip_banks = File.readlines(Rails.root.join('import/flip.txt')).map(&:downcase)
+flip_banks = File.readlines(Rails.root.join('import/flip.txt')).map(&:strip).map(&:downcase)
 
 # Process each file
 csv_files.each do |file_path|
