@@ -56,6 +56,7 @@ def create_transaction(flip_bank, file_path, bank)
 end
 
 Transaction.destroy_all
+Bank.destroy_all
 
 # Prepare lookup data
 name_to_bank = File.readlines(Rails.root.join('import/banks.txt')).map(&:strip).to_h do |bank_name|
