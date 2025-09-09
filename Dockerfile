@@ -72,10 +72,11 @@
 # CMD ["./bin/thrust", "./bin/rails", "server"]
 
 # Mine
-FROM quay.io/fedora/ruby-33
+FROM quay.io/fedora/ruby-33:20250909
 
 # Install lib
 USER 0
+RUN dnf autoremove
 RUN dnf install libyaml-devel jemalloc-devel -y
 
 # Install deps
