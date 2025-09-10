@@ -31,5 +31,5 @@ ENV PORT="8080"
 ENV TARGET_PORT="8080"
 ENV LD_PRELOAD="/usr/lib64/libjemalloc.so.2"
 ENV RAILS_ENV="production"
-ENTRYPOINT ["bin/docker-entrypoint"]
+ENTRYPOINT ["./bin/docker-entrypoint"]
 CMD ["./bin/thrust", "./bin/rails", "server", "-b", "0.0.0.0"]
