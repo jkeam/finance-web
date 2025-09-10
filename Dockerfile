@@ -27,7 +27,8 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
 
 # Migrate database
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails db:create && SECRET_KEY_BASE_DUMMY=1 ./bin/rails db:migrate
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails db:create
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails db:migrate
 
 # Clean for prod
 RUN bundle config set --local without 'development test' && bundle install && bundle clean --force
