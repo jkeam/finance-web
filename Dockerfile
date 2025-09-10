@@ -18,6 +18,7 @@ ENV PORT="8080"
 ENV TARGET_PORT="8080"
 ENV LD_PRELOAD="/usr/lib64/libjemalloc.so.2"
 ENV RAILS_ENV="production"
+ENV SOLID_QUEUE_IN_PUMA="true"
 
 # Compile bootsnap
 RUN bundle exec bootsnap precompile app/ lib/
