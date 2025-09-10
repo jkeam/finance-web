@@ -5,7 +5,7 @@ namespace: finance
 
 images:
 - name: quay.io/jkeam/finance-web
-  digest: sha256:418c17162560e0a48d5314e98709687cd824969243bc65b691a536e9abc86d1a
+  digest: sha256:9c93849d3f0c50d5bc8c1e4b7d8b27eefd05dfb2f6f97db1e4f3e1dc67c91247
 
 resources:
   - namespace.yaml
