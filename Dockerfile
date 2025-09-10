@@ -19,11 +19,11 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompile assets
 RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
 
-# Clean for prod
-RUN bundle config set --local without 'development test' && bundle install && bundle clean --force
-
 # Migrate database
 RUN ./bin/rails db:prepare
+
+# Clean for prod
+RUN bundle config set --local without 'development test' && bundle install && bundle clean --force
 
 # Final permissions fix
 USER 0
