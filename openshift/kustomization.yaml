@@ -9,5 +9,4 @@ images:
 
 resources:
   - namespace.yaml
-  - sa.yaml
   - app
