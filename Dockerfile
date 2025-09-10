@@ -13,6 +13,12 @@ RUN gem install bundler && bundle install
 # Copy code
 COPY --chown=1001:0 . .
 
+# ENV
+ENV PORT="8080"
+ENV TARGET_PORT="8080"
+ENV LD_PRELOAD="/usr/lib64/libjemalloc.so.2"
+ENV RAILS_ENV="production"
+
 # Compile bootsnap
 RUN bundle exec bootsnap precompile app/ lib/
 
@@ -20,7 +26,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
 
 # Migrate database
-RUN ./bin/rails db:prepare
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails db:create && SECRET_KEY_BASE_DUMMY=1 ./bin/rails db:migrate
 
 # Clean for prod
 RUN bundle config set --local without 'development test' && bundle install && bundle clean --force
@@ -30,9 +36,5 @@ USER 0
 RUN chown -R 1001:0 /opt/app-root/src && chmod -R 775 /opt/app-root/src
 USER 1001
 
-
-ENV PORT="8080"
-ENV TARGET_PORT="8080"
-ENV LD_PRELOAD="/usr/lib64/libjemalloc.so.2"
-ENV RAILS_ENV="production"
+# Run
 CMD ["./bin/thrust", "./bin/rails", "server", "-b", "0.0.0.0"]
