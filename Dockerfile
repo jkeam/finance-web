@@ -22,6 +22,11 @@ RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
 # Clean for prod
 RUN bundle config set --local without 'development test' && bundle install && bundle clean --force
 
+# Final permissions fix
+USER 0
+RUN chown -R 1001:0 /opt/app-root/src
+USER 1001
+
 ENV PORT="8080"
 ENV TARGET_PORT="8080"
 ENV LD_PRELOAD="/usr/lib64/libjemalloc.so.2"
