@@ -24,7 +24,7 @@ ENV SOLID_QUEUE_IN_PUMA="true"
 RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompile assets
-RUN SECRET_KEY_BASE_DUMMY=1 rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 DB_USERNAME=tmp DB_PASSWORD=tmp rails assets:precompile
 
 # Clean for prod
 RUN bundle config set --local without 'development test' && bundle install && bundle clean --force
