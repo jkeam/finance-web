@@ -13,6 +13,8 @@ defaultpostgres: &defaultpostgres
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("DB_USERNAME") %>
+  password: <%= ENV.fetch("DB_PASSWORD") %>
   prepared_statements: false
   advisory_locks: false
   statement_limit: 200
@@ -33,16 +35,16 @@ test:
 production:
   primary:
     <<: *defaultpostgres
-    database: finance_production.sqlite3
+    database: finance_production
   cache:
     <<: *defaultpostgres
-    database: finance_production_cache.sqlite3
+    database: finance_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *defaultpostgres
-    database: finance_production_queue.sqlite3
+    database: finance_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *defaultpostgres
-    database: finance_production_cable.sqlite3
+    database: finance_production_cable
     migrations_paths: db/cable_migrate
