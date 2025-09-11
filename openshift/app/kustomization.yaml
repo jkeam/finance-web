@@ -1,5 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: finance
+images:
+- name: quay.io/jkeam/finance-web
+  digest: sha256:2f38890147d49da8a1f4ec8c3b731571ed7181b16b636d832670aed66369d575
 resources:
   - app-storage.yaml
   - app-deployment.yaml
