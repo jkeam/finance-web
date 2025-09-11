@@ -1,0 +1,44 @@
+piVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    app: db
+    app.kubernetes.io/part-of: finance
+    app.openshift.io/runtime: postgresql
+    app.openshift.io/runtime-version: '16'
+    app.kubernetes.io/name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - image: registry.redhat.io/rhel9/postgresql-16:9.6-1756967015
+          name: db
+          env:
+          - name: POSTGRESQL_USER
+            value: financeuser
+          - name: POSTGRESQL_PASSWORD
+            value: financepassword
+          - name: POSTGRESQL_ADMIN_PASSWORD
+            value: adminpassword
+          - name: POSTGRESQL_DATABASE
+            value: finance_production
+          ports:
+          - containerPort: 5432
+            name: theport
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/pgsql/data
+      restartPolicy: Always
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: db
