@@ -1,9 +1,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: finance
+
 images:
 - name: quay.io/jkeam/finance-web
   digest: sha256:1cf1b2accb3f387ea9891d56b4692fbffd50c22c58e2c208e4422fb483a98dfa
+
+configMapGenerator:
+- name: finance-web-config
+  literals:
+  - RAILS_ENV=production
+  - PORT=8080
+  - SOLID_QUEUE_IN_PUMA=true
+  - RAILS_LOG_LEVEL=info
+
+secretGenerator:
+- name: finance-web-secrets
+  literals:
+  - DB_USERNAME=postgres
+  - DB_PASSWORD=adminpassword
+  - SECRET_KEY_BASE=2cafcc9bcf39cda432c9a30cb12592282f9cc952feb67a31a1b4d52c336fa9834a2b3d9ed5f8c061768a61548bc726245cf8ea19c3260736a56c7c77f555095d
+  - DB_NAME=finance_production
+  - DB_HOST=db
+
 resources:
   - app-migration.yaml
   - app-deployment.yaml

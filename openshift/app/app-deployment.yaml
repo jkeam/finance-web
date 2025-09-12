@@ -27,23 +27,11 @@ spec:
       - name: finance-web
         image: quay.io/jkeam/finance-web
         imagePullPolicy: Always
-        env:
-        - name: PORT
-          value: "8080"
-        - name: SOLID_QUEUE_IN_PUMA
-          value: "true"
-        - name: DB_NAME
-          value: "finance_production"
-        - name: DB_USERNAME
-          value: "postgres"
-        - name: DB_PASSWORD
-          value: "adminpassword"
-        - name: DB_HOST
-          value: "db"
-        - name: RAILS_ENV
-          value: "production"
-        - name: SECRET_KEY_BASE
-          value: "2cafcc9bcf39cda432c9a30cb12592282f9cc952feb67a31a1b4d52c336fa9834a2b3d9ed5f8c061768a61548bc726245cf8ea19c3260736a56c7c77f555095d"
+        envFrom:
+        - configMapRef:
+            name: finance-web-config
+        - secretRef:
+            name: finance-web-secrets
         ports:
         - containerPort: 8080
           name: theport
