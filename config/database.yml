@@ -35,16 +35,16 @@ test:
 production:
   primary:
     <<: *defaultpostgres
-    database: finance_production
+    database: <%= ENV.fetch("DB_NAME") { 'finance_production' } %>
   cache:
     <<: *defaultpostgres
-    database: finance_production_cache
+    database: <%= ENV.fetch("DB_NAME") { 'finance_production' } %>_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *defaultpostgres
-    database: finance_production_queue
+    database: <%= ENV.fetch("DB_NAME") { 'finance_production' } %>_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *defaultpostgres
-    database: finance_production_cable
+    database: <%= ENV.fetch("DB_NAME") { 'finance_production' } %>_cable
     migrations_paths: db/cable_migrate
