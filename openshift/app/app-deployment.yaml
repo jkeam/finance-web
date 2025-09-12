@@ -79,11 +79,4 @@ spec:
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 10
-        volumeMounts:
-          - mountPath: /opt/app-root/src/storage
-            name: finance-storage
-      volumes:
-      - name: finance-storage
-        PersistentVolumeClaim:
-          claimName: finance-storage
       restartPolicy: Always

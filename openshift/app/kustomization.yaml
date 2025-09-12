@@ -6,7 +6,6 @@ images:
   digest: sha256:ccef56b6696f25286ec409736281f518353fcc820eeecd546dc9b811d71b921b
 resources:
   - app-migration.yaml
-  - app-storage.yaml
   - app-deployment.yaml
   - app-service.yaml
   - app-route.yaml
