@@ -26,8 +26,8 @@ spec:
       containers:
       - name: migrate
         image: quay.io/jkeam/finance-web
-        command: ["/bin/sh"]
-        args: ["-c", "./bin/rails", "db:prepare"]
+        command: ["./bin/rails"]
+        args: ["db:prepare"]
         envFrom:
         - secretRef:
             name: db-credentials
