@@ -11,6 +11,9 @@ stringData:
   DB_USERNAME: postgres
   DB_PASSWORD: adminpassword
   SECRET_KEY_BASE: "2cafcc9bcf39cda432c9a30cb12592282f9cc952feb67a31a1b4d52c336fa9834a2b3d9ed5f8c061768a61548bc726245cf8ea19c3260736a56c7c77f555095d"
+  DB_NAME: "finance_production"
+  DB_HOST: "db"
+  RAILS_ENV: "production"
 
 ---
 apiVersion: batch/v1
