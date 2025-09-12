@@ -47,8 +47,8 @@ spec:
         ports:
         - containerPort: 8080
           name: theport
-        command: ["/bin/sh"]
-        args: ["-c", "./bin/thrust", "./bin/rails", "server", "-b", "0.0.0.0"]
+        command: ["./bin/thrust"]
+        args: ["./bin/rails", "server", "-b", "0.0.0.0"]
         startupProbe:
           httpGet:
             path: /up
