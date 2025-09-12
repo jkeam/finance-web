@@ -5,6 +5,7 @@ images:
 - name: quay.io/jkeam/finance-web
   digest: sha256:d22b19f44011ed30acb19fbca870d26a86ba7332aee55c5e8d60149285972c72
 resources:
+  - app-migration.yaml
   - app-storage.yaml
   - app-deployment.yaml
   - app-service.yaml
