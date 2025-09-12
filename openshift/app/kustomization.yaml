@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: finance
 images:
 - name: quay.io/jkeam/finance-web
-  digest: sha256:527e69b803eaebac714f851a4112d7487773dbe03a9825ae90af18d1742ed71c
+  digest: sha256:ccef56b6696f25286ec409736281f518353fcc820eeecd546dc9b811d71b921b
 resources:
   - app-migration.yaml
   - app-storage.yaml
