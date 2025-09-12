@@ -4,6 +4,7 @@ metadata:
   name: db-credentials
   annotations:
     argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: -1
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
 type: Opaque
 stringData:
@@ -17,6 +18,7 @@ metadata:
   name: db-migration
   annotations:
     argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: 0
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   template:
