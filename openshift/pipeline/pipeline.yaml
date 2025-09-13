@@ -1,0 +1,96 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: finance-web-pipeline
+spec:
+  params:
+  - name: APP_SOURCE_GIT
+    type: string
+    description: The application git repository
+    default: https://github.com/jkeam/finance-web.git
+  - name: APP_SOURCE_REVISION
+    type: string
+    description: The application git branch or sha hash
+    default: main
+  - name: APP_NAME
+    type: string
+    description: The application name
+    default: finance-web
+  - name: DOCKERFILE
+    type: string
+    description: Dockerfile location
+    default: Dockerfile
+  results:
+  - name: APP_IMAGE_DIGEST
+    description: The image digest built in the pipeline
+    value: $(tasks.build-image.results.IMAGE_DIGEST)
+  workspaces:
+  - name: workspace
+  - name: quay-creds
+  tasks:
+  - name: source-clone
+    taskRef:
+      resolver: cluster
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: git-clone
+      - name: namespace
+        value: openshift-pipelines
+    workspaces:
+    - name: output
+      workspace: workspace
+    params:
+    - name: URL
+      value: $(params.APP_SOURCE_GIT)
+    - name: REVISION
+      value: $(params.APP_SOURCE_REVISION)
+  - name: run-tests
+    taskSpec:
+      steps:
+      - image: docker.io/ruby:3.3
+        workingDir: $(workspaces.source.path)
+        env:
+        - name: RAILS_ENV
+          value: test
+        script: |
+          #!/bin/sh
+          set -e
+
+          echo "Installing bundler..."
+          gem install bundler
+
+          echo "Running bundle install..."
+          bundle install
+
+          echo "Running tests..."
+          bundle exec rails db:prepare
+          bundle exec rails test
+    runAfter:
+    - source-clone
+    workspaces:
+    - name: source
+      workspace: workspace
+  - name: build-image
+    taskRef:
+      resolver: cluster
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: buildah
+      - name: namespace
+        value: openshift-pipelines
+    runAfter:
+    - run-tests
+    params:
+    - name: IMAGE
+      value: "quay.io/jkeam/$(params.APP_NAME)"
+    - name: DOCKERFILE
+      value: "$(params.DOCKERFILE)"
+    workspaces:
+    - name: source
+      workspace: workspace
+    - name: dockerconfig
+      workspace: quay-creds

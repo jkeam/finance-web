@@ -31,3 +31,32 @@ All data imported MUST follow the Apple Card export schema.
     ```shell
     rails db:seed:custom
     ```
+
+## OpenShift
+
+### Pipelines
+
+1. Create secret with image repository credentials, something like:
+
+    ```shell
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: quay-creds
+      namespace: finance
+    data:
+      .dockerconfigjson: randomlongstringhere
+    type: kubernetes.io/dockerconfigjson
+    ```
+
+2. Create pipeline
+
+    ```shell
+    oc apply -k openshift/pipeline
+    ```
+
+3. Create run
+
+    ```shell
+    oc create -f ./openshift/pipeline/pipeline-run.yaml
+    ```

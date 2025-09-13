@@ -17,3 +17,5 @@ jon/*
 
 storage/test.sqlite3
 storage/development.sqlite3
+
+/openshift/pipeline/secrets.yaml

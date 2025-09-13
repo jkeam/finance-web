@@ -50,4 +50,6 @@
 /.dockerignore
 /Dockerfile*
 
+# Custom ignore
 /openshift/*
+/import/*

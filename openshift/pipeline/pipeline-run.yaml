@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  namespace: finance
+  generateName: finance-web-pipelinerun-
+spec:
+  serviceAccountName: 'pipeline'
+  pipelineRef:
+    name: finance-web-pipeline
+  workspaces:
+  - name: workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+  - name: quay-creds
+    secret:
+      secretName: quay-creds
