@@ -2,6 +2,7 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: finance-web-pipeline
+  namespace: finance
 spec:
   params:
   - name: APP_SOURCE_GIT

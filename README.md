@@ -42,7 +42,7 @@ All data imported MUST follow the Apple Card export schema.
     apiVersion: v1
     kind: Secret
     metadata:
-      name: quay-creds
+      name: quay-creds  # this name is important
       namespace: finance
     data:
       .dockerconfigjson: randomlongstringhere
@@ -52,7 +52,7 @@ All data imported MUST follow the Apple Card export schema.
 2. Create pipeline
 
     ```shell
-    oc apply -k openshift/pipeline
+    oc apply -f openshift/pipeline/pipeline.yaml
     ```
 
 3. Create run
