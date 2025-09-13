@@ -6,6 +6,22 @@
     Total
   </h1>
   <h2 class="subtitle">
+    Info
+  </h2>
+  <div class="block">
+    Number of months: <%= @number_of_months %>
+    <br />
+    Net: <%= Money.from_cents(@net_amount * 100).format %>
+    <br/>
+    Net Income: <%= Money.from_cents(@net_income_amount * 100).format %>
+    <br/>
+    Net Spending: <%= Money.from_cents(@net_spending_amount * 100).format %>
+    <br />
+    Avg Monthly Income: <%= Money.from_cents(@net_income_amount / @number_of_months * 100).format %>
+    <br/>
+    Avg Monthly Spending: <%= Money.from_cents(@net_spending_amount / @number_of_months * 100).format %>
+  </div>
+  <h2 class="subtitle">
     Transactions
   </h2>
   <%= pie_chart @transactions.group(:category).count %>
@@ -23,6 +39,10 @@
     Income
   </h2>
   <%= column_chart @income_per_month %>
+  <h2 class="subtitle">
+    Income by merchant
+  </h2>
+  <%= line_chart @income_per_month_by_merchant %>
   <h2 class="subtitle">
     Spending
   </h2>

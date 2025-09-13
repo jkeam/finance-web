@@ -37,6 +37,17 @@ class DashboardController < ApplicationController
       @income_per_month[k] = (v * -1) / 100
     end
 
+    @income_per_month_by_merchant = @all_transactions.where(category: :category_income).select(:merchant).distinct.pluck(:merchant).map do |m|
+      {
+        name: m,
+        data: income_by_merchant_and_month(@all_transactions, m)
+      }
+    end
+    @spending_by_category_per_month = [
+      { name: 'Restaurants', data: spending_category_by_month(@all_transactions, :category_restaurants) },
+      { name: 'Services', data: spending_category_by_month(@all_transactions, :category_services) },
+    ]
+
     # spend per category
     @spend = @transactions.group(:category).sum(:amount_cents)
     @spend.each do |k, v|
@@ -92,6 +103,12 @@ class DashboardController < ApplicationController
     ]
 
     @net_per_month = @income_per_month.map { |k, v| [ k, v - @spend_per_month[k] ] }.to_h
+
+    # info
+    @net_amount = @net_per_month.values().inject(0) { |acc, n| acc + n }
+    @net_spending_amount = @spend_per_month.values().inject(0) { |acc, n| acc + n }
+    @net_income_amount = @income_per_month.values().inject(0) { |acc, n| acc + n }
+    @number_of_months = @income_per_month.keys().size
 
     @spending_by_category_per_month = [
       { name: 'Restaurants', data: spending_category_by_month(@all_transactions, :category_restaurants) },

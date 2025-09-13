@@ -24,6 +24,14 @@ module Filterable
     tmp.each do |k, v|
       tmp[k] = v / 100
     end
-    return tmp
+    tmp
+  end
+
+  def income_by_merchant_and_month(transactions, merchant)
+    tmp = transactions.where(category: :category_income, merchant: merchant).group_by_month(:transaction_date).sum(:amount_cents)
+    tmp.each do |k, v|
+      tmp[k] = v * -1 / 100
+    end
+    tmp
   end
 end
