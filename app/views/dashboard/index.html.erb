@@ -9,17 +9,34 @@
     Info
   </h2>
   <div class="block">
-    Number of months: <%= @number_of_months %>
-    <br />
-    Net: <%= Money.from_cents(@net_amount * 100).format %>
-    <br/>
-    Net Income: <%= Money.from_cents(@net_income_amount * 100).format %>
-    <br/>
-    Net Spending: <%= Money.from_cents(@net_spending_amount * 100).format %>
-    <br />
-    Avg Monthly Income: <%= Money.from_cents(@net_income_amount / @number_of_months * 100).format %>
-    <br/>
-    Avg Monthly Spending: <%= Money.from_cents(@net_spending_amount / @number_of_months * 100).format %>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td>Number of months:</td>
+          <td><%= @number_of_months %></td>
+        </tr>
+        <tr>
+          <td>Net:</td>
+          <td><%= Money.from_cents(@net_amount * 100).format %></td>
+        </tr>
+        <tr>
+          <td>Gross Income:</td>
+          <td><%= Money.from_cents(@net_income_amount * 100).format %></td>
+        </tr>
+        <tr>
+          <td>Gross Spending:</td>
+          <td><%= Money.from_cents(@net_spending_amount * 100).format %></td>
+        </tr>
+        <tr>
+          <td>Avg Monthly Income:</td>
+          <td><%= Money.from_cents(@net_income_amount / @number_of_months * 100).format %></td>
+        </tr>
+        <tr>
+          <td>Avg Monthly Spending:</td>
+          <td><%= Money.from_cents(@net_spending_amount / @number_of_months * 100).format %></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <h2 class="subtitle">
     Transactions
