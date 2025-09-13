@@ -30,7 +30,9 @@ class DashboardController < ApplicationController
       @all_transactions = @all_transactions.where('transaction_date <= ?', @enddate)
     end
 
-    @income_per_month = @all_transactions.where(category: :category_income).group_by_month(:transaction_date).sum(:amount_cents)
+    @income_per_month = @all_transactions.where(category: :category_income)
+      .group_by_month(:transaction_date)
+      .sum(:amount_cents)
     @income_per_month.each do |k, v|
       @income_per_month[k] = (v * -1) / 100
     end
@@ -85,18 +87,20 @@ class DashboardController < ApplicationController
     end
 
     @income_and_spending = [
-      {name: 'Income', data: @income_per_month},
-      {name: 'Spend', data: @spend_per_month}
+      { name: 'Income', data: @income_per_month },
+      { name: 'Spend', data: @spend_per_month }
     ]
 
+    @net_per_month = @income_per_month.map { |k, v| [ k, v - @spend_per_month[k] ] }.to_h
+
     @spending_by_category_per_month = [
-      {name: 'Restaurants', data: spending_category_by_month(@all_transactions, :category_restaurants)},
-      {name: 'Services', data: spending_category_by_month(@all_transactions, :category_services)},
-      {name: 'Grocery', data: spending_category_by_month(@all_transactions, :category_grocery)},
-      {name: 'Utilities', data: spending_category_by_month(@all_transactions, :category_utility)},
-      {name: 'Shopping', data: spending_category_by_month(@all_transactions, :category_shopping)},
-      {name: 'Travel', data: spending_category_by_month(@all_transactions, :category_travel)},
-      {name: 'Transportation', data: spending_category_by_month(@all_transactions, :category_transportation)}
+      { name: 'Restaurants', data: spending_category_by_month(@all_transactions, :category_restaurants) },
+      { name: 'Services', data: spending_category_by_month(@all_transactions, :category_services) },
+      { name: 'Grocery', data: spending_category_by_month(@all_transactions, :category_grocery) },
+      { name: 'Utilities', data: spending_category_by_month(@all_transactions, :category_utility) },
+      { name: 'Shopping', data: spending_category_by_month(@all_transactions, :category_shopping) },
+      { name: 'Travel', data: spending_category_by_month(@all_transactions, :category_travel) },
+      { name: 'Transportation', data: spending_category_by_month(@all_transactions, :category_transportation) }
     ]
   end
 end

@@ -3,7 +3,7 @@
 
 <section class="section chart">
   <h1 class="title">
-    Total Count
+    Total
   </h1>
   <h2 class="subtitle">
     Transactions
@@ -35,6 +35,10 @@
     Income and spending
   </h2>
   <%= line_chart @income_and_spending %>
+  <h2 class="subtitle">
+    Net
+  </h2>
+  <%= column_chart @net_per_month %>
 </section>
 
 <section class="section chart">
