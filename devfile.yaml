@@ -10,10 +10,10 @@ components:
           name: finance-web
           targetPort: 8080
           protocol: https
-      memoryLimit: 512Mi
-      cpuLimit: 500m
-      memoryRequest: 256Mi
-      cpuRequest: 100m
+      memoryLimit: 2Gi
+      cpuLimit: 1000m
+      memoryRequest: 1Gi
+      cpuRequest: 500m
       mountSources: true
 
 commands:
@@ -31,7 +31,7 @@ commands:
       label: "Build database"
       component: tools
       workingDir: ${PROJECT_SOURCE}
-      commandLine: "rails db:create"
+      commandLine: "bundle exec rails db:create"
       group:
         kind: build
 
@@ -40,7 +40,7 @@ commands:
       label: "Migrate database"
       component: tools
       workingDir: ${PROJECT_SOURCE}
-      commandLine: "rails db:migrate"
+      commandLine: "bundle exec rails db:migrate"
       group:
         kind: build
 
@@ -49,7 +49,7 @@ commands:
       label: "Test"
       component: tools
       workingDir: ${PROJECT_SOURCE}
-      commandLine: "rails test"
+      commandLine: "bundle exec rails test"
       group:
         kind: test
 
