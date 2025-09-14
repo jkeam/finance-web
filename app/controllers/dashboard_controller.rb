@@ -43,12 +43,9 @@ class DashboardController < ApplicationController
         data: income_by_merchant_and_month(all_transactions, m)
       }
     end
-    @income_per_month_by_merchant.each do |merchant|
+    @income_per_month_by_merchant.reject! do |merchant|
       value = merchant[:data]
-      if value.nil? || value.keys().size.zero?
-        puts "DELETING"
-        @income_per_month_by_merchant.delete(merchant)
-      end
+      value.nil? || value.keys().size.zero?
     end
 
     # spending
