@@ -1,5 +1,6 @@
 require 'csv'
 require 'date'
+require 'yaml'
 
 # Read in transactions
 csv_files = Dir.glob(Rails.root.join('import/*.csv')).map(&:strip)
@@ -14,7 +15,7 @@ csv_files.each do |file_path|
 end
 
 # Insert everything
-def create_transaction(is_commercial_bank, file_path, bank)
+def create_transaction(file_path, account)
   CSV.foreach(file_path, headers: true) do |row|
     amount = row['amount']
     positive = true
@@ -23,10 +24,10 @@ def create_transaction(is_commercial_bank, file_path, bank)
     end
     category = row['category'].downcase.gsub(' ', '_').strip
 
-    # banks track the normal way,
+    # commercial banks track the normal way,
     # but I want the negative to match my credit cards
     # where spending is positive amounts
-    if is_commercial_bank
+    if account.commercial?
       if positive
         amount = "-#{amount}"
       else
@@ -47,7 +48,7 @@ def create_transaction(is_commercial_bank, file_path, bank)
         notes: '',
         amount: Monetize.parse(amount),
         positive: positive,
-        bank: bank
+        account: account
       )
     rescue => e
       STDERR.puts "Error for #{file_path}, error is #{e.message}"
@@ -56,24 +57,42 @@ def create_transaction(is_commercial_bank, file_path, bank)
 end
 
 Transaction.destroy_all
+Account.destroy_all
 Bank.destroy_all
 
 # Prepare lookup data
-banks = File.readlines(Rails.root.join('import/banks.txt')).map(&:strip)
-credit_cards = File.readlines(Rails.root.join('import/credit-card.txt')).map(&:strip)
-commercial_banks = (banks - credit_cards).map(&:downcase)
+banks = YAML.load_file(Rails.root.join('import/banks.yaml'))
 
-# create banks
-name_to_bank = banks.to_h do |bank_name|
-  category = commercial_banks.include?(bank_name.downcase) ? :commercial : :credit_card
-  [ bank_name, Bank.find_or_create_by!(name: bank_name, category: category) ]
+# Build banks and accounts
+name_to_bank = {}
+bank_name_to_accounts = {}
+banks['banks'].each do |bank_input|
+  bank_name = bank_input['name']
+  bank = Bank.find_or_create_by!(name: bank_name)
+  name_to_bank[bank_name] = bank
+
+  accounts = []
+  bank_name_to_accounts[bank_name] = accounts
+  bank_input['accounts'].each do |account_input|
+    accounts << Account.find_or_create_by!(
+      name: account_input['name'],
+      bank: bank,
+      category: account_input['type'].to_s
+    )
+  end
 end
 
 # Process each file
 csv_files.each do |file_path|
   name_to_bank.each do |name, bank|
-    if file_path.downcase.include?(name.downcase)
-      create_transaction(commercial_banks.include?(name.downcase), file_path, bank)
+    filename = file_path.downcase
+    if filename.include?(name.downcase)
+      bank_name_to_accounts[bank.name].each do |cur_account|
+        if filename.include?(cur_account.name.downcase)
+          create_transaction(file_path, cur_account)
+          break
+        end
+      end
       break
     end
   end
