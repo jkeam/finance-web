@@ -136,4 +136,58 @@ class DashboardController < ApplicationController
       @number_of_months = 1
     end
   end
+
+  # GET /spending
+  def spending
+    set_filter_params(params)
+
+    all_transactions = Transaction.all
+
+    # params
+    if @startdate != nil
+      all_transactions = all_transactions.where("transaction_date >= ?", @startdate)
+    end
+    if @enddate != nil
+      all_transactions = all_transactions.where("transaction_date <= ?", @enddate)
+    end
+
+    # restaurants
+    @restaurants = all_transactions.where(category: :category_restaurants)
+      .group(:merchant)
+      .having("sum(amount_cents) > 10000")
+      .sum(:amount_cents)
+    @restaurants.each do |k, v|
+      @restaurants[k] = v / 100
+    end
+    # restaurant occurances
+    @restaurant_times = all_transactions.where(category: :category_restaurants)
+      .group(:merchant)
+      .having("count(merchant) > 5")
+      .count
+
+    # grocery per merchant
+    @grocery = all_transactions.where(category: :category_grocery)
+      .group(:merchant)
+      .having("sum(amount_cents) > 10000")
+      .sum(:amount_cents)
+    @grocery.each do |k, v|
+      @grocery[k] = v / 100
+    end
+
+    # services
+    @services = all_transactions.where(category: :category_services)
+      .group(:merchant)
+      .sum(:amount_cents)
+    @services.each do |k, v|
+      @services[k] = v / 100
+    end
+    # services grouped by merchants
+    @services_expensive = all_transactions.where(category: :category_services)
+      .group(:merchant)
+      .having("sum(amount_cents) > 10000")
+      .sum(:amount_cents)
+    @services_expensive.each do |k, v|
+      @services_expensive[k] = v / 100
+    end
+  end
 end

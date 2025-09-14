@@ -6,10 +6,10 @@ class TransactionsController < ApplicationController
     set_filter_params(params)
     transactions = Transaction.includes(:bank).where.not(category: @ignore_categories)
     if @startdate != nil
-      transactions = transactions.where('transaction_date >= ?', @startdate)
+      transactions = transactions.where("transaction_date >= ?", @startdate)
     end
     if @enddate != nil
-      transactions = transactions.where('transaction_date <= ?', @enddate)
+      transactions = transactions.where("transaction_date <= ?", @enddate)
     end
     @pagy, @transactions = pagy(transactions.order(:transaction_date))
   end

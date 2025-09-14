@@ -5,4 +5,9 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_index_url
     assert_response :success
   end
+
+  test "should get spending" do
+    get dashboard_spending_url
+    assert_response :success
+  end
 end
