@@ -1,0 +1,9 @@
+banks:
+  - name: TheBank
+    accounts:
+    - name: Checking
+      type: checking
+  - name: Chase
+    accounts:
+    - name: CreditCard
+      type: credit_card
