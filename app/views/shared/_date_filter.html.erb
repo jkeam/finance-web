@@ -21,15 +21,6 @@
       </div>
     </div>
 
-    <div class="field">
-      <div class="control">
-        <label class="checkbox">
-          <input type="checkbox" name="sigother" value="true" <%- if sigother %>checked="checked"<%- end %>>
-          Include Significant Other
-        </label>
-      </div>
-    </div>
-
     <div class="field is-grouped">
       <div class="control">
         <button class="button is-link" type="submit">Submit</button>
@@ -45,9 +36,6 @@
     try {
       document.getElementsByName('startdate')[0].value = '';
       document.getElementsByName('enddate')[0].value = '';
-      const checkbox = document.getElementsByName('sigother')[0];
-      checkbox.removeAttribute('checked');
-      checkbox.checked = false;
     } catch(e) {
       console.error(e);
     }

@@ -4,120 +4,143 @@ class DashboardController < ApplicationController
   # GET /
   def index
     set_filter_params(params)
-    @ignore_categories.concat(%i[
-      category_payment
-      category_credit
-      category_debit
-      category_installment
-      category_interest
-      category_other
-      category_income
-      category_transfer
-      category_deposit
-      category_withdrawl
-      category_dividend
-      category_rental_property
-      category_software
-    ])
-    @transactions = Transaction.where.not(category: @ignore_categories)
-    @all_transactions = Transaction
+
+    # do not ignore anything
+    all_transactions = Transaction.all
+
+    # needs and wants
+    needs_transactions = Transaction.all.where(category: Transaction.get_needs_categories())
+    wants_transactions = Transaction.all.where(category: Transaction.get_wants_categories())
+
+    # used for spending to ignore income and internal transfers and payments
+    income_transactions = Transaction.income()
+    spending_transactions = Transaction.spending()
+
+    # params
     if @startdate != nil
-      @transactions = @transactions.where('transaction_date >= ?', @startdate)
-      @all_transactions = @all_transactions.where('transaction_date >= ?', @startdate)
+      all_transactions = all_transactions.where("transaction_date >= ?", @startdate)
+      needs_transactions = needs_transactions.where("transaction_date >= ?", @startdate)
+      wants_transactions = wants_transactions.where("transaction_date >= ?", @startdate)
+      income_transactions = income_transactions.where("transaction_date >= ?", @startdate)
+      spending_transactions = spending_transactions.where("transaction_date >= ?", @startdate)
     end
     if @enddate != nil
-      @transactions = @transactions.where('transaction_date <= ?', @enddate)
-      @all_transactions = @all_transactions.where('transaction_date <= ?', @enddate)
+      all_transactions = all_transactions.where("transaction_date <= ?", @enddate)
+      needs_transactions = needs_transactions.where("transaction_date <= ?", @enddate)
+      wants_transactions = wants_transactions.where("transaction_date <= ?", @enddate)
+      income_transactions = income_transactions.where("transaction_date <= ?", @enddate)
+      spending_transactions = spending_transactions.where("transaction_date <= ?", @enddate)
     end
 
-    @income_per_month = @all_transactions.where(category: :category_income)
-      .group_by_month(:transaction_date)
-      .sum(:amount_cents)
+    # income
+    @income_per_month = income_transactions.group_by_month(:transaction_date).sum(:amount_cents)
     @income_per_month.each do |k, v|
       @income_per_month[k] = (v * -1) / 100
     end
-
-    @income_per_month_by_merchant = @all_transactions.where(category: :category_income).select(:merchant).distinct.pluck(:merchant).map do |m|
+    @income_per_month_by_merchant = income_transactions.select(:merchant).distinct.pluck(:merchant).map do |m|
       {
-        name: m,
-        data: income_by_merchant_and_month(@all_transactions, m)
+        name: m[0...30],
+        data: income_by_merchant_and_month(all_transactions, m)
       }
     end
-    @spending_by_category_per_month = [
-      { name: 'Restaurants', data: spending_category_by_month(@all_transactions, :category_restaurants) },
-      { name: 'Services', data: spending_category_by_month(@all_transactions, :category_services) },
-    ]
-
-    # spend per category
-    @spend = @transactions.group(:category).sum(:amount_cents)
-    @spend.each do |k, v|
-      @spend[k] = v / 100
+    @income_per_month_by_merchant.each do |merchant|
+      value = merchant[:data]
+      if value.nil? || value.keys().size.zero?
+        puts "DELETING"
+        @income_per_month_by_merchant.delete(merchant)
+      end
     end
 
-    # restaurants per merchant
-    @restaurants = @all_transactions.where(category: :category_restaurants)
+    # spending
+    @spending_by_category_per_month = [
+      { name: "Restaurants", data: spending_category_by_month(all_transactions, :category_restaurants) },
+      { name: "Services", data: spending_category_by_month(all_transactions, :category_services) }
+    ]
+    # spend per category
+    @spend = spending_transactions.group(:category).sum(:amount_cents)
+    @spend.each { |k, v| @spend[k] = v / 100 }
+    # spend per month
+    @spend_per_month = spending_transactions.group_by_month(:transaction_date).sum(:amount_cents)
+    @spend_per_month.each do |k, v|
+      @spend_per_month[k] = v / 100
+    end
+    @spend_count = spending_transactions.group(:category).count
+    @spending_by_category_per_month = [
+      { name: "Restaurants", data: spending_category_by_month(all_transactions, :category_restaurants) },
+      { name: "Services", data: spending_category_by_month(all_transactions, :category_services) },
+      { name: "Grocery", data: spending_category_by_month(all_transactions, :category_grocery) },
+      { name: "Utilities", data: spending_category_by_month(all_transactions, :category_utility) },
+      { name: "Shopping", data: spending_category_by_month(all_transactions, :category_shopping) },
+      { name: "Travel", data: spending_category_by_month(all_transactions, :category_travel) },
+      { name: "Transportation", data: spending_category_by_month(all_transactions, :category_transportation) }
+    ]
+
+    # income and spending
+    @income_and_spending = [
+      { name: "Income", data: @income_per_month },
+      { name: "Spend", data: @spend_per_month }
+    ]
+    @net_per_month = @income_per_month.map { |k, v| [ k, v - @spend_per_month[k] ] }.to_h
+
+    # restaurants
+    @restaurants = all_transactions.where(category: :category_restaurants)
       .group(:merchant)
-      .having('sum(amount_cents) > 10000')
+      .having("sum(amount_cents) > 10000")
       .sum(:amount_cents)
     @restaurants.each do |k, v|
       @restaurants[k] = v / 100
     end
-
-    # restaurant times
-    @restaurant_times = @all_transactions.where(category: :category_restaurants)
+    # restaurant occurances
+    @restaurant_times = all_transactions.where(category: :category_restaurants)
       .group(:merchant)
-      .having('count(merchant) > 5')
+      .having("count(merchant) > 5")
       .count
 
     # grocery per merchant
-    @grocery = @all_transactions.where(category: :category_grocery)
+    @grocery = all_transactions.where(category: :category_grocery)
       .group(:merchant)
-      .having('sum(amount_cents) > 10000')
+      .having("sum(amount_cents) > 10000")
       .sum(:amount_cents)
     @grocery.each do |k, v|
       @grocery[k] = v / 100
     end
 
-    @all_services = @all_transactions.where(category: :category_services)
+    # services
+    @services = all_transactions.where(category: :category_services)
       .group(:merchant)
-      .sum(:amount_cents)
-    @all_services.each do |k, v|
-      @all_services[k] = v / 100
-    end
-    @services = @all_transactions.where(category: :category_services)
-      .group(:merchant)
-      .having('sum(amount_cents) > 10000')
       .sum(:amount_cents)
     @services.each do |k, v|
       @services[k] = v / 100
     end
-
-    @spend_per_month = @transactions.group_by_month(:transaction_date).sum(:amount_cents)
-    @spend_per_month.each do |k, v|
-      @spend_per_month[k] = v / 100
+    # services grouped by merchants
+    @services_expensive = all_transactions.where(category: :category_services)
+      .group(:merchant)
+      .having("sum(amount_cents) > 10000")
+      .sum(:amount_cents)
+    @services_expensive.each do |k, v|
+      @services_expensive[k] = v / 100
     end
 
-    @income_and_spending = [
-      { name: 'Income', data: @income_per_month },
-      { name: 'Spend', data: @spend_per_month }
-    ]
-
-    @net_per_month = @income_per_month.map { |k, v| [ k, v - @spend_per_month[k] ] }.to_h
+    # budget
+    budget_spending_needs = all_transactions.where(category: Transaction.get_needs_categories()).sum(:amount_cents)
+    budget_spending_wants = all_transactions.where(category: Transaction.get_wants_categories()).sum(:amount_cents)
+    budget_spending_income = income_transactions.sum(:amount_cents) * -1
+    budget_savings = budget_spending_income - (budget_spending_needs + budget_spending_wants)
+    @budget_spending = {
+      "needs" => budget_spending_needs / 100,
+      "wants" => budget_spending_wants / 100,
+      "savings" => budget_savings / 100
+    }
 
     # info
-    @net_amount = @net_per_month.values().inject(0) { |acc, n| acc + n }
-    @net_spending_amount = @spend_per_month.values().inject(0) { |acc, n| acc + n }
-    @net_income_amount = @income_per_month.values().inject(0) { |acc, n| acc + n }
     @number_of_months = @income_per_month.keys().size
-
-    @spending_by_category_per_month = [
-      { name: 'Restaurants', data: spending_category_by_month(@all_transactions, :category_restaurants) },
-      { name: 'Services', data: spending_category_by_month(@all_transactions, :category_services) },
-      { name: 'Grocery', data: spending_category_by_month(@all_transactions, :category_grocery) },
-      { name: 'Utilities', data: spending_category_by_month(@all_transactions, :category_utility) },
-      { name: 'Shopping', data: spending_category_by_month(@all_transactions, :category_shopping) },
-      { name: 'Travel', data: spending_category_by_month(@all_transactions, :category_travel) },
-      { name: 'Transportation', data: spending_category_by_month(@all_transactions, :category_transportation) }
-    ]
+    if @number_of_months.zero?
+      @number_of_months = 1
+    end
+    @info_net_amount = @net_per_month.values().inject(0) { |acc, n| acc + n }
+    @info_spending_amount = @spend_per_month.values().inject(0) { |acc, n| acc + n }
+    @info_income_amount = @income_per_month.values().inject(0) { |acc, n| acc + n }
+    @info_budget_spending_amount = (budget_spending_needs + budget_spending_wants) / 100
+    @info_budget_income_amount = budget_spending_income / 100
   end
 end

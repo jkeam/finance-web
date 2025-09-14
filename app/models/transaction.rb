@@ -1,4 +1,7 @@
 class Transaction < ApplicationRecord
+  monetize :amount_cents
+  belongs_to :bank
+
   enum :category, {
     category_other: 0,
     category_payment: 1,
@@ -37,6 +40,34 @@ class Transaction < ApplicationRecord
     type_transfer: 6
   }
 
+  # CC:
+    # - (ignore, should match bank tranfer) Payment: is a transfer from a bank
+    # - (income) Credit: Refund
+    # - (spend) Installment: Big Purchase
+    # - (spend) Debit: Deduction
+    # - (spend) Interest: Late payment
+    # - (spend) Purchase: Buying stuff
+  # Bank:
+    # - (income) Credit: Being paid
+    # - (spend) Debit: ATM cash withdrawl
+    # - (ignore, covered by CC transactions) Transfer: Paying CC
+    #   - except rental_property since that's not synced here
+    # - (spend) Purchase: Buying stuff
+    # - (spend) Payment: Bills
+  scope :spending, -> {
+    joins(:bank)
+      .where(bank: { category: :commercial },
+             transaction_type: %i[type_debit type_purchase type_payment])
+      .or(where(bank: { category: :credit_card },
+                transaction_type: %i[type_installment type_debit type_interest type_purchase]))
+      .or(where(bank: { category: :commercial },
+                category: :category_rental_property))
+  }
+  scope :income, -> { where(transaction_type: :type_credit) }
+  scope :bank_transactions, -> {
+    joins(:bank).where(bank: { category: :commercial })
+  }
+
   @@needs_categories = %i[
     category_grocery
     category_utility
@@ -63,36 +94,4 @@ class Transaction < ApplicationRecord
   def self.get_wants_categories
     @@wants_categories
   end
-
-  @@income_categories = %i[
-    category_dividend
-    category_interest
-    category_credit
-    category_deposit
-    category_income
-  ]
-  def self.get_income_categories
-    @@income_categories
-  end
-
-  @@income_types = %i[
-    type_credit
-    type_dividend
-  ]
-  def self.get_income_types
-    @@income_types
-  end
-
-  @@spend_types = %i[
-    type_payment
-    type_purchase
-    type_transfer
-    type_debit
-  ]
-  def self.get_spend_types
-    @@spend_types
-  end
-
-  monetize :amount_cents
-  belongs_to :bank
 end

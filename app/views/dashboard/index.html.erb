@@ -3,7 +3,7 @@
 
 <section class="section chart">
   <h1 class="title">
-    Total
+    Summary
   </h1>
   <h2 class="subtitle">
     Info
@@ -17,33 +17,45 @@
         </tr>
         <tr>
           <td>Net:</td>
-          <td><%= Money.from_cents(@net_amount * 100).format %></td>
+          <td><%= Money.from_cents(@info_net_amount * 100).format %></td>
         </tr>
         <tr>
           <td>Gross Income:</td>
-          <td><%= Money.from_cents(@net_income_amount * 100).format %></td>
+          <td><%= Money.from_cents(@info_income_amount * 100).format %></td>
+        </tr>
+        <tr>
+          <td>Gross Budget Income:</td>
+          <td><%= Money.from_cents(@info_budget_income_amount * 100).format %></td>
         </tr>
         <tr>
           <td>Gross Spending:</td>
-          <td><%= Money.from_cents(@net_spending_amount * 100).format %></td>
+          <td><%= Money.from_cents(@info_spending_amount * 100).format %></td>
+        </tr>
+        <tr>
+          <td>Gross Budget Spending:</td>
+          <td><%= Money.from_cents(@info_budget_spending_amount * 100).format %></td>
         </tr>
         <tr>
           <td>Avg Monthly Income:</td>
-          <td><%= Money.from_cents(@net_income_amount / @number_of_months * 100).format %></td>
+          <td><%= Money.from_cents(@info_income_amount / @number_of_months * 100).format %></td>
         </tr>
         <tr>
           <td>Avg Monthly Spending:</td>
-          <td><%= Money.from_cents(@net_spending_amount / @number_of_months * 100).format %></td>
+          <td><%= Money.from_cents(@info_spending_amount / @number_of_months * 100).format %></td>
         </tr>
       </tbody>
     </table>
   </div>
   <h2 class="subtitle">
-    Transactions
+    Budget Spending
   </h2>
-  <%= pie_chart @transactions.group(:category).count %>
+  <%= pie_chart @budget_spending %>
   <h2 class="subtitle">
-    Spend
+    Number of Transactions
+  </h2>
+  <%= pie_chart @spend_count %>
+  <h2 class="subtitle">
+    Total Spend
   </h2>
   <%= pie_chart @spend %>
 </section>
@@ -109,9 +121,9 @@
   <h2 class="subtitle">
     Total
   </h2>
-  <%= column_chart @all_services %>
+  <%= column_chart @services %>
   <h2 class="subtitle">
     Total (over $100)
   </h2>
-  <%= column_chart @services %>
+  <%= column_chart @services_expensive %>
 </section>

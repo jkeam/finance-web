@@ -21,3 +21,15 @@ two:
   notes: Taco dinner
   amount_cents: 20000
   bank: two
+
+three:
+  transaction_date: 2025-08-29
+  clearing_date: 2025-08-29
+  description: Red Hat
+  merchant: Red Hat
+  category: 9
+  transaction_type: 4
+  purchased_by: Jon Keam
+  notes: I bought some chicken
+  amount_cents: 2000000
+  bank: one
