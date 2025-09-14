@@ -24,7 +24,7 @@ All data imported MUST follow the Apple Card export schema.
 
 3. Update `banks.txt` with your bank and credit card names, each on it's own line
 
-4. Update `flip.txt` with the banks that need to be flipped to matched credit card deductions
+4. Update `credit-card.txt` that are only credit cards
 
 5. Import
 

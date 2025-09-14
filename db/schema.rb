@@ -13,6 +13,7 @@
 ActiveRecord::Schema[8.0].define(version: 2025_08_30_014041) do
   create_table "banks", force: :cascade do |t|
     t.string "name", null: false
+    t.integer "category", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_banks_on_name", unique: true

@@ -14,7 +14,7 @@ csv_files.each do |file_path|
 end
 
 # Insert everything
-def create_transaction(flip_bank, file_path, bank)
+def create_transaction(is_commercial_bank, file_path, bank)
   CSV.foreach(file_path, headers: true) do |row|
     amount = row['amount']
     positive = true
@@ -26,7 +26,7 @@ def create_transaction(flip_bank, file_path, bank)
     # banks track the normal way,
     # but I want the negative to match my credit cards
     # where spending is positive amounts
-    if flip_bank
+    if is_commercial_bank
       if positive
         amount = "-#{amount}"
       else
@@ -59,16 +59,21 @@ Transaction.destroy_all
 Bank.destroy_all
 
 # Prepare lookup data
-name_to_bank = File.readlines(Rails.root.join('import/banks.txt')).map(&:strip).to_h do |bank_name|
-  [bank_name, Bank.find_or_create_by!(name: bank_name)]
+banks = File.readlines(Rails.root.join('import/banks.txt')).map(&:strip)
+credit_cards = File.readlines(Rails.root.join('import/credit-card.txt')).map(&:strip)
+commercial_banks = (banks - credit_cards).map(&:downcase)
+
+# create banks
+name_to_bank = banks.to_h do |bank_name|
+  category = commercial_banks.include?(bank_name.downcase) ? :commercial : :credit_card
+  [ bank_name, Bank.find_or_create_by!(name: bank_name, category: category) ]
 end
-flip_banks = File.readlines(Rails.root.join('import/flip.txt')).map(&:strip).map(&:downcase)
 
 # Process each file
 csv_files.each do |file_path|
   name_to_bank.each do |name, bank|
     if file_path.downcase.include?(name.downcase)
-      create_transaction(flip_banks.include?(name.downcase), file_path, bank)
+      create_transaction(commercial_banks.include?(name.downcase), file_path, bank)
       break
     end
   end

@@ -10,4 +10,9 @@ class BankTest < ActiveSupport::TestCase
     bb = Bank.create(name: 'test')
     refute bb.persisted?
   end
+  test "default bank type is commercial" do
+    b = Bank.create(name: 'test')
+    assert b.persisted?
+    assert b.commercial?
+  end
 end
