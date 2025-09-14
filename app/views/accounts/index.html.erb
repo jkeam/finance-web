@@ -1,0 +1,40 @@
+<%= render partial: 'shared/header', locals: { title: 'Accounts', subtitle: 'All the accounts' } %>
+
+<section class="section">
+  <h1 class="title">
+    Listing
+  </h1>
+  <h2 class="subtitle">
+    All accounts
+  </h2>
+
+  <table class="table is-fullwidth">
+    <thead>
+      <tr>
+        <th><abbr title="ID">ID</abbr></th>
+        <th><abbr title="Name">Name</abbr></th>
+        <th><abbr title="Bank">Bank</abbr></th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th><abbr title="Id">Id</abbr></th>
+        <th><abbr title="Name">Name</abbr></th>
+        <th><abbr title="Bank">Bank</abbr></th>
+      </tr>
+    </tfoot>
+    <tbody>
+      <%- @accounts.each do |a| %>
+      <tr>
+        <th><%= a.id %></th>
+        <td>
+          <strong><%= a.name %></strong>
+        </td>
+        <th><%= a.bank.name %></th>
+      </tr>
+      <%- end %>
+    </tbody>
+  </table>
+  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+</section>
+
