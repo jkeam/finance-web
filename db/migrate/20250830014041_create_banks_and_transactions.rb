@@ -22,7 +22,12 @@ class CreateBanksAndTransactions < ActiveRecord::Migration[8.0]
       t.monetize :amount, null: false
       t.boolean :positive, default: false
       t.references :account, null: false, foreign_key: true
-
+      t.timestamps
+    end
+    create_table :balances do |t|
+      t.monetize :amount, null: false
+      t.date :date, null: false
+      t.references :account, null: false, foreign_key: true
       t.timestamps
     end
     add_index :banks, :name, unique: true

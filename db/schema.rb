@@ -20,6 +20,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_30_014041) do
     t.index ["bank_id"], name: "index_accounts_on_bank_id"
   end
 
+  create_table "balances", force: :cascade do |t|
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "USD", null: false
+    t.date "date", null: false
+    t.integer "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_balances_on_account_id"
+  end
+
   create_table "banks", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -46,5 +56,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_30_014041) do
   end
 
   add_foreign_key "accounts", "banks"
+  add_foreign_key "balances", "accounts"
   add_foreign_key "transactions", "accounts"
 end
