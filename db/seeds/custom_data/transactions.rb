@@ -84,16 +84,34 @@ end
 
 # Process each file
 csv_files.each do |file_path|
+  matched_bank = false
+  matched_account = false
+  filename = file_path.downcase
   name_to_bank.each do |name, bank|
-    filename = file_path.downcase
     if filename.include?(name.downcase)
-      bank_name_to_accounts[bank.name].each do |cur_account|
-        if filename.include?(cur_account.name.downcase)
-          create_transaction(file_path, cur_account)
-          break
+      matched_bank = true
+      accounts = bank_name_to_accounts[bank.name]
+      if accounts.size == 0
+        puts "No accounts found for bank #{bank.name}"
+        break
+      elsif accounts.size == 1
+        matched_account = true
+        create_transaction(file_path, accounts[0])
+        break
+      else
+        accounts.each do |cur_account|
+          if filename.include?(cur_account.name.downcase)
+            matched_account = true
+            create_transaction(file_path, cur_account)
+            break
+          end
         end
       end
       break
     end
   end
+  # debug information
+  # puts "filename: #{filename}"
+  # puts "matched_bank: #{matched_bank}"
+  # puts "matched_account: #{matched_account}"
 end

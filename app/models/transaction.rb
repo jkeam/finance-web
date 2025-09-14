@@ -64,9 +64,6 @@ class Transaction < ApplicationRecord
                 category: :category_rental_property))
   }
   scope :income, -> { where(transaction_type: :type_credit) }
-  # scope :account_transactions, -> {
-    # joins(:account).where(account: { category: Account.commercial_categories() })
-  # }
 
   @@needs_categories = %i[
     category_grocery
