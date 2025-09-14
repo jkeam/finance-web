@@ -79,45 +79,6 @@ class DashboardController < ApplicationController
     ]
     @net_per_month = @income_per_month.map { |k, v| [ k, v - @spend_per_month[k] ] }.to_h
 
-    # restaurants
-    @restaurants = all_transactions.where(category: :category_restaurants)
-      .group(:merchant)
-      .having("sum(amount_cents) > 10000")
-      .sum(:amount_cents)
-    @restaurants.each do |k, v|
-      @restaurants[k] = v / 100
-    end
-    # restaurant occurances
-    @restaurant_times = all_transactions.where(category: :category_restaurants)
-      .group(:merchant)
-      .having("count(merchant) > 5")
-      .count
-
-    # grocery per merchant
-    @grocery = all_transactions.where(category: :category_grocery)
-      .group(:merchant)
-      .having("sum(amount_cents) > 10000")
-      .sum(:amount_cents)
-    @grocery.each do |k, v|
-      @grocery[k] = v / 100
-    end
-
-    # services
-    @services = all_transactions.where(category: :category_services)
-      .group(:merchant)
-      .sum(:amount_cents)
-    @services.each do |k, v|
-      @services[k] = v / 100
-    end
-    # services grouped by merchants
-    @services_expensive = all_transactions.where(category: :category_services)
-      .group(:merchant)
-      .having("sum(amount_cents) > 10000")
-      .sum(:amount_cents)
-    @services_expensive.each do |k, v|
-      @services_expensive[k] = v / 100
-    end
-
     # budget
     @summary_income = income_transactions.sum(:amount_cents) * -1
     @summary_spending = spending_transactions.sum(:amount_cents)
