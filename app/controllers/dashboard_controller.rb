@@ -34,7 +34,7 @@ class DashboardController < ApplicationController
     @income_per_month_by_merchant = income_transactions.select(:merchant).distinct.pluck(:merchant).map do |m|
       {
         name: m[0...30],
-        data: income_by_merchant_and_month(all_transactions, m)
+        data: income_by_merchant_and_month(income_transactions, m)
       }
     end
     @income_per_month_by_merchant.reject! do |merchant|
@@ -51,6 +51,20 @@ class DashboardController < ApplicationController
     @spend = spending_transactions.group(:category).sum(:amount_cents)
     @spend.each { |k, v| @spend[k] = v / 100 }
     @spend.transform_keys! do |key|
+      key.gsub("category_", "")
+    end
+    # needs spend per category
+    @needs = spending_transactions.where(category: Transaction.get_needs_categories())
+      .group(:category).sum(:amount_cents)
+    @needs.each { |k, v| @needs[k] = v / 100 }
+    @needs.transform_keys! do |key|
+      key.gsub("category_", "")
+    end
+    # wants spend per category
+    @wants = spending_transactions.where.not(category: Transaction.get_needs_categories())
+      .group(:category).sum(:amount_cents)
+    @wants.each { |k, v| @wants[k] = v / 100 }
+    @wants.transform_keys! do |key|
       key.gsub("category_", "")
     end
     # spend per month

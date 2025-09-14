@@ -21,7 +21,7 @@ module Filterable
   end
 
   def income_by_merchant_and_month(transactions, merchant)
-    tmp = transactions.where(category: :category_income, merchant: merchant).group_by_month(:transaction_date).sum(:amount_cents)
+    tmp = transactions.where(merchant: merchant).group_by_month(:transaction_date).sum(:amount_cents)
     tmp.each do |k, v|
       tmp[k] = v * -1 / 100
     end
