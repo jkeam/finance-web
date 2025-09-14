@@ -28,12 +28,33 @@
           <td><%= Money.from_cents(@summary_spending).format %></td>
         </tr>
         <tr>
+          <td>Needs:</td>
+          <td>
+            <%= Money.from_cents(@budget_spending['needs'] * 100).format %>
+            (<%= ((@budget_spending['needs'] * 100).to_f / @summary_spending * 100).truncate %>%)
+          </td>
+        </tr>
+        <tr>
+          <td>Wants:</td>
+          <td>
+            <%= Money.from_cents(@budget_spending['wants'] * 100).format %>
+            (<%= ((@budget_spending['wants'] * 100).to_f / @summary_spending * 100).truncate %>%)
+          </td>
+        </tr>
+        <tr>
+          <td>Savings:</td>
+          <td>
+            <%= Money.from_cents(@budget_spending['savings'] * 100).format %>
+            (<%= ((@budget_spending['savings'] * 100).to_f / @summary_spending * 100).truncate %>%)
+          </td>
+        </tr>
+        <tr>
           <td>Avg Monthly Income:</td>
-          <td><%= Money.from_cents(@summary_income / @number_of_months * 100).format %></td>
+          <td><%= Money.from_cents(@summary_income / @number_of_months).format %></td>
         </tr>
         <tr>
           <td>Avg Monthly Spending:</td>
-          <td><%= Money.from_cents(@summary_spending / @number_of_months * 100).format %></td>
+          <td><%= Money.from_cents(@summary_spending / @number_of_months).format %></td>
         </tr>
       </tbody>
     </table>
