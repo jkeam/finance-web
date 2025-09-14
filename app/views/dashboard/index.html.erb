@@ -17,31 +17,23 @@
         </tr>
         <tr>
           <td>Net:</td>
-          <td><%= Money.from_cents(@info_net_amount * 100).format %></td>
+          <td><%= Money.from_cents(@budget_savings).format %></td>
         </tr>
         <tr>
-          <td>Gross Income:</td>
-          <td><%= Money.from_cents(@info_income_amount * 100).format %></td>
+          <td>Income:</td>
+          <td><%= Money.from_cents(@summary_income).format %></td>
         </tr>
         <tr>
-          <td>Gross Budget Income:</td>
-          <td><%= Money.from_cents(@info_budget_income_amount * 100).format %></td>
-        </tr>
-        <tr>
-          <td>Gross Spending:</td>
-          <td><%= Money.from_cents(@info_spending_amount * 100).format %></td>
-        </tr>
-        <tr>
-          <td>Gross Budget Spending:</td>
-          <td><%= Money.from_cents(@info_budget_spending_amount * 100).format %></td>
+          <td>Spending:</td>
+          <td><%= Money.from_cents(@summary_spending).format %></td>
         </tr>
         <tr>
           <td>Avg Monthly Income:</td>
-          <td><%= Money.from_cents(@info_income_amount / @number_of_months * 100).format %></td>
+          <td><%= Money.from_cents(@summary_income / @number_of_months * 100).format %></td>
         </tr>
         <tr>
           <td>Avg Monthly Spending:</td>
-          <td><%= Money.from_cents(@info_spending_amount / @number_of_months * 100).format %></td>
+          <td><%= Money.from_cents(@summary_spending / @number_of_months * 100).format %></td>
         </tr>
       </tbody>
     </table>

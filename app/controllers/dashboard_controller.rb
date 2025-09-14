@@ -5,12 +5,8 @@ class DashboardController < ApplicationController
   def index
     set_filter_params(params)
 
-    # do not ignore anything
     all_transactions = Transaction.all
-
-    # needs and wants
     needs_transactions = Transaction.all.where(category: Transaction.get_needs_categories())
-    wants_transactions = Transaction.all.where(category: Transaction.get_wants_categories())
 
     # used for spending to ignore income and internal transfers and payments
     income_transactions = Transaction.income()
@@ -20,14 +16,12 @@ class DashboardController < ApplicationController
     if @startdate != nil
       all_transactions = all_transactions.where("transaction_date >= ?", @startdate)
       needs_transactions = needs_transactions.where("transaction_date >= ?", @startdate)
-      wants_transactions = wants_transactions.where("transaction_date >= ?", @startdate)
       income_transactions = income_transactions.where("transaction_date >= ?", @startdate)
       spending_transactions = spending_transactions.where("transaction_date >= ?", @startdate)
     end
     if @enddate != nil
       all_transactions = all_transactions.where("transaction_date <= ?", @enddate)
       needs_transactions = needs_transactions.where("transaction_date <= ?", @enddate)
-      wants_transactions = wants_transactions.where("transaction_date <= ?", @enddate)
       income_transactions = income_transactions.where("transaction_date <= ?", @enddate)
       spending_transactions = spending_transactions.where("transaction_date <= ?", @enddate)
     end
@@ -56,12 +50,18 @@ class DashboardController < ApplicationController
     # spend per category
     @spend = spending_transactions.group(:category).sum(:amount_cents)
     @spend.each { |k, v| @spend[k] = v / 100 }
+    @spend.transform_keys! do |key|
+      key.gsub("category_", "")
+    end
     # spend per month
     @spend_per_month = spending_transactions.group_by_month(:transaction_date).sum(:amount_cents)
     @spend_per_month.each do |k, v|
       @spend_per_month[k] = v / 100
     end
     @spend_count = spending_transactions.group(:category).count
+    @spend_count.transform_keys! do |key|
+      key.gsub("category_", "")
+    end
     @spending_by_category_per_month = [
       { name: "Restaurants", data: spending_category_by_month(all_transactions, :category_restaurants) },
       { name: "Services", data: spending_category_by_month(all_transactions, :category_services) },
@@ -119,14 +119,15 @@ class DashboardController < ApplicationController
     end
 
     # budget
+    @summary_income = income_transactions.sum(:amount_cents) * -1
+    @summary_spending = spending_transactions.sum(:amount_cents)
     budget_spending_needs = all_transactions.where(category: Transaction.get_needs_categories()).sum(:amount_cents)
-    budget_spending_wants = all_transactions.where(category: Transaction.get_wants_categories()).sum(:amount_cents)
-    budget_spending_income = income_transactions.sum(:amount_cents) * -1
-    budget_savings = budget_spending_income - (budget_spending_needs + budget_spending_wants)
+    budget_spending_wants = @summary_spending - budget_spending_needs
+    @budget_savings = @summary_income - @summary_spending
     @budget_spending = {
       "needs" => budget_spending_needs / 100,
       "wants" => budget_spending_wants / 100,
-      "savings" => budget_savings / 100
+      "savings" => @budget_savings / 100
     }
 
     # info
@@ -134,10 +135,5 @@ class DashboardController < ApplicationController
     if @number_of_months.zero?
       @number_of_months = 1
     end
-    @info_net_amount = @net_per_month.values().inject(0) { |acc, n| acc + n }
-    @info_spending_amount = @spend_per_month.values().inject(0) { |acc, n| acc + n }
-    @info_income_amount = @income_per_month.values().inject(0) { |acc, n| acc + n }
-    @info_budget_spending_amount = (budget_spending_needs + budget_spending_wants) / 100
-    @info_budget_income_amount = budget_spending_income / 100
   end
 end

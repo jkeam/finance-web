@@ -75,23 +75,9 @@ class Transaction < ApplicationRecord
     category_transportation
     category_rent
     category_rental_property
+    category_interest
   ]
   def self.get_needs_categories
     @@needs_categories
-  end
-
-  @@wants_categories = %i[
-    category_shopping
-    category_restaurants
-    category_services
-    category_travel
-    category_alcohol
-    category_entertainment
-    category_investment
-    category_significant_other
-    category_software
-  ]
-  def self.get_wants_categories
-    @@wants_categories
   end
 end
