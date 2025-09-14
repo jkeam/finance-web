@@ -94,10 +94,10 @@ class DashboardController < ApplicationController
     @net_per_month = @income_per_month.map { |k, v| [ k, v - @spend_per_month[k] ] }.to_h
 
     # budget
-    @summary_income = income_transactions.sum(:amount_cents) * -1
-    @summary_spending = spending_transactions.sum(:amount_cents)
-    budget_spending_needs = all_transactions.where(category: Transaction.get_needs_categories()).sum(:amount_cents)
-    budget_spending_wants = @summary_spending - budget_spending_needs
+    @summary_income = (income_transactions.sum(:amount_cents) * -1) || 0
+    @summary_spending = (spending_transactions.sum(:amount_cents)) || 0
+    budget_spending_needs = all_transactions.where(category: Transaction.get_needs_categories()).sum(:amount_cents) || 0
+    budget_spending_wants = @summary_spending - budget_spending_needs || 0
     @budget_savings = @summary_income - @summary_spending
     @budget_spending = {
       "needs" => budget_spending_needs / 100,

@@ -13,7 +13,7 @@ class TransactionTest < ActiveSupport::TestCase
     t.save
     refute t.persisted?
 
-    t.bank = banks(:one)
+    t.account = accounts(:one)
     t.save
     assert t.persisted?
   end

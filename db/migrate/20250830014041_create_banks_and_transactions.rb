@@ -2,7 +2,12 @@ class CreateBanksAndTransactions < ActiveRecord::Migration[8.0]
   def change
     create_table :banks do |t|
       t.string :name, null: false
-      t.integer :category, default: 0
+      t.timestamps
+    end
+    create_table :accounts do |t|
+      t.string :name, null: false
+      t.integer :category, null: false
+      t.references :bank, null: false, foreign_key: true
       t.timestamps
     end
     create_table :transactions do |t|
@@ -16,7 +21,7 @@ class CreateBanksAndTransactions < ActiveRecord::Migration[8.0]
       t.text :notes, null: true
       t.monetize :amount, null: false
       t.boolean :positive, default: false
-      t.references :bank, null: false, foreign_key: true
+      t.references :account, null: false, foreign_key: true
 
       t.timestamps
     end

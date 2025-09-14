@@ -4,7 +4,7 @@ class TransactionsController < ApplicationController
 
   def index
     set_filter_params(params)
-    transactions = Transaction.includes(:bank).where.not(category: @ignore_categories)
+    transactions = Transaction.all
     if @startdate != nil
       transactions = transactions.where("transaction_date >= ?", @startdate)
     end

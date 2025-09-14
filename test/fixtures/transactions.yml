@@ -8,7 +8,7 @@ one:
   purchased_by: Jon Keam
   notes: I bought some chicken
   amount_cents: 100000
-  bank: one
+  account: one
 
 two:
   transaction_date: 2025-08-29
@@ -20,7 +20,7 @@ two:
   purchased_by: Jon Keam
   notes: Taco dinner
   amount_cents: 20000
-  bank: two
+  account: two
 
 three:
   transaction_date: 2025-08-29
@@ -32,4 +32,4 @@ three:
   purchased_by: Jon Keam
   notes: I bought some chicken
   amount_cents: 2000000
-  bank: one
+  account: three

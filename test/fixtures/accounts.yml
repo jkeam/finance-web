@@ -1,0 +1,19 @@
+one:
+  name: Credit Card One
+  bank: one
+  category: 3
+
+two:
+  name: Credit Card Two
+  bank: one
+  category: 3
+
+three:
+  name: Checking
+  bank: two
+  category: 1
+
+four:
+  name: Savings
+  bank: two
+  category: 0

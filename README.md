@@ -22,11 +22,9 @@ All data imported MUST follow the Apple Card export schema.
 
 2. Put your import files into the `import` dir, matching the same schema
 
-3. Update `banks.txt` with your bank and credit card names, each on it's own line
+3. Update `banks.yaml` following the template there
 
-4. Update `credit-card.txt` that are only credit cards
-
-5. Import
+4. Import
 
     ```shell
     rails db:seed:custom

@@ -1,6 +1,6 @@
 class Transaction < ApplicationRecord
   monetize :amount_cents
-  belongs_to :bank
+  belongs_to :account
 
   enum :category, {
     category_other: 0,
@@ -55,18 +55,18 @@ class Transaction < ApplicationRecord
     # - (spend) Purchase: Buying stuff
     # - (spend) Payment: Bills
   scope :spending, -> {
-    joins(:bank)
-      .where(bank: { category: :commercial },
+    joins(:account)
+      .where(account: { category: Account.commercial_categories() },
              transaction_type: %i[type_debit type_purchase type_payment])
-      .or(where(bank: { category: :credit_card },
+      .or(where(account: { category: :credit_card },
                 transaction_type: %i[type_installment type_debit type_interest type_purchase]))
-      .or(where(bank: { category: :commercial },
+      .or(where(account: { category: Account.commercial_categories() },
                 category: :category_rental_property))
   }
   scope :income, -> { where(transaction_type: :type_credit) }
-  scope :bank_transactions, -> {
-    joins(:bank).where(bank: { category: :commercial })
-  }
+  # scope :account_transactions, -> {
+    # joins(:account).where(account: { category: Account.commercial_categories() })
+  # }
 
   @@needs_categories = %i[
     category_grocery
