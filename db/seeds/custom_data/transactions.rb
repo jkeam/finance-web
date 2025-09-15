@@ -54,7 +54,7 @@ def create_balance(file_path, accounts)
       if account.downcase.include?(cur_account.name.downcase)
         Balance.create(
           date: Date.strptime(row['date'], "%m/%d/%Y"),
-          account: account,
+          account: cur_account,
           amount: Monetize.parse(amount)
         )
         break
