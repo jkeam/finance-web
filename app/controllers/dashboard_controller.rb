@@ -12,18 +12,22 @@ class DashboardController < ApplicationController
     income_transactions = Transaction.income()
     spending_transactions = Transaction.spending()
 
+    all_balances = Balance.all
+
     # params
     if @startdate != nil
       all_transactions = all_transactions.where("transaction_date >= ?", @startdate)
       needs_transactions = needs_transactions.where("transaction_date >= ?", @startdate)
       income_transactions = income_transactions.where("transaction_date >= ?", @startdate)
       spending_transactions = spending_transactions.where("transaction_date >= ?", @startdate)
+      all_balances.where("date >= ?", @startdate)
     end
     if @enddate != nil
       all_transactions = all_transactions.where("transaction_date <= ?", @enddate)
       needs_transactions = needs_transactions.where("transaction_date <= ?", @enddate)
       income_transactions = income_transactions.where("transaction_date <= ?", @enddate)
       spending_transactions = spending_transactions.where("transaction_date <= ?", @enddate)
+      all_balances.where("date <= ?", @enddate)
     end
 
     # income
@@ -109,6 +113,15 @@ class DashboardController < ApplicationController
     @number_of_months = @income_per_month.keys().size
     if @number_of_months.zero?
       @number_of_months = 1
+    end
+
+    # balances
+    @balances = []
+    Account.where(id: all_balances.select(:account_id).distinct.pluck(:account_id)).each do |account|
+      @balances << {
+        name: account.name,
+        data: all_balances.where(account_id: account.id).group_by_month(:date).sum(:amount_cents)
+      }
     end
   end
 
