@@ -44,12 +44,14 @@ def create_transaction(file_path, account)
   end
 end
 
-def clear_everything()
+# Reset Tables
+def reset_tables()
   Transaction.destroy_all
   Account.destroy_all
   Bank.destroy_all
 end
 
+# Process CSV Files
 def main(debug, csv_files, banks)
   # Build banks and accounts
   name_to_bank = {}
@@ -106,20 +108,24 @@ def main(debug, csv_files, banks)
   end
 end
 
+# Test reading of files (looking for non-utf8)
+def validate_csv_files(csv_files)
+  csv_files.each do |file_path|
+    begin
+      CSV.read(file_path, headers: true)
+    rescue => e
+      STDERR.puts "Failed #{file_path} error is #{e.message}"
+      return false
+    end
+  end
+  true
+end
+
 # Read in data
 csv_files = Dir.glob(Rails.root.join('import/*.csv')).map(&:strip)
 banks = YAML.load_file(Rails.root.join('import/banks.yaml'))
 
-# Test reading of files (looking for non-utf8)
-csv_files.each do |file_path|
-  begin
-    CSV.read(file_path, headers: true)
-  rescue => e
-    STDERR.puts "Failed #{file_path} error is #{e.message}"
-    return
-  end
+if validate_csv_files(csv_files)
+  reset_tables()
+  main(false, csv_files, banks)
 end
-
-# Main
-clear_everything()
-main(false, csv_files, banks)
