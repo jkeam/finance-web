@@ -53,7 +53,7 @@ def create_balance(file_path, accounts)
     accounts.each do |cur_account|
       if account.downcase.include?(cur_account.name.downcase)
         Balance.create(
-          date: Date.strptime(row['transaction_date'], "%m/%d/%Y"),
+          date: Date.strptime(row['date'], "%m/%d/%Y"),
           account: account,
           amount: Monetize.parse(amount)
         )
