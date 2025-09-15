@@ -2,19 +2,7 @@ require 'csv'
 require 'date'
 require 'yaml'
 
-# Read in transactions
-csv_files = Dir.glob(Rails.root.join('import/*.csv')).map(&:strip)
-
-# Test reading of files (looking for non-utf8)
-csv_files.each do |file_path|
-  begin
-    CSV.read(file_path, headers: true)
-  rescue => e
-    STDERR.puts "Failed #{file_path} error is #{e.message}"
-  end
-end
-
-# Insert everything
+# Create transaction
 def create_transaction(file_path, account)
   CSV.foreach(file_path, headers: true) do |row|
     amount = row['amount']
@@ -56,62 +44,82 @@ def create_transaction(file_path, account)
   end
 end
 
-Transaction.destroy_all
-Account.destroy_all
-Bank.destroy_all
-
-# Prepare lookup data
-banks = YAML.load_file(Rails.root.join('import/banks.yaml'))
-
-# Build banks and accounts
-name_to_bank = {}
-bank_name_to_accounts = {}
-banks['banks'].each do |bank_input|
-  bank_name = bank_input['name']
-  bank = Bank.find_or_create_by!(name: bank_name)
-  name_to_bank[bank_name] = bank
-
-  accounts = []
-  bank_name_to_accounts[bank_name] = accounts
-  bank_input['accounts'].each do |account_input|
-    accounts << Account.find_or_create_by!(
-      name: account_input['name'],
-      bank: bank,
-      category: account_input['type'].to_s
-    )
-  end
+def clear_everything()
+  Transaction.destroy_all
+  Account.destroy_all
+  Bank.destroy_all
 end
 
-# Process each file
-csv_files.each do |file_path|
-  matched_bank = false
-  matched_account = false
-  filename = file_path.downcase
-  name_to_bank.each do |name, bank|
-    if filename.include?(name.downcase)
-      matched_bank = true
-      accounts = bank_name_to_accounts[bank.name]
-      if accounts.size == 0
-        puts "No accounts found for bank #{bank.name}"
-        break
-      elsif accounts.size == 1
-        matched_account = true
-        create_transaction(file_path, accounts[0])
-        break
-      else
-        accounts.each do |cur_account|
-          if filename.include?(cur_account.name.downcase)
-            matched_account = true
-            create_transaction(file_path, cur_account)
-            break
-          end
-        end
-      end
-      break
+def main(debug, csv_files, banks)
+  # Build banks and accounts
+  name_to_bank = {}
+  bank_name_to_accounts = {}
+  banks['banks'].each do |bank_input|
+    bank_name = bank_input['name']
+    bank = Bank.find_or_create_by!(name: bank_name)
+    name_to_bank[bank_name] = bank
+
+    accounts = []
+    bank_name_to_accounts[bank_name] = accounts
+    bank_input['accounts'].each do |account_input|
+      accounts << Account.find_or_create_by!(
+        name: account_input['name'],
+        bank: bank,
+        category: account_input['type'].to_s
+      )
     end
   end
-  # debug information
-  # puts "filename: #{filename}"
-  # puts "matched_bank: #{matched_bank}"
-  # puts "matched_account: #{matched_account}"
+
+  # Process each file
+  csv_files.each do |file_path|
+    matched_bank = false
+    matched_account = false
+    filename = file_path.downcase
+    name_to_bank.each do |name, bank|
+      if filename.include?(name.downcase)
+        matched_bank = true
+        accounts = bank_name_to_accounts[bank.name]
+        if accounts.size == 0
+          puts "No accounts found for bank #{bank.name}"
+          break
+        elsif accounts.size == 1
+          matched_account = true
+          create_transaction(file_path, accounts[0])
+          break
+        else
+          accounts.each do |cur_account|
+            if filename.include?(cur_account.name.downcase)
+              matched_account = true
+              create_transaction(file_path, cur_account)
+              break
+            end
+          end
+        end
+        break
+      end
+    end
+    if debug
+      puts "filename: #{filename}"
+      puts "matched_bank: #{matched_bank}"
+      puts "matched_account: #{matched_account}"
+    end
+  end
 end
+
+# Read in data
+csv_files = Dir.glob(Rails.root.join('import/*.csv')).map(&:strip)
+banks = YAML.load_file(Rails.root.join('import/banks.yaml'))
+
+# Test reading of files (looking for non-utf8)
+csv_files.each do |file_path|
+  begin
+    CSV.read(file_path, headers: true)
+  rescue => e
+    STDERR.puts "Failed #{file_path} error is #{e.message}"
+    return
+  end
+end
+
+# Main
+clear_everything()
+main(false, csv_files, banks)
