@@ -4,7 +4,7 @@ namespace: finance
 
 images:
 - name: quay.io/jkeam/finance-web
-  digest: sha256:ad649d870d8cd18008de7ac8b2954fdef8cc947fe12da2c008467995d072a044
+  digest: sha256:2b98efd91c71b871a03832a0f8415bab975c8897ccf726dec0153a599f5f12d6
 
 configMapGenerator:
 - name: finance-web-config
