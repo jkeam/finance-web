@@ -31,21 +31,27 @@
           <td>Needs:</td>
           <td>
             <%= Money.from_cents(@budget_spending['needs'] * 100).format %>
-            (<%= ((@budget_spending['needs'] * 100).to_f / @summary_spending * 100).truncate %>%)
+            <% if @summary_spending > 0 %>
+              (<%= ((@budget_spending['needs'] * 100).to_f / @summary_spending * 100).truncate %>%)
+            <% end %>
           </td>
         </tr>
         <tr>
           <td>Wants:</td>
           <td>
             <%= Money.from_cents(@budget_spending['wants'] * 100).format %>
-            (<%= ((@budget_spending['wants'] * 100).to_f / @summary_spending * 100).truncate %>%)
+            <% if @summary_spending > 0 %>
+              (<%= ((@budget_spending['wants'] * 100).to_f / @summary_spending * 100).truncate %>%)
+            <% end %>
           </td>
         </tr>
         <tr>
           <td>Savings:</td>
           <td>
             <%= Money.from_cents(@budget_spending['savings'] * 100).format %>
-            (<%= ((@budget_spending['savings'] * 100).to_f / @summary_spending * 100).truncate %>%)
+            <% if @summary_spending > 0 %>
+              (<%= ((@budget_spending['savings'] * 100).to_f / @summary_spending * 100).truncate %>%)
+            <% end %>
           </td>
         </tr>
         <tr>

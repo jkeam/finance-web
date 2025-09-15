@@ -44,8 +44,28 @@ def create_transaction(file_path, account)
   end
 end
 
+# Create balance
+def create_balance(file_path, accounts)
+  CSV.foreach(file_path, headers: true) do |row|
+    account = row['account']
+    date = row['date']
+    amount = row['amount']
+    accounts.each do |cur_account|
+      if account.downcase.include?(cur_account.name.downcase)
+        Balance.create(
+          date: Date.strptime(row['transaction_date'], "%m/%d/%Y"),
+          account: account,
+          amount: Monetize.parse(amount)
+        )
+        break
+      end
+    end
+  end
+end
+
 # Reset Tables
 def reset_tables()
+  Balance.destroy_all
   Transaction.destroy_all
   Account.destroy_all
   Bank.destroy_all
@@ -81,7 +101,10 @@ def main(debug, csv_files, banks)
       if filename.include?(name.downcase)
         matched_bank = true
         accounts = bank_name_to_accounts[bank.name]
-        if accounts.size == 0
+        if filename.include?("balances")
+          create_balance(file_path, accounts)
+          break
+        elsif accounts.size == 0
           puts "No accounts found for bank #{bank.name}"
           break
         elsif accounts.size == 1
