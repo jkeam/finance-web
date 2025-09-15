@@ -145,8 +145,9 @@ def validate_csv_files(csv_files)
 end
 
 # Read in data
-csv_files = Dir.glob(Rails.root.join('import/*.csv')).map(&:strip)
-banks = YAML.load_file(Rails.root.join('import/banks.yaml'))
+import_dir = ENV.fetch("IMPORT_DIR") { "import" }
+csv_files = Dir.glob(Rails.root.join(import_dir, "*.csv")).map(&:strip)
+banks = YAML.load_file(Rails.root.join(import_dir, "banks.yaml"))
 
 if validate_csv_files(csv_files)
   reset_tables()
