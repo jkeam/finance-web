@@ -8,33 +8,9 @@
     All accounts
   </h2>
 
-  <table class="table is-fullwidth">
-    <thead>
-      <tr>
-        <th><abbr title="ID">ID</abbr></th>
-        <th><abbr title="Name">Name</abbr></th>
-        <th><abbr title="Bank">Bank</abbr></th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <th><abbr title="Id">Id</abbr></th>
-        <th><abbr title="Name">Name</abbr></th>
-        <th><abbr title="Bank">Bank</abbr></th>
-      </tr>
-    </tfoot>
-    <tbody>
-      <%- @accounts.each do |a| %>
-      <tr>
-        <th><%= a.id %></th>
-        <td>
-          <strong><%= a.name %></strong>
-        </td>
-        <th><%= a.bank.name %></th>
-      </tr>
-      <%- end %>
-    </tbody>
-  </table>
-  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  <div>
+    <%= render partial: 'accounts/listing', locals: { accounts: @accounts } %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  </div>
 </section>
 

@@ -1,0 +1,27 @@
+<table class="table is-fullwidth">
+  <thead>
+    <tr>
+      <th><abbr title="ID">ID</abbr></th>
+      <th><abbr title="Name">Name</abbr></th>
+      <th><abbr title="Bank">Bank</abbr></th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <th><abbr title="Id">Id</abbr></th>
+      <th><abbr title="Name">Name</abbr></th>
+      <th><abbr title="Bank">Bank</abbr></th>
+    </tr>
+  </tfoot>
+  <tbody>
+    <%- accounts.each do |a| %>
+    <tr>
+      <th><%= link_to a.id, account_url(a) %></th>
+      <td>
+        <%= link_to a.name, account_url(a) %>
+      </td>
+      <th><%= link_to a.bank.name, bank_url(a.bank) %></th>
+    </tr>
+    <%- end %>
+  </tbody>
+</table>

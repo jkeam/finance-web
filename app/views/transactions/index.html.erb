@@ -41,7 +41,7 @@
     <tbody>
       <%- @transactions.each do |b| %>
       <tr>
-        <th><%= b.id %></th>
+        <th><%= link_to b.id, transaction_path(b) %></th>
         <td>
           <%= b.transaction_date %>
         </td>
@@ -67,7 +67,7 @@
           <%= b.purchased_by %>
         </td>
         <td>
-          <%= b.account.name %>
+          <%= link_to b.account.name, bank_path(b) %>
         </td>
       </tr>
       <%- end %>

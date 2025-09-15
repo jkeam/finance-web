@@ -2,6 +2,7 @@ class Account < ApplicationRecord
   validates :name, uniqueness: true
   validates :category, presence: true
   belongs_to :bank
+  has_many :transactions
   enum :category, {
     savings: 0,
     checking: 1,

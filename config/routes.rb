@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  resources :banks, only: [:index]
-  resources :transactions, only: [:index]
-  resources :accounts, only: [:index]
+  resources :banks, only: %i[index show]
+  resources :transactions, only: %i[index show]
+  resources :accounts, only: %i[index show]
   get "dashboard/index"
   get "dashboard/spending"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

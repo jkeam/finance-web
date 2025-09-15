@@ -1,0 +1,17 @@
+<%= render partial: 'shared/header', locals: { title: 'Bank Detail', subtitle: '' } %>
+
+<section class="section">
+  <h1 class="title">
+    Bank: <%= @bank.id %>
+  </h1>
+  <h2 class="subtitle">
+    <%= @bank.name %>
+  </h2>
+
+  <br />
+  
+  <h3 class="title is-4">Accounts</h3>
+  <%= render partial: 'accounts/listing', locals: { accounts: @bank.accounts } %>
+</section>
+
+<%= link_to 'All Banks', banks_path %>

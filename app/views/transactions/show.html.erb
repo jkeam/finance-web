@@ -1,0 +1,40 @@
+<%= render partial: 'shared/header', locals: { title: 'Transaction Detail', subtitle: '' } %>
+
+<section class="section">
+  <h1 class="title">
+    Transaction: <%= @transaction.id %>
+  </h1>
+  <h2 class="subtitle">
+    <%= Money.from_cents(@transaction.amount_cents).format %>
+    to 
+    <%= @transaction.merchant %>
+    on
+    <%= @transaction.transaction_date %>
+  </h2>
+
+  Account: <%= link_to @transaction.account.name, transaction_path(@transaction) %>
+  <br />
+  Bank: <%= link_to @transaction.account.bank.name, bank_path(@transaction.account.bank) %>
+  <br />
+  Transaction Date: <%= @transaction.transaction_date %>
+  <br />
+  Cleared Date: <%= @transaction.clearing_date %>
+  <br />
+  Amount: <%= Money.from_cents(@transaction.amount_cents).format %>
+  <br />
+  Merchant: <%= @transaction.merchant %>
+  <br />
+  Description: <%= @transaction.description %>
+  <br />
+  Category: <%= @transaction.category.to_s.gsub('category_', '').titleize %>
+  <br />
+  Type: <%= @transaction.transaction_type.to_s.gsub('type_', '').titleize %>
+  <br />
+  Purchased By: <%= @transaction.purchased_by %>
+  <br />
+  Positive: <%= @transaction.positive %>
+  <br />
+  Notes: <%= @transaction.notes %>
+</section>
+
+<%= link_to 'All Transactions', transactions_path %>

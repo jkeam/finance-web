@@ -24,9 +24,9 @@
     <tbody>
       <%- @banks.each do |b| %>
       <tr>
-        <th><%= b.id %></th>
+        <th><%= link_to b.id, bank_url(b) %></th>
         <td>
-          <strong><%= b.name %></strong>
+          <strong><%= link_to b.name, bank_url(b) %></strong>
         </td>
       </tr>
       <%- end %>

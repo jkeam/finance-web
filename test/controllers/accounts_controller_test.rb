@@ -5,4 +5,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     get accounts_url
     assert_response :success
   end
+
+  test "should get show" do
+    get account_url(accounts(:one))
+    assert_response :success
+  end
 end
