@@ -64,6 +64,12 @@ class Transaction < ApplicationRecord
                 category: :category_rental_property))
   }
   scope :income, -> { where(transaction_type: :type_credit) }
+  scope :between_dates, ->(startdate, enddate) {
+    query = self
+    query = where("transaction_date >= ?", startdate) if startdate != nil
+    query = where("transaction_date <= ?", enddate) if enddate != nil
+    query
+  }
 
   @@needs_categories = %i[
     category_grocery
