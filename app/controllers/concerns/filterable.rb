@@ -1,7 +1,7 @@
 module Filterable
   extend ActiveSupport::Concern
 
-  def set_filter_params(params)
+  def set_filter_params()
     @startdate = nil
     if ((params[:startdate] || '').strip != '')
       @startdate = Date.strptime(params[:startdate], "%Y-%m-%d")

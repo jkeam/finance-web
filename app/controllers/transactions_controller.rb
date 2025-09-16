@@ -2,10 +2,10 @@ class TransactionsController < ApplicationController
   include Pagy::Backend
   include Filterable
   before_action :set_transaction, only: %i[show]
+  before_action :set_filter_params, only: :index
 
   # GET /transactions
   def index
-    set_filter_params(params)
     transactions = Transaction.all
     if @startdate != nil
       transactions = transactions.where("transaction_date >= ?", @startdate)
