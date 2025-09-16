@@ -10,4 +10,14 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_spending_url
     assert_response :success
   end
+
+  test "should get monthly spending" do
+    get dashboard_monthly_url
+    assert_response :success
+  end
+
+  test "should get trends spending" do
+    get dashboard_trends_url
+    assert_response :success
+  end
 end

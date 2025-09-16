@@ -199,4 +199,29 @@ class DashboardController < ApplicationController
       }
     end
   end
+
+  # GET /dashboard/trends
+  def trends
+    create_spending = lambda do |thestart, theend|
+      spend = Transaction.spending()
+        .where("transaction_date >= ?", thestart)
+        .where("transaction_date <= ?", theend)
+        .group(:category).sum(:amount_cents)
+      spend.each { |k, v| spend[k] = v / 100 }
+      spend.transform_keys! do |key|
+        key.gsub("category_", "")
+      end
+      spend
+    end
+
+    @spending = []
+    cur_date = @startdate
+    while cur_date < @enddate
+      @spending << {
+        name: cur_date,
+        data: create_spending.call(cur_date, cur_date.next_month)
+      }
+      cur_date = cur_date.next_month
+    end
+  end
 end

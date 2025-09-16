@@ -1,0 +1,14 @@
+<%= render partial: 'shared/header', locals: { title: 'Trends', subtitle: 'Trend reports' } %>
+<%= render partial: 'shared/date_filter', locals: {startdate: @startdate, enddate: @enddate} %>
+
+<section class="section chart">
+  <h1 class="title">
+    Trends
+  </h1>
+  <%- @spending.each do |s| %>
+    <h2 class="subtitle">
+      <%= s[:name] %>
+    </h2>
+    <%= pie_chart s[:data] %>
+  <% end %>
+</section>
