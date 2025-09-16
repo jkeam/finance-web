@@ -1,7 +1,7 @@
 class DashboardController < ApplicationController
   include Filterable
 
-  # GET /
+  # GET /dashboard
   def index
     set_filter_params(params)
 
@@ -31,14 +31,16 @@ class DashboardController < ApplicationController
     end
 
     # income
-    @income_per_month = income_transactions.group_by_month(:transaction_date).sum(:amount_cents)
+    @income_per_month = income_transactions
+      .group_by_month(:transaction_date, range: @startdate..@enddate, expand_range: true)
+      .sum(:amount_cents)
     @income_per_month.each do |k, v|
       @income_per_month[k] = (v * -1) / 100
     end
     @income_per_month_by_merchant = income_transactions.select(:merchant).distinct.pluck(:merchant).map do |m|
       {
         name: m[0...30],
-        data: income_by_merchant_and_month(income_transactions, m)
+        data: income_by_merchant_and_month(income_transactions, @startdate, @enddate, m)
       }
     end
     @income_per_month_by_merchant.reject! do |merchant|
@@ -48,8 +50,8 @@ class DashboardController < ApplicationController
 
     # spending
     @spending_by_category_per_month = [
-      { name: "Restaurants", data: spending_category_by_month(all_transactions, :category_restaurants) },
-      { name: "Services", data: spending_category_by_month(all_transactions, :category_services) }
+      { name: "Restaurants", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_restaurants) },
+      { name: "Services", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_services) }
     ]
     # spend per category
     @spend = spending_transactions.group(:category).sum(:amount_cents)
@@ -72,7 +74,9 @@ class DashboardController < ApplicationController
       key.gsub("category_", "")
     end
     # spend per month
-    @spend_per_month = spending_transactions.group_by_month(:transaction_date).sum(:amount_cents)
+    @spend_per_month = spending_transactions
+      .group_by_month(:transaction_date, range: @startdate..@enddate, expand_range: true)
+      .sum(:amount_cents)
     @spend_per_month.each do |k, v|
       @spend_per_month[k] = v / 100
     end
@@ -81,13 +85,21 @@ class DashboardController < ApplicationController
       key.gsub("category_", "")
     end
     @spending_by_category_per_month = [
-      { name: "Restaurants", data: spending_category_by_month(all_transactions, :category_restaurants) },
-      { name: "Services", data: spending_category_by_month(all_transactions, :category_services) },
-      { name: "Grocery", data: spending_category_by_month(all_transactions, :category_grocery) },
-      { name: "Utilities", data: spending_category_by_month(all_transactions, :category_utility) },
-      { name: "Shopping", data: spending_category_by_month(all_transactions, :category_shopping) },
-      { name: "Travel", data: spending_category_by_month(all_transactions, :category_travel) },
-      { name: "Transportation", data: spending_category_by_month(all_transactions, :category_transportation) }
+      { name: "Restaurants", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_restaurants) },
+      { name: "Services", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_services) },
+      { name: "Grocery", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_grocery) },
+      { name: "Utilities", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_utility) },
+      { name: "Shopping", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_shopping) },
+      { name: "Travel", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_travel) },
+      { name: "Transportation", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_transportation) },
+      { name: "Health", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_health) },
+      { name: "Alcohol", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_alcohol) },
+      { name: "Entertainment", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_entertainment) },
+      { name: "Software", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_software) },
+      { name: "Significant Other", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_significant_other) },
+      { name: "Other", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_other) },
+      { name: "Rent", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_rent) },
+      { name: "Rental Property", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_rental_property) }
     ]
 
     # income and spending
@@ -120,12 +132,14 @@ class DashboardController < ApplicationController
     Account.where(id: all_balances.select(:account_id).distinct.pluck(:account_id)).each do |account|
       @balances << {
         name: account.name,
-        data: all_balances.where(account_id: account.id).group_by_month(:date).sum(:amount_cents)
+        data: all_balances.where(account_id: account.id)
+        .group_by_month(:date, range: @startdate..@enddate, expand_range: true)
+        .sum(:amount_cents)
       }
     end
   end
 
-  # GET /spending
+  # GET /dashboard/spending
   def spending
     set_filter_params(params)
 
