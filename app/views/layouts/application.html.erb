@@ -39,31 +39,31 @@
 
       <div id="mainnavbar" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="/">
+          <a class="navbar-item <% if params[:controller] == 'dashboard' && params[:action] == 'index' %>is-selected<%- end %>" href="/">
             Home
           </a>
 
-          <a class="navbar-item" href="/dashboard/monthly">
+          <a class="navbar-item <% if params[:controller] == 'dashboard' && params[:action] == 'monthly' %>is-selected<%- end %>" href="/dashboard/monthly">
             Monthly
           </a>
 
-          <a class="navbar-item" href="/dashboard/spending">
+          <a class="navbar-item <% if params[:controller] == 'dashboard' && params[:action] == 'spending' %>is-selected<%- end %>" href="/dashboard/spending">
             Spending
           </a>
 
-          <a class="navbar-item" href="/dashboard/trends">
+          <a class="navbar-item <% if params[:controller] == 'dashboard' && params[:action] == 'trends' %>is-selected<%- end %>" href="/dashboard/trends">
             Trends
           </a>
 
-          <a class="navbar-item" href="/transactions">
+          <a class="navbar-item <% if params[:controller] == 'transactions' && params[:action] == 'index' %>is-selected<%- end %>" href="/transactions">
             Transactions
           </a>
 
-          <a class="navbar-item" href="/banks">
+          <a class="navbar-item <% if params[:controller] == 'banks' && params[:action] == 'index' %>is-selected<%- end %>" href="/banks">
             Banks
           </a>
 
-          <a class="navbar-item" href="/accounts">
+          <a class="navbar-item <% if params[:controller] == 'accounts' && params[:action] == 'index' %>is-selected<%- end %>" href="/accounts">
             Accounts
           </a>
         </div>
