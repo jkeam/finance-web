@@ -125,6 +125,10 @@ class DashboardController < ApplicationController
       { name: "Rent", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_rent) },
       { name: "Rental Property", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_rental_property) }
     ]
+    @spending_by_category_per_month.each do |s|
+      data = s[:data]
+      s[:mean] = data.values.inject(&:+) / data.values.size
+    end
 
     # income and spending
     @income_and_spending = [
