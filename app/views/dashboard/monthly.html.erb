@@ -66,11 +66,20 @@
         <%- end %>
         <td>
           <strong>
-            <%= @spending_by_category_per_month.map(&:[:mean]).inject(&:+) %>
+            <%= Money.from_cents(@spending_by_category_per_month.map { |c| c[:mean] }.inject(&:+) * 100).format %>
           </strong>
         </td>
       </tr>
     </tbody>
+    <tfoot>
+      <tr>
+        <th><abbr title="Category">Category</abbr></th>
+        <%- @spending_by_category_per_month[0][:data].keys.each do |value| %>
+          <th><abbr title="<%= value %>"><%= value %></abbr></th>
+        <%- end %>
+        <th><abbr title="Mean">Mean</abbr></th>
+      </tr>
+    </tfoot>
   </table>
 
   <h2 class="subtitle">
