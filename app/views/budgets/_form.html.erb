@@ -26,7 +26,7 @@
     <% end %>
   </div>
 
-  <%= link_to 'Add Category', '#', data: { action: 'budget-transaction-category#add_association' }, class: "button", style: "margin-top: 1rem;" %>
+  <%= link_to 'Add Category', '#', data: { action: 'budget-transaction-category#add_association' }, class: "button is-info", style: "margin-top: 1rem;" %>
 
   <template data-budget-transaction-category-target="template">
     <%= render 'budget_transaction_category_form', form: form, budget_transaction_category: BudgetTransactionCategory.new %>

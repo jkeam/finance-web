@@ -9,16 +9,40 @@
     <%= @budget.name %>
   </h2>
 
-  <%- @budget.budget_transaction_categories.each do |c| %>
-    <%= Transaction.pretty_print_category(Transaction.categories.key(c.transaction_category)) %>:
-    <%= Money.from_cents(c.amount_cents).format %>
-    <br />
-  <% end %>
-
+  <div class="block">
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th><abbr title="Category">Category</abbr></th>
+          <th><abbr title="Amount">Amount</abbr></th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th><abbr title="Category">Category</abbr></th>
+          <th><abbr title="Amount">Amount</abbr></th>
+        </tr>
+      </tfoot>
+      <tbody>
+        <%- @budget.budget_transaction_categories.each do |c| %>
+          <tr>
+            <td><%= Transaction.pretty_print_category(Transaction.categories.key(c.transaction_category)) %></td>
+            <td><%= Money.from_cents(c.amount_cents).format %></td>
+          </tr>
+        <% end %>
+        <tr>
+          <td><strong>Sum</strong></td>
+          <td><strong><%= Money.from_cents(@budget.budget_transaction_categories.map{|c|c.amount_cents}.inject(&:+)).format %></strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 <div class="field is-grouped">
   <%= link_to "Edit", edit_budget_path(@budget) %> |
-  <%= link_to "Listing", budgets_path %> |
+  <%= link_to "Listing", budgets_path %>
+</div>
+<div class="field is-grouped">
   <%= button_to "Destroy this budget", @budget, method: :delete, class: 'button is-danger' %>
 </div>

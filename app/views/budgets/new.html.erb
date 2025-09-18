@@ -1,11 +1,14 @@
-<% content_for :title, "New budget" %>
+<%= render partial: 'shared/header', locals: { title: 'New Budget', subtitle: '' } %>
 
-<h1>New budget</h1>
+<section class="section">
+  <h1 class="title">
+    New Budget
+  </h1>
+  <h2 class="subtitle">
+  </h2>
+  <%= render "form", budget: @budget %>
+</section>
 
-<%= render "form", budget: @budget %>
-
-<br>
-
-<div>
-  <%= link_to "Back to budgets", budgets_path %>
+<div class="field is-grouped">
+  <%= link_to "Listing", budgets_path %>
 </div>

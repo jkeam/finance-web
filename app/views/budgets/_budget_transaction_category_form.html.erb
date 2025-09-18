@@ -1,4 +1,4 @@
-<div class="budget-transaction-category">
+<div class="budget-transaction-category" style="padding-top: 2rem;">
   <%= form.fields_for(:budget_transaction_categories, budget_transaction_category, child_index: (budget_transaction_category.id || 'NEW_RECORD')) do |category_form| %>
     <div class="field">
       <%= category_form.label :amount, style: "display: block", class: "label" %>
