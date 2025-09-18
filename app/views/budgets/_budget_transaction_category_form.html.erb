@@ -1,5 +1,5 @@
 <div class="budget-transaction-category">
-  <%= form.fields_for :budget_transaction_categories, budget_transaction_category, child_index: 'NEW_RECORD' do |category_form| %>
+  <%= form.fields_for(:budget_transaction_categories, budget_transaction_category, child_index: (budget_transaction_category.id || 'NEW_RECORD')) do |category_form| %>
     <div class="field">
       <%= category_form.label :amount, style: "display: block", class: "label" %>
       <div class="control">
@@ -10,7 +10,7 @@
     <div class="field">
       <%= category_form.label :transaction_category, style: "display: block", class: "label" %>
       <div class="control">
-        <%= category_form.number_field :transaction_category %>
+        <%= category_form.select :transaction_category, options_for_select(Transaction.categories.map { |key, value| [key.gsub('category_', '').titleize, value] }, budget_transaction_category.transaction_category) %>
       </div>
     </div>
 
