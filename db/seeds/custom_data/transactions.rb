@@ -132,7 +132,7 @@ def main(debug, csv_files, banks, budgets)
   end
 
   # budgets
-  if budgets && budgets.get('budgets')
+  if budgets && budgets['budgets']
     budgets['budgets'].each do |input_budget|
       budget = Budget.create(
         name: input_budget['name'],

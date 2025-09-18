@@ -24,7 +24,9 @@ All data imported MUST follow the Apple Card export schema.
 
 3. Update `banks.yaml` following the template there
 
-4. Import
+4. Update `budgets.yaml` following the template there
+
+5. Import
 
     ```shell
     rails db:seed:custom
