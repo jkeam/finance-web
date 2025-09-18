@@ -1,5 +1,5 @@
 <%= render partial: 'shared/header', locals: { title: 'Edit Budget', subtitle: '' } %>
-<p style="color: green"><%= notice %></p>
+<%= render partial: 'shared/flash', locals: { notice: notice, errors: @budget.errors } %>
 
 <section class="section">
   <h1 class="title">

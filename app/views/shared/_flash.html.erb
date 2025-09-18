@@ -1,0 +1,20 @@
+<div class="">
+  <% if !notice.nil? %>
+    <span class="has-text-success">
+      <%= notice %>
+    </span>
+  <% end %>
+  <% if !errors.nil? && errors.count > 0 %>
+    <span class="has-text-danger">
+      <h2>
+        <%= pluralize(errors.count, "error") %> prohibited this budget from being saved:
+      </h2>
+
+      <ul>
+        <% errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </span>
+  <% end %>
+</div>
