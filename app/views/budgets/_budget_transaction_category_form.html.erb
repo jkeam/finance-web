@@ -10,7 +10,7 @@
     <div class="field">
       <%= category_form.label :transaction_category, style: "display: block", class: "label" %>
       <div class="control">
-        <%= category_form.select :transaction_category, options_for_select(Transaction.categories.map { |key, value| [key.gsub('category_', '').titleize, value] }, budget_transaction_category.transaction_category) %>
+        <%= category_form.select :transaction_category, options_for_select(Transaction.categories.map { |key, value| [Transaction.pretty_print_category(key), value] }, budget_transaction_category.transaction_category) %>
       </div>
     </div>
 

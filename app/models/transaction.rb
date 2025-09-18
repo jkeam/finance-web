@@ -83,4 +83,10 @@ class Transaction < ApplicationRecord
   def self.get_needs_categories
     @@needs_categories
   end
+  def self.pretty_print_category(category)
+    (category || '').gsub('category_', '').titleize
+  end
+  def self.pretty_print_type(type)
+    (type || '').gsub('type_', '').titleize
+  end
 end

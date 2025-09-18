@@ -55,10 +55,10 @@
           <%= b.merchant %>
         </td>
         <td>
-          <%= (b.category || '').gsub('category_', '').titleize %>
+          <%= Transaction.pretty_print_category(b.category) %>
         </td>
         <td>
-          <%= (b.transaction_type || '').gsub('type_', '').titleize %>
+          <%= Transaction.pretty_print_type(b.transaction_type) %>
         </td>
         <td>
           <%= b.amount %>

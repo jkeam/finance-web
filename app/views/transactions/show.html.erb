@@ -26,9 +26,9 @@
   <br />
   Description: <%= @transaction.description %>
   <br />
-  Category: <%= @transaction.category.to_s.gsub('category_', '').titleize %>
+  Category: <%= Transaction.pretty_print_category(@transaction.category) %>
   <br />
-  Type: <%= @transaction.transaction_type.to_s.gsub('type_', '').titleize %>
+  Type: <%= Transaction.pretty_print_type(@transaction.transaction_type) %>
   <br />
   Purchased By: <%= @transaction.purchased_by %>
   <br />

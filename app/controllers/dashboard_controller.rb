@@ -11,21 +11,21 @@ class DashboardController < ApplicationController
     # spend per category
     @spend = spending_transactions.group(:category).sum(:amount_cents)
     @spend.each { |k, v| @spend[k] = v / 100 }
-    @spend.transform_keys! { |key| key.gsub("category_", "") }
+    @spend.transform_keys! { |key| Transaction.pretty_print_category(key) }
     # needs spend per category
     @needs = spending_transactions.where(category: Transaction.get_needs_categories())
       .group(:category).sum(:amount_cents)
     @needs.each { |k, v| @needs[k] = v / 100 }
-    @needs.transform_keys! { |key| key.gsub("category_", "") }
+    @needs.transform_keys! { |key| Transaction.pretty_print_category(key) }
     # wants spend per category
     @wants = spending_transactions.where.not(category: Transaction.get_needs_categories())
       .group(:category).sum(:amount_cents)
     @wants.each { |k, v| @wants[k] = v / 100 }
-    @wants.transform_keys! { |key| key.gsub("category_", "") }
+    @wants.transform_keys! { |key| Transaction.pretty_print_category(key) }
 
     # spend count
     @spend_count = spending_transactions.group(:category).count
-    @spend_count.transform_keys! { |key| key.gsub("category_", "") }
+    @spend_count.transform_keys! { |key| Transaction.pretty_print_category(key) }
 
     # budget
     @summary_income = (income_transactions.sum(:amount_cents) * -1) || 0
@@ -157,7 +157,7 @@ class DashboardController < ApplicationController
         .where("transaction_date <= ?", theend)
         .group(:category).sum(:amount_cents)
       spend.each { |k, v| spend[k] = v / 100 }
-      spend.transform_keys! { |key| key.gsub("category_", "") }
+      spend.transform_keys! { |key| Transaction.pretty_print_category(key) }
       spend
     end
 
