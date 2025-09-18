@@ -64,15 +64,16 @@ def create_balance(file_path, accounts)
 end
 
 # Reset Tables
-def reset_tables()
+def reset_tables
   Balance.destroy_all
   Transaction.destroy_all
   Account.destroy_all
   Bank.destroy_all
+  Budget.destroy_all
 end
 
 # Process CSV Files
-def main(debug, csv_files, banks)
+def main(debug, csv_files, banks, budgets)
   # Build banks and accounts
   name_to_bank = {}
   bank_name_to_accounts = {}
@@ -129,6 +130,22 @@ def main(debug, csv_files, banks)
       puts "matched_account: #{matched_account}"
     end
   end
+
+  # budgets
+  if budgets && budgets.get('budgets')
+    budgets['budgets'].each do |input_budget|
+      budget = Budget.create(
+        name: input_budget['name'],
+      )
+      input_budget['categories'].each do |input_cat|
+        BudgetTransactionCategory.create(
+          transaction_category: Transaction.categories["category_#{input_cat['name'].downcase}"],
+          amount: input_cat['amount'].to_s,
+          budget: budget
+        )
+      end
+    end
+  end
 end
 
 # Test reading of files (looking for non-utf8)
@@ -148,8 +165,12 @@ end
 import_dir = ENV.fetch("IMPORT_DIR") { "import" }
 csv_files = Dir.glob(Rails.root.join(import_dir, "*.csv")).map(&:strip)
 banks = YAML.load_file(Rails.root.join(import_dir, "banks.yaml"))
+budgets = nil
+if Rails.root.join(import_dir, "budgets.yaml").exist?
+  budgets = YAML.load_file(Rails.root.join(import_dir, "budgets.yaml"))
+end
 
 if validate_csv_files(csv_files)
   reset_tables()
-  main(false, csv_files, banks)
+  main(false, csv_files, banks, budgets)
 end
