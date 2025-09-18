@@ -1,16 +1,20 @@
 <div class="budget-transaction-category">
   <%= form.fields_for :budget_transaction_categories, budget_transaction_category, child_index: 'NEW_RECORD' do |category_form| %>
-    <div>
-      <%= category_form.label :amount, style: "display: block" %>
-      <%= category_form.text_field :amount %>
+    <div class="field">
+      <%= category_form.label :amount, style: "display: block", class: "label" %>
+      <div class="control">
+        <%= category_form.text_field :amount %>
+      </div>
     </div>
 
-    <div>
-      <%= category_form.label :transaction_category, style: "display: block" %>
-      <%= category_form.number_field :transaction_category %>
+    <div class="field">
+      <%= category_form.label :transaction_category, style: "display: block", class: "label" %>
+      <div class="control">
+        <%= category_form.number_field :transaction_category %>
+      </div>
     </div>
 
     <%= category_form.hidden_field :_destroy %>
-    <button type="button" data-action="budget-transaction-category#remove_association">Remove</button>
+    <button type="button" data-action="budget-transaction-category#remove_association" class="button">Remove</button>
   <% end %>
 </div>

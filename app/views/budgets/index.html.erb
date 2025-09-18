@@ -1,16 +1,40 @@
+<%= render partial: 'shared/header', locals: { title: 'Budgets', subtitle: 'All the budgets' } %>
+
 <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Budgets" %>
+<section class="section">
+  <h1 class="title">
+    Listing
+  </h1>
+  <h2 class="subtitle">
+    All budgets
+  </h2>
 
-<h1>Budgets</h1>
-
-<div id="budgets">
-  <% @budgets.each do |budget| %>
-    <%= render budget %>
-    <p>
-      <%= link_to "Show this budget", budget %>
-    </p>
-  <% end %>
-</div>
+  <table class="table is-fullwidth">
+    <thead>
+      <tr>
+        <th><abbr title="ID">ID</abbr></th>
+        <th><abbr title="Name">Name</abbr></th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th><abbr title="Id">Id</abbr></th>
+        <th><abbr title="Name">Name</abbr></th>
+      </tr>
+    </tfoot>
+    <tbody>
+      <%- @budgets.each do |b| %>
+      <tr>
+        <th><%= link_to b.id, budget_url(b) %></th>
+        <td>
+          <strong><%= link_to b.name, budget_url(b) %></strong>
+        </td>
+      </tr>
+      <%- end %>
+    </tbody>
+  </table>
+  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+</section>
 
 <%= link_to "New budget", new_budget_path %>

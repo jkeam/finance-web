@@ -1,10 +1,25 @@
+<%= render partial: 'shared/header', locals: { title: 'Budget Detail', subtitle: '' } %>
 <p style="color: green"><%= notice %></p>
 
-<%= render @budget %>
+<section class="section">
+  <h1 class="title">
+    Budget: <%= @budget.id %>
+  </h1>
+  <h2 class="subtitle">
+    <%= @budget.name %>
+  </h2>
 
-<div>
-  <%= link_to "Edit this budget", edit_budget_path(@budget) %> |
-  <%= link_to "Back to budgets", budgets_path %>
+  <%- @budget.budget_transaction_categories.each do |c| %>
+    <%= Transaction.categories.key(c.transaction_category).gsub('category_', '').titleize %>
+    :
+    <%= Money.from_cents(c.amount_cents).format %>
+    <br />
+  <% end %>
 
-  <%= button_to "Destroy this budget", @budget, method: :delete %>
+</section>
+
+<div class="field is-grouped">
+  <%= link_to "Edit", edit_budget_path(@budget) %> |
+  <%= link_to "Listing", budgets_path %> |
+  <%= button_to "Destroy this budget", @budget, method: :delete, class: 'button is-danger' %>
 </div>

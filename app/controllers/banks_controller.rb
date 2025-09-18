@@ -8,12 +8,10 @@ class BanksController < ApplicationController
   end
 
   # GET /banks/1
-  def show
-  end
+  def show; end
 
   private
-
-  def set_bank
-    @bank = Bank.where(id: params[:id]).includes(:accounts).first
-  end
+    def set_bank
+      @bank = Bank.where(id: params[:id]).includes(:accounts).first
+    end
 end

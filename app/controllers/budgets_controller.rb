@@ -1,9 +1,10 @@
 class BudgetsController < ApplicationController
+  include Pagy::Backend
   before_action :set_budget, only: %i[ show edit update destroy ]
 
   # GET /budgets
   def index
-    @budgets = Budget.all
+    @pagy, @budgets = pagy(Budget.all.order(:id))
   end
 
   # GET /budgets/1

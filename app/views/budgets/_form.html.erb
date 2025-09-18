@@ -1,4 +1,4 @@
-<%= form_with(model: budget, data: { controller: 'budget-transaction-category' }) do |form| %>
+<%= form_with(model: budget, data: { controller: 'budget-transaction-category' }, class: 'form') do |form| %>
   <% if budget.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(budget.errors.count, "error") %> prohibited this budget from being saved:</h2>
@@ -11,12 +11,14 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="field">
+    <%= form.label :name, style: "display: block", class: "label" %>
+    <div class="control">
+      <%= form.text_field :name %>
+    </div>
   </div>
 
-  <h2>Categories</h2>
+  <h2 class="is-size-4" style="padding-top: 2rem;">Categories</h2>
 
   <div data-budget-transaction-category-target="links">
     <% budget.budget_transaction_categories.each do |btc| %>
@@ -24,13 +26,15 @@
     <% end %>
   </div>
 
-  <%= link_to 'Add Category', '#', data: { action: 'budget-transaction-category#add_association' } %>
+  <%= link_to 'Add Category', '#', data: { action: 'budget-transaction-category#add_association' }, class: "button", style: "margin-top: 1rem;" %>
 
   <template data-budget-transaction-category-target="template">
     <%= render 'budget_transaction_category_form', form: form, budget_transaction_category: BudgetTransactionCategory.new %>
   </template>
 
-  <div>
-    <%= form.submit %>
+  <div class="field is-grouped" style="padding-top: 2rem;">
+    <div class="control">
+      <%= form.submit "Submit", class: "button is-link" %>
+    </div>
   </div>
 <% end %>
