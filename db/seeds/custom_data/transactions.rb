@@ -138,8 +138,9 @@ def main(debug, csv_files, banks, budgets)
         name: input_budget['name'],
       )
       input_budget['categories'].each do |input_cat|
+        transaction_category = Transaction.categories["category_#{input_cat['name'].downcase.gsub(' ', '_')}"]
         BudgetTransactionCategory.create(
-          transaction_category: Transaction.categories["category_#{input_cat['name'].downcase}"],
+          transaction_category: transaction_category,
           amount: input_cat['amount'].to_s,
           budget: budget
         )

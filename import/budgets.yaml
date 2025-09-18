@@ -1,0 +1,8 @@
+budgets:
+  - name: Default
+    categories:
+    - name: Restaurants
+      amount: 1500
+    - name: Services
+      amount: 500
+
