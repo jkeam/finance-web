@@ -1,0 +1,20 @@
+<div id="<%= dom_id budget %>">
+  <p>
+    <strong>Name:</strong>
+    <%= budget.name %>
+  </p>
+
+  Categories:
+  <%- budget.budget_transaction_categories.each do |b| %>
+    <p>
+      <strong>Amount:</strong>
+      <%= Money.from_cents(b.amount_cents).format %>
+    </p>
+
+    <p>
+      <strong>Transaction category:</strong>
+      <%= Transaction.categories.key(b.transaction_category) %>
+    </p>
+  <% end %>
+
+</div>

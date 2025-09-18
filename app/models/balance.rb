@@ -1,6 +1,6 @@
 class Balance < ApplicationRecord
-  monetize :amount_cents
-  belongs_to :account
+  monetize :amount_cents, allow_nil: false
+  belongs_to :account, inverse_of: :balances
 
   scope :between_dates, ->(startdate, enddate) {
     query = self

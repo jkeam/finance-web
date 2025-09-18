@@ -1,0 +1,9 @@
+one:
+  amount_cents: 100_000
+  transaction_category: 12
+  budget: one
+
+two:
+  amount_cents: 200_000
+  transaction_category: 14
+  budget: one

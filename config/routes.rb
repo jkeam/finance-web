@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :budgets
   resources :banks, only: %i[index show]
   resources :transactions, only: %i[index show]
   resources :accounts, only: %i[index show]

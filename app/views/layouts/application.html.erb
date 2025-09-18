@@ -66,6 +66,10 @@
           <a class="navbar-item <% if params[:controller] == 'accounts' && params[:action] == 'index' %>is-selected<%- end %>" href="/accounts">
             Accounts
           </a>
+
+          <a class="navbar-item <% if params[:controller] == 'budgets' %>is-selected<%- end %>" href="/budgets">
+            Budgets
+          </a>
         </div>
       </div>
     </nav>

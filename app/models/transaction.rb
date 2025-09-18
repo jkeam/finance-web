@@ -1,6 +1,6 @@
 class Transaction < ApplicationRecord
-  monetize :amount_cents
-  belongs_to :account
+  monetize :amount_cents, allow_nil: false
+  belongs_to :account, inverse_of: :transactions
 
   enum :category, {
     category_other: 0,
