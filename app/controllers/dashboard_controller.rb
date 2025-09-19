@@ -49,7 +49,7 @@ class DashboardController < ApplicationController
 
   # GET /dashboard/spending
   def spending
-    all_transactions = Transaction.all.between_dates(@startdate, @enddate)
+    all_transactions = Transaction.between_dates(@startdate, @enddate)
 
     # restaurants
     @restaurants = all_transactions.where(category: :category_restaurants)
@@ -111,27 +111,7 @@ class DashboardController < ApplicationController
       .group_by_month(:transaction_date, range: @startdate..@enddate, expand_range: true)
       .sum(:amount_cents)
     @spend_per_month.each { |k, v| @spend_per_month[k] = v / 100 }
-    @spending_by_category_per_month = [
-      { name: "Restaurants", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_restaurants) },
-      { name: "Services", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_services) },
-      { name: "Grocery", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_grocery) },
-      { name: "Utilities", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_utility) },
-      { name: "Shopping", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_shopping) },
-      { name: "Travel", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_travel) },
-      { name: "Transportation", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_transportation) },
-      { name: "Health", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_health) },
-      { name: "Alcohol", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_alcohol) },
-      { name: "Entertainment", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_entertainment) },
-      { name: "Software", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_software) },
-      { name: "Significant Other", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_significant_other) },
-      { name: "Other", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_other) },
-      { name: "Rent", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_rent) },
-      { name: "Rental Property", data: spending_category_by_month(all_transactions, @startdate, @enddate, :category_rental_property) }
-    ]
-    @spending_by_category_per_month.each do |s|
-      data = s[:data]
-      s[:mean] = data.values.inject(&:+) / data.values.size
-    end
+    @spending_by_category_per_month = Transaction.spending_per_category_per_month(@startdate, @enddate)
 
     # income and spending
     @income_and_spending = [

@@ -12,6 +12,9 @@ class BudgetsController < ApplicationController
     @budget = Budget.where(id: params.expect(:id)).includes(:budget_transaction_categories).first
     @budget_transaction_categories = BudgetTransactionCategory.all.group(:transaction_category).sum(:amount_cents)
     @budget_transaction_categories.transform_keys! { |key| Transaction.pretty_print_category(Transaction.categories.key(key)) }
+
+    today = Date.current
+    @spending_by_category_per_month = Transaction.spending_per_category_per_month(today << 5, today)
   end
 
   # GET /budgets/new
@@ -24,19 +27,6 @@ class BudgetsController < ApplicationController
 
   # POST /budgets or /budgets.json
   def create
-    # @survey = Survey.new(survey_params)
-  
-    # if @survey.save
-      # Create questions manually after the parent object is saved
-      # questions_data = params[:survey][:questions_data] # Assuming an array of questions data
-      # questions_data.each do |question_attributes|
-        # @survey.questions.create(question_attributes)
-      # end
-      # redirect_to @survey
-    # else
-      # render :new
-    # end
-
     @budget = Budget.new(budget_params)
 
     respond_to do |format|

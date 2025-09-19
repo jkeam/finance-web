@@ -12,6 +12,7 @@
   <div class="block">
     <%= pie_chart @budget_transaction_categories %>
   </div>
+
   <div class="block">
     <table class="table is-fullwidth">
       <thead>
@@ -39,6 +40,15 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <hr />
+
+  <div class="block">
+    <h1 class="title">
+      Past Reference Data
+    </h1>
+    <%= render partial: 'dashboard/spend_per_category_listing', locals: {spending_by_category_per_month: @spending_by_category_per_month} %>
   </div>
 </section>
 

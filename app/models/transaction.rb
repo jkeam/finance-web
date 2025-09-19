@@ -83,10 +83,55 @@ class Transaction < ApplicationRecord
   def self.get_needs_categories
     @@needs_categories
   end
+
   def self.pretty_print_category(category)
-    (category || '').gsub('category_', '').titleize
+    (category || '').to_s.gsub('category_', '').titleize
   end
+
   def self.pretty_print_type(type)
     (type || '').gsub('type_', '').titleize
+  end
+
+  def self.spending_category_by_month(transactions, startdate, enddate, category)
+    tmp = transactions.where(category: category)
+      .group_by_month(:transaction_date, range: startdate..enddate, expand_range: true)
+      .sum(:amount_cents)
+    tmp.each do |k, v|
+      tmp[k] = v / 100
+      tmp[k] ||= 0
+    end
+    puts tmp
+    tmp
+  end
+
+  def self.spending_per_category_per_month(startdate, enddate)
+    all_transactions = between_dates(startdate, enddate)
+    categories = %i[
+      category_restaurants
+      category_services
+      category_grocery
+      category_utility
+      category_shopping
+      category_travel
+      category_transportation
+      category_health
+      category_alcohol
+      category_entertainment
+      category_software
+      category_significant_other
+      category_other
+      category_rent
+      category_rental_property
+    ]
+
+    spending_by_category_per_month = categories.map do |category|
+      data = spending_category_by_month(all_transactions, startdate, enddate, category)
+      {
+        name: pretty_print_category(category),
+        data: data,
+        mean: data.values.inject(&:+) / data.values.size
+      }
+    end
+    spending_by_category_per_month
   end
 end

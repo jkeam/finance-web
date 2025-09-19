@@ -1,10 +1,14 @@
-<div class="">
-  <% if !notice.nil? %>
+<% if !notice.nil? %>
+  <div class="notification">
+    <button class="delete"></button>
     <span class="has-text-success">
       <%= notice %>
     </span>
-  <% end %>
-  <% if !errors.nil? && errors.count > 0 %>
+  </div>
+<% end %>
+<% if !errors.nil? && errors.count > 0 %>
+  <div class="notification">
+    <button class="delete"></button>
     <span class="has-text-danger">
       <h2>
         <%= pluralize(errors.count, "error") %> prohibited this budget from being saved:
@@ -16,5 +20,6 @@
         <% end %>
       </ul>
     </span>
-  <% end %>
-</div>
+  </div>
+<% end %>
+
