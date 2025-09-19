@@ -100,7 +100,6 @@ class Transaction < ApplicationRecord
       tmp[k] = v / 100
       tmp[k] ||= 0
     end
-    puts tmp
     tmp
   end
 
