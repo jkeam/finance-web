@@ -6,7 +6,7 @@ class TransactionsController < ApplicationController
 
   # GET /transactions
   def index
-    transactions = Transaction.all
+    transactions = Transaction.includes(:account)
     if @startdate != nil
       transactions = transactions.where("transaction_date >= ?", @startdate)
     end
@@ -17,8 +17,7 @@ class TransactionsController < ApplicationController
   end
 
   # GET /transactions/
-  def show
-  end
+  def show; end
 
   private
 
