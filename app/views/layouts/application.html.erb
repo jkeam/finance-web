@@ -48,7 +48,7 @@
                 Reports
               </a>
               <div class="navbar-dropdown">
-                <%= link_to 'Yearly', root_path, class: ['navbar-item', {"is-active" => current_page?(root_path)}] %>
+                <%= link_to 'Yearly', dashboard_yearly_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_yearly_path)}] %>
                 <%= link_to 'Monthly', dashboard_monthly_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_monthly_path)}] %>
                 <%= link_to 'Spending', dashboard_spending_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_spending_path)}] %>
                 <%= link_to 'Trends', dashboard_trends_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_trends_path)}] %>
@@ -58,7 +58,7 @@
 
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">
-                Financial Institutions
+                Data
               </a>
               <div class="navbar-dropdown">
                 <%= link_to 'Banks', banks_path, class: ['navbar-item', {"is-active" => current_page?(banks_path)}] %>

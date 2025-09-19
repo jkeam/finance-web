@@ -6,6 +6,11 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get yearly" do
+    get dashboard_yearly_url
+    assert_response :success
+  end
+
   test "should get spending" do
     get dashboard_spending_url
     assert_response :success

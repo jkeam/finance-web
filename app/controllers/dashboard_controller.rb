@@ -3,7 +3,10 @@ class DashboardController < ApplicationController
   before_action :set_filter_params
 
   # GET /dashboard
-  def index
+  def index; end
+
+  # GET /dashboard/yearly
+  def yearly
     all_transactions = Transaction.between_dates(@startdate, @enddate)
     income_transactions = Transaction.income().between_dates(@startdate, @enddate)
     spending_transactions = Transaction.spending().between_dates(@startdate, @enddate)

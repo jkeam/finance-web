@@ -1,96 +1,10 @@
-<%= render partial: 'shared/header', locals: { title: 'Dashboard', subtitle: 'Summary reports' } %>
-<%= render partial: 'shared/date_filter', locals: {startdate: @startdate, enddate: @enddate} %>
+<%= render partial: 'shared/header', locals: { title: 'Dashboard', subtitle: '' } %>
 
 <section class="section chart">
   <h1 class="title">
-    Summary
+    Welcome
   </h1>
-  <h2 class="subtitle">
-    Info
-  </h2>
   <div class="block">
-    <table class="table">
-      <tbody>
-        <tr>
-          <td>Start Date:</td>
-          <td><%= @startdate %></td>
-        </tr>
-        <tr>
-          <td>End Date:</td>
-          <td><%= @enddate %></td>
-        </tr>
-        <tr>
-          <td>Number of months:</td>
-          <td><%= @number_of_months %></td>
-        </tr>
-        <tr>
-          <td>Net:</td>
-          <td><%= Money.from_cents(@budget_savings).format %></td>
-        </tr>
-        <tr>
-          <td>Income:</td>
-          <td><%= Money.from_cents(@summary_income).format %></td>
-        </tr>
-        <tr>
-          <td>Spending:</td>
-          <td><%= Money.from_cents(@summary_spending).format %></td>
-        </tr>
-        <tr>
-          <td>Needs:</td>
-          <td>
-            <%= Money.from_cents(@budget_spending['needs'] * 100).format %>
-            <% if @summary_spending > 0 %>
-              (<%= ((@budget_spending['needs'] * 100).to_f / @summary_spending * 100).truncate %>%)
-            <% end %>
-          </td>
-        </tr>
-        <tr>
-          <td>Wants:</td>
-          <td>
-            <%= Money.from_cents(@budget_spending['wants'] * 100).format %>
-            <% if @summary_spending > 0 %>
-              (<%= ((@budget_spending['wants'] * 100).to_f / @summary_spending * 100).truncate %>%)
-            <% end %>
-          </td>
-        </tr>
-        <tr>
-          <td>Savings:</td>
-          <td>
-            <%= Money.from_cents(@budget_spending['savings'] * 100).format %>
-            <% if @summary_spending > 0 %>
-              (<%= ((@budget_spending['savings'] * 100).to_f / @summary_spending * 100).truncate %>%)
-            <% end %>
-          </td>
-        </tr>
-        <tr>
-          <td>Avg Monthly Income:</td>
-          <td><%= Money.from_cents(@summary_income / @number_of_months).format %></td>
-        </tr>
-        <tr>
-          <td>Avg Monthly Spending:</td>
-          <td><%= Money.from_cents(@summary_spending / @number_of_months).format %></td>
-        </tr>
-      </tbody>
-    </table>
+    See reports and all the data through the navbar.
   </div>
-  <h2 class="subtitle">
-    Budget Spending
-  </h2>
-  <%= pie_chart @budget_spending %>
-  <h2 class="subtitle">
-    Number of Transactions
-  </h2>
-  <%= pie_chart @spend_count %>
-  <h2 class="subtitle">
-    Total Spend
-  </h2>
-  <%= pie_chart @spend %>
-  <h2 class="subtitle">
-    Needs
-  </h2>
-  <%= pie_chart @needs %>
-  <h2 class="subtitle">
-    Wants
-  </h2>
-  <%= pie_chart @wants %>
 </section>
