@@ -38,27 +38,27 @@
         <tr>
           <td>Needs:</td>
           <td>
-            <%= Money.from_cents(@budget_spending['needs'] * 100).format %>
+            <%= Money.from_cents(@budget_spending['Needs'] * 100).format %>
             <% if @summary_spending > 0 %>
-              (<%= ((@budget_spending['needs'] * 100).to_f / @summary_spending * 100).truncate %>%)
+              (<%= ((@budget_spending['Needs'] * 100).to_f / @summary_spending * 100).truncate %>%)
             <% end %>
           </td>
         </tr>
         <tr>
           <td>Wants:</td>
           <td>
-            <%= Money.from_cents(@budget_spending['wants'] * 100).format %>
+            <%= Money.from_cents(@budget_spending['Wants'] * 100).format %>
             <% if @summary_spending > 0 %>
-              (<%= ((@budget_spending['wants'] * 100).to_f / @summary_spending * 100).truncate %>%)
+              (<%= ((@budget_spending['Wants'] * 100).to_f / @summary_spending * 100).truncate %>%)
             <% end %>
           </td>
         </tr>
         <tr>
           <td>Savings:</td>
           <td>
-            <%= Money.from_cents(@budget_spending['savings'] * 100).format %>
+            <%= Money.from_cents(@budget_spending['Savings'] * 100).format %>
             <% if @summary_spending > 0 %>
-              (<%= ((@budget_spending['savings'] * 100).to_f / @summary_spending * 100).truncate %>%)
+              (<%= ((@budget_spending['Savings'] * 100).to_f / @summary_spending * 100).truncate %>%)
             <% end %>
           </td>
         </tr>

@@ -37,9 +37,9 @@ class DashboardController < ApplicationController
     budget_spending_wants = @summary_spending - budget_spending_needs || 0
     @budget_savings = @summary_income - @summary_spending
     @budget_spending = {
-      "needs" => budget_spending_needs / 100,
-      "wants" => budget_spending_wants / 100,
-      "savings" => @budget_savings / 100
+      "Needs" => budget_spending_needs / 100,
+      "Wants" => budget_spending_wants / 100,
+      "Savings" => @budget_savings / 100
     }
 
     # info

@@ -9,6 +9,9 @@ class BudgetsController < ApplicationController
 
   # GET /budgets/1
   def show
+    @budget = Budget.where(id: params.expect(:id)).includes(:budget_transaction_categories).first
+    @budget_transaction_categories = BudgetTransactionCategory.all.group(:transaction_category).sum(:amount_cents)
+    @budget_transaction_categories.transform_keys! { |key| Transaction.pretty_print_category(Transaction.categories.key(key)) }
   end
 
   # GET /budgets/new
@@ -17,8 +20,7 @@ class BudgetsController < ApplicationController
   end
 
   # GET /budgets/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /budgets or /budgets.json
   def create
