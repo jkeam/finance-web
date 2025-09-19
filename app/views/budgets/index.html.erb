@@ -26,9 +26,7 @@
       <%- @budgets.each do |b| %>
       <tr>
         <th><%= link_to b.id, budget_url(b) %></th>
-        <td>
-          <strong><%= link_to b.name, budget_url(b) %></strong>
-        </td>
+        <td><%= link_to b.name, budget_url(b) %></td>
       </tr>
       <%- end %>
     </tbody>

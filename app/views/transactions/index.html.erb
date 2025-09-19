@@ -39,35 +39,35 @@
       </tr>
     </tfoot>
     <tbody>
-      <%- @transactions.each do |b| %>
+      <%- @transactions.each do |transaction| %>
       <tr>
-        <th><%= link_to b.id, transaction_path(b) %></th>
+        <th><%= link_to transaction.id, transaction_path(transaction) %></th>
         <td>
-          <%= b.transaction_date %>
+          <%= transaction.transaction_date %>
         </td>
         <td>
-          <%= b.clearing_date %>
+          <%= transaction.clearing_date %>
         </td>
         <td>
-          <%= b.description %>
+          <%= transaction.description %>
         </td>
         <td>
-          <%= b.merchant %>
+          <%= transaction.merchant %>
         </td>
         <td>
-          <%= Transaction.pretty_print_category(b.category) %>
+          <%= Transaction.pretty_print_category(transaction.category) %>
         </td>
         <td>
-          <%= Transaction.pretty_print_type(b.transaction_type) %>
+          <%= Transaction.pretty_print_type(transaction.transaction_type) %>
         </td>
         <td>
-          <%= b.amount %>
+          <%= Money.from_cents(transaction.amount).format %>
         </td>
         <td>
-          <%= b.purchased_by %>
+          <%= transaction.purchased_by %>
         </td>
         <td>
-          <%= link_to b.account.name, bank_path(b) %>
+          <%= link_to transaction.account.name, bank_path(transaction) %>
         </td>
       </tr>
       <%- end %>
