@@ -27,6 +27,13 @@ spec:
       - name: finance-web
         image: quay.io/jkeam/finance-web
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
         envFrom:
         - configMapRef:
             name: finance-web-config
