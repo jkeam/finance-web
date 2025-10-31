@@ -20,8 +20,15 @@ spec:
         app: db
     spec:
       containers:
-        - image: registry.redhat.io/rhel9/postgresql-16:9.6-1756967015
-          name: db
+        - name: db
+          image: registry.redhat.io/rhel9/postgresql-16:9.6-1760420746
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
           env:
           - name: POSTGRESQL_USER
             value: financeuser
