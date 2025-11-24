@@ -29,3 +29,5 @@ resources:
   - app-service.yaml
   - app-route.yaml
   - app-console-link.yaml
+  - app-tls-certificate.yaml
+  - app-tls-route.yaml
