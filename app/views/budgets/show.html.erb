@@ -19,24 +19,41 @@
         <tr>
           <th><abbr title="Category">Category</abbr></th>
           <th><abbr title="Amount">Amount</abbr></th>
+          <th><abbr title="Mean">Mean &#40;past&#41;</abbr></th>
+          <th><abbr title="Max">Max &#40;past&#41;</abbr></th>
+          <th><abbr title="Min">Min &#40;past&#41;</abbr></th>
         </tr>
       </thead>
       <tfoot>
         <tr>
           <th><abbr title="Category">Category</abbr></th>
           <th><abbr title="Amount">Amount</abbr></th>
+          <th><abbr title="Mean">Mean &#40;past&#41;</abbr></th>
+          <th><abbr title="Max">Max &#40;past&#41;</abbr></th>
+          <th><abbr title="Min">Min &#40;past&#41;</abbr></th>
         </tr>
       </tfoot>
       <tbody>
         <%- @budget.budget_transaction_categories.each do |c| %>
+          <% matching_spending_category = @spending_by_category_per_month.find(proc {{mean: 0, min: 0, max: 0}}) { |sc| sc[:category] == Transaction.categories.key(c.transaction_category).to_sym } %>
           <tr>
             <td><%= Transaction.pretty_print_category(Transaction.categories.key(c.transaction_category)) %></td>
             <td><%= Money.from_cents(c.amount_cents).format %></td>
+            <td>
+              <%= Money.from_cents(matching_spending_category[:mean] * 100).format %>
+            </td>
+            <td>
+              <%= Money.from_cents(matching_spending_category[:max] * 100).format %>
+            </td>
+            <td>
+              <%= Money.from_cents(matching_spending_category[:min] * 100).format %>
+            </td>
           </tr>
         <% end %>
         <tr>
           <td><strong>Sum</strong></td>
           <td><strong><%= Money.from_cents(@budget.budget_transaction_categories.map{|c|c.amount_cents}.inject(&:+)).format %></strong></td>
+          <td><strong><%= Money.from_cents(@spending_by_category_per_month.map { |c| c[:mean] }.inject(&:+) * 100).format %></strong></td>
         </tr>
       </tbody>
     </table>

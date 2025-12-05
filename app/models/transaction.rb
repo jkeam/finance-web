@@ -127,7 +127,10 @@ class Transaction < ApplicationRecord
       data = spending_category_by_month(all_transactions, startdate, enddate, category)
       {
         name: pretty_print_category(category),
+        category: category,
         data: data,
+        min: data.values.reject{|v| v == 0}.min || 0,
+        max: data.values.max,
         mean: data.values.inject(&:+) / data.values.size
       }
     end
