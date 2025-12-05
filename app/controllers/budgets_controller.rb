@@ -13,8 +13,10 @@ class BudgetsController < ApplicationController
     @budget_transaction_categories = BudgetTransactionCategory.all.group(:transaction_category).sum(:amount_cents)
     @budget_transaction_categories.transform_keys! { |key| Transaction.pretty_print_category(Transaction.categories.key(key)) }
 
-    last_month = (Date.current << 1)
-    @spending_by_category_per_month = Transaction.spending_per_category_per_month(last_month << 5, last_month)
+    @spending_by_category_per_month = Transaction.spending_per_category_per_month(
+      Date.current.months_ago(6).beginning_of_month,
+      Date.current.beginning_of_month
+    )
   end
 
   # GET /budgets/new

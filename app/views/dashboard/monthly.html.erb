@@ -24,6 +24,8 @@
 
   <%= render partial: 'dashboard/spend_per_category_listing', locals: {spending_by_category_per_month: @spending_by_category_per_month} %>
 
+  <%= render partial: 'dashboard/spend_per_category_summary_listing', locals: {spending_by_category_per_month: @spending_by_category_per_month} %>
+
   <h2 class="subtitle">
     Income and spending
   </h2>

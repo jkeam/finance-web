@@ -6,13 +6,13 @@ module Filterable
     if ((params[:startdate] || '').strip != '')
       @startdate = Date.strptime(params[:startdate], "%Y-%m-%d")
     end
-    @startdate ||= Date.new(2025, 1, 1)
+    @startdate ||= Date.current.months_ago(12).beginning_of_month
 
     @endddate = nil
     if ((params[:enddate] || '').strip != '')
       @enddate = Date.strptime(params[:enddate], "%Y-%m-%d")
     end
-    @enddate ||= Date.current()
+    @enddate ||= Date.current.beginning_of_month
   end
 
   def income_by_merchant_and_month(transactions, startdate, enddate, merchant)

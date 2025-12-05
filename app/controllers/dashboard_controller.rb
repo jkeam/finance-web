@@ -92,7 +92,7 @@ class DashboardController < ApplicationController
 
     # income
     @income_per_month = income_transactions
-      .group_by_month(:transaction_date, range: @startdate..@enddate, expand_range: true)
+      .group_by_month(:transaction_date, range: @startdate...@enddate, expand_range: true)
       .sum(:amount_cents)
     @income_per_month.each { |k, v| @income_per_month[k] = (v * -1) / 100 }
     @income_per_month_by_merchant = income_transactions.select(:merchant).distinct.pluck(:merchant).map do |m|
@@ -108,7 +108,7 @@ class DashboardController < ApplicationController
 
     # spend per month
     @spend_per_month = spending_transactions
-      .group_by_month(:transaction_date, range: @startdate..@enddate, expand_range: true)
+      .group_by_month(:transaction_date, range: @startdate...@enddate, expand_range: true)
       .sum(:amount_cents)
     @spend_per_month.each { |k, v| @spend_per_month[k] = v / 100 }
     @spending_by_category_per_month = Transaction.spending_per_category_per_month(@startdate, @enddate)
@@ -126,7 +126,7 @@ class DashboardController < ApplicationController
       @balances << {
         name: account.name,
         data: all_balances.where(account_id: account.id)
-        .group_by_month(:date, range: @startdate..@enddate, expand_range: true)
+        .group_by_month(:date, range: @startdate...@enddate, expand_range: true)
         .sum(:amount_cents)
       }
     end
