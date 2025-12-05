@@ -1,5 +1,5 @@
 class AccountsController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Method
   before_action :set_account, only: %i[show]
 
   # GET /accounts

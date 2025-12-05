@@ -1,5 +1,5 @@
 class BanksController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Method
   before_action :set_bank, only: %i[show]
 
   # GET /banks

@@ -31,7 +31,7 @@
       <%- end %>
     </tbody>
   </table>
-  <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+  <%== @pagy.series_nav() if @pagy.pages > 1 %>
 </section>
 
 <%= link_to "New budget", new_budget_path %>

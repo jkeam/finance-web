@@ -1,5 +1,5 @@
 class TransactionsController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Method
   include Filterable
   before_action :set_transaction, only: %i[show]
   before_action :set_filter_params, only: :index

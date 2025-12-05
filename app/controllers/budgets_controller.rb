@@ -1,5 +1,5 @@
 class BudgetsController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Method
   before_action :set_budget, only: %i[ show edit update destroy ]
 
   # GET /budgets
