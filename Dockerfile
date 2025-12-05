@@ -14,8 +14,10 @@ RUN gem install bundler && bundle install
 COPY --chown=1001:0 . .
 
 # ENV
-ENV PORT="8080"
-ENV TARGET_PORT="8080"
+ENV PORT="3000"
+ENV TARGET_PORT="3000"
+ENV HTTP_PORT="8080"
+ENV HTTPS_PORT="8443"
 ENV LD_PRELOAD="/usr/lib64/libjemalloc.so.2"
 ENV RAILS_ENV="production"
 ENV SOLID_QUEUE_IN_PUMA="true"

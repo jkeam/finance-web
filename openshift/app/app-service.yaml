@@ -8,7 +8,7 @@ spec:
   ports:
     - name: port8080
       port: 8080
-      targetPort: 8080
+      targetPort: 3000
   selector:
     app: finance-web
   type: ClusterIP

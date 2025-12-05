@@ -40,14 +40,14 @@ spec:
         - secretRef:
             name: finance-web-secrets
         ports:
-        - containerPort: 8080
+        - containerPort: 3000
           name: theport
         command: ["./bin/thrust"]
         args: ["./bin/rails", "server", "-b", "0.0.0.0"]
         startupProbe:
           httpGet:
             path: /up
-            port: 8080
+            port: 3000
             httpHeaders:
             - name: Accept
               value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
@@ -57,7 +57,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /up
-            port: 8080
+            port: 3000
             httpHeaders:
             - name: Accept
               value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
@@ -67,7 +67,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /up
-            port: 8080
+            port: 3000
             httpHeaders:
             - name: Accept
               value: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
