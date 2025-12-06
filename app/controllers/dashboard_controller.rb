@@ -42,9 +42,8 @@ class DashboardController < ApplicationController
       "Savings" => @budget_savings / 100
     }
 
-    # info
-    @number_of_months = @enddate.month - @startdate.month
-    @number_of_months = 1 if @number_of_months.zero?
+    # info at top
+    @number_of_months = (@enddate.year * 12 + @enddate.month) - (@startdate.year * 12 + @startdate.month)
   end
 
   # GET /dashboard/spending

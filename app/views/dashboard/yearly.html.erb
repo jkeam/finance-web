@@ -6,37 +6,37 @@
     Summary
   </h1>
   <h2 class="subtitle">
-    Info
+    At a Glance
   </h2>
   <div class="block">
     <table class="table">
       <tbody>
         <tr>
-          <td>Start Date:</td>
+          <td>Start Date</td>
           <td><%= @startdate %></td>
         </tr>
         <tr>
-          <td>End Date:</td>
+          <td>End Date</td>
           <td><%= @enddate %></td>
         </tr>
         <tr>
-          <td>Number of months:</td>
+          <td>Number of months</td>
           <td><%= @number_of_months %></td>
         </tr>
         <tr>
-          <td>Net:</td>
+          <td>Net</td>
           <td><%= Money.from_cents(@budget_savings).format %></td>
         </tr>
         <tr>
-          <td>Income:</td>
+          <td>Income</td>
           <td><%= Money.from_cents(@summary_income).format %></td>
         </tr>
         <tr>
-          <td>Spending:</td>
+          <td>Spending</td>
           <td><%= Money.from_cents(@summary_spending).format %></td>
         </tr>
         <tr>
-          <td>Needs:</td>
+          <td>Needs</td>
           <td>
             <%= Money.from_cents(@budget_spending['Needs'] * 100).format %>
             <% if @summary_spending > 0 %>
@@ -45,7 +45,7 @@
           </td>
         </tr>
         <tr>
-          <td>Wants:</td>
+          <td>Wants</td>
           <td>
             <%= Money.from_cents(@budget_spending['Wants'] * 100).format %>
             <% if @summary_spending > 0 %>
@@ -54,7 +54,7 @@
           </td>
         </tr>
         <tr>
-          <td>Savings:</td>
+          <td>Savings &lpar;income &minus; savings&rpar;</td>
           <td>
             <%= Money.from_cents(@budget_spending['Savings'] * 100).format %>
             <% if @summary_spending > 0 %>
@@ -63,18 +63,18 @@
           </td>
         </tr>
         <tr>
-          <td>Avg Monthly Income:</td>
+          <td>Avg Monthly Income</td>
           <td><%= Money.from_cents(@summary_income / @number_of_months).format %></td>
         </tr>
         <tr>
-          <td>Avg Monthly Spending:</td>
+          <td>Avg Monthly Spending</td>
           <td><%= Money.from_cents(@summary_spending / @number_of_months).format %></td>
         </tr>
       </tbody>
     </table>
   </div>
   <h2 class="subtitle">
-    Budget Spending
+    Spending Breakdown
   </h2>
   <%= pie_chart @budget_spending %>
   <h2 class="subtitle">
