@@ -8,28 +8,30 @@
     All banks
   </h2>
 
-  <table class="table is-fullwidth">
-    <thead>
-      <tr>
-        <th><abbr title="ID">ID</abbr></th>
-        <th><abbr title="Name">Name</abbr></th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <th><abbr title="Id">Id</abbr></th>
-        <th><abbr title="Name">Name</abbr></th>
-      </tr>
-    </tfoot>
-    <tbody>
-      <%- @banks.each do |b| %>
-      <tr>
-        <th><%= link_to b.id, bank_url(b) %></th>
-        <td><%= link_to b.name, bank_url(b) %></td>
-      </tr>
-      <%- end %>
-    </tbody>
-  </table>
+  <div class="table-container">
+    <table class="table is-fullwidth is-hoverable is-striped">
+      <thead>
+        <tr>
+          <th><abbr title="ID">ID</abbr></th>
+          <th><abbr title="Name">Name</abbr></th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th><abbr title="Id">Id</abbr></th>
+          <th><abbr title="Name">Name</abbr></th>
+        </tr>
+      </tfoot>
+      <tbody>
+        <%- @banks.each do |b| %>
+        <tr>
+          <th><%= link_to b.id, bank_url(b) %></th>
+          <td><%= link_to b.name, bank_url(b) %></td>
+        </tr>
+        <%- end %>
+      </tbody>
+    </table>
+  </div>
   <%== @pagy.series_nav() if @pagy.pages > 1 %>
 </section>
 

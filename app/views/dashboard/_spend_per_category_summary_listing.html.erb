@@ -1,57 +1,59 @@
 <h2 class="subtitle">
   Spend per category summary
 </h2>
-<table class="table is-fullwidth">
-  <thead>
-    <tr>
-      <th><abbr title="Category">Category</abbr></th>
-      <th><abbr title="Mean">Mean</abbr></th>
-      <th><abbr title="Max">Max</abbr></th>
-      <th><abbr title="Min">Min</abbr></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%- spending_by_category_per_month.each do |s| %>
-    <tr>
-      <td>
-        <%= s[:name] %>
-      </td>
-      <td>
-        <%= Money.from_cents(s[:mean] * 100).format %>
-      </td>
-      <td>
-        <%= Money.from_cents(s[:max] * 100).format %>
-      </td>
-      <td>
-        <%= Money.from_cents(s[:min] * 100).format %>
-      </td>
-    </tr>
-    <%- end %>
-    <tr>
-      <td><strong>Sum</strong></td>
-      <td>
-        <strong>
-          <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:mean] }.inject(&:+) * 100).format %>
-        </strong>
-      </td>
-      <td>
-        <strong>
-          <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:max] }.inject(&:+) * 100).format %>
-        </strong>
-      </td>
-      <td>
-        <strong>
-          <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:min] }.inject(&:+) * 100).format %>
-        </strong>
-      </td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <th><abbr title="Category">Category</abbr></th>
-      <th><abbr title="Mean">Mean</abbr></th>
-      <th><abbr title="Max">Max</abbr></th>
-      <th><abbr title="Min">Min</abbr></th>
-    </tr>
-  </tfoot>
-</table>
+<div class="table-container">
+  <table class="table is-fullwidth is-hoverable is-striped">
+    <thead>
+      <tr>
+        <th><abbr title="Category">Category</abbr></th>
+        <th><abbr title="Mean">Mean</abbr></th>
+        <th><abbr title="Max">Max</abbr></th>
+        <th><abbr title="Min">Min</abbr></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%- spending_by_category_per_month.each do |s| %>
+      <tr>
+        <td>
+          <%= s[:name] %>
+        </td>
+        <td>
+          <%= Money.from_cents(s[:mean] * 100).format %>
+        </td>
+        <td>
+          <%= Money.from_cents(s[:max] * 100).format %>
+        </td>
+        <td>
+          <%= Money.from_cents(s[:min] * 100).format %>
+        </td>
+      </tr>
+      <%- end %>
+      <tr>
+        <td><strong>Sum</strong></td>
+        <td>
+          <strong>
+            <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:mean] }.inject(&:+) * 100).format %>
+          </strong>
+        </td>
+        <td>
+          <strong>
+            <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:max] }.inject(&:+) * 100).format %>
+          </strong>
+        </td>
+        <td>
+          <strong>
+            <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:min] }.inject(&:+) * 100).format %>
+          </strong>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th><abbr title="Category">Category</abbr></th>
+        <th><abbr title="Mean">Mean</abbr></th>
+        <th><abbr title="Max">Max</abbr></th>
+        <th><abbr title="Min">Min</abbr></th>
+      </tr>
+    </tfoot>
+  </table>
+</div>

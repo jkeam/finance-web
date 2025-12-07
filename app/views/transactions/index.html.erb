@@ -9,70 +9,72 @@
     All transactions
   </h2>
 
-  <table class="table is-fullwidth is-striped">
-    <thead>
-      <tr>
-        <th><abbr title="ID">ID</abbr></th>
-        <th><abbr title="Transaction Date">Transaction Date</abbr></th>
-        <th><abbr title="Cleared Date">Cleared Date</abbr></th>
-        <th><abbr title="Description">Description</abbr></th>
-        <th><abbr title="Merchant">Merchant</abbr></th>
-        <th><abbr title="Category">Category</abbr></th>
-        <th><abbr title="Type">Type</abbr></th>
-        <th><abbr title="Amount">Amount</abbr></th>
-        <th><abbr title="Purchased By">Purchased By</abbr></th>
-        <th><abbr title="Account">Account</abbr></th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <th><abbr title="Id">Id</abbr></th>
-        <th><abbr title="Transaction Date">Transaction Date</abbr></th>
-        <th><abbr title="Cleared Date">Cleared Date</abbr></th>
-        <th><abbr title="Description">Description</abbr></th>
-        <th><abbr title="Merchant">Merchant</abbr></th>
-        <th><abbr title="Category">Category</abbr></th>
-        <th><abbr title="Type">Type</abbr></th>
-        <th><abbr title="Amount">Amount</abbr></th>
-        <th><abbr title="Purchased By">Purchased By</abbr></th>
-        <th><abbr title="Account">Account</abbr></th>
-      </tr>
-    </tfoot>
-    <tbody>
-      <%- @transactions.each do |transaction| %>
-      <tr>
-        <th><%= link_to transaction.id, transaction_path(transaction) %></th>
-        <td>
-          <%= transaction.transaction_date %>
-        </td>
-        <td>
-          <%= transaction.clearing_date %>
-        </td>
-        <td>
-          <%= transaction.description %>
-        </td>
-        <td>
-          <%= transaction.merchant %>
-        </td>
-        <td>
-          <%= Transaction.pretty_print_category(transaction.category) %>
-        </td>
-        <td>
-          <%= Transaction.pretty_print_type(transaction.transaction_type) %>
-        </td>
-        <td>
-          <%= Money.from_cents(transaction.amount).format %>
-        </td>
-        <td>
-          <%= transaction.purchased_by %>
-        </td>
-        <td>
-          <%= link_to transaction.account.name, bank_path(transaction) %>
-        </td>
-      </tr>
-      <%- end %>
-    </tbody>
-  </table>
+  <div class="table-container">
+    <table class="table is-fullwidth is-hoverable is-striped">
+      <thead>
+        <tr>
+          <th><abbr title="ID">ID</abbr></th>
+          <th><abbr title="Transaction Date">Transaction Date</abbr></th>
+          <th><abbr title="Cleared Date">Cleared Date</abbr></th>
+          <th><abbr title="Description">Description</abbr></th>
+          <th><abbr title="Merchant">Merchant</abbr></th>
+          <th><abbr title="Category">Category</abbr></th>
+          <th><abbr title="Type">Type</abbr></th>
+          <th><abbr title="Amount">Amount</abbr></th>
+          <th><abbr title="Purchased By">Purchased By</abbr></th>
+          <th><abbr title="Account">Account</abbr></th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th><abbr title="Id">Id</abbr></th>
+          <th><abbr title="Transaction Date">Transaction Date</abbr></th>
+          <th><abbr title="Cleared Date">Cleared Date</abbr></th>
+          <th><abbr title="Description">Description</abbr></th>
+          <th><abbr title="Merchant">Merchant</abbr></th>
+          <th><abbr title="Category">Category</abbr></th>
+          <th><abbr title="Type">Type</abbr></th>
+          <th><abbr title="Amount">Amount</abbr></th>
+          <th><abbr title="Purchased By">Purchased By</abbr></th>
+          <th><abbr title="Account">Account</abbr></th>
+        </tr>
+      </tfoot>
+      <tbody>
+        <%- @transactions.each do |transaction| %>
+        <tr>
+          <th><%= link_to transaction.id, transaction_path(transaction) %></th>
+          <td>
+            <%= transaction.transaction_date %>
+          </td>
+          <td>
+            <%= transaction.clearing_date %>
+          </td>
+          <td>
+            <%= transaction.description %>
+          </td>
+          <td>
+            <%= transaction.merchant %>
+          </td>
+          <td>
+            <%= Transaction.pretty_print_category(transaction.category) %>
+          </td>
+          <td>
+            <%= Transaction.pretty_print_type(transaction.transaction_type) %>
+          </td>
+          <td>
+            <%= Money.from_cents(transaction.amount).format %>
+          </td>
+          <td>
+            <%= transaction.purchased_by %>
+          </td>
+          <td>
+            <%= link_to transaction.account.name, bank_path(transaction) %>
+          </td>
+        </tr>
+        <%- end %>
+      </tbody>
+    </table>
+  </div>
   <%== @pagy.series_nav(:bulma) if @pagy.pages > 1 %>
 </section>
 
