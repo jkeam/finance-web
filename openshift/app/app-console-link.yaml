@@ -5,7 +5,7 @@ metadata:
   labels:
     app: finance-web
 spec:
-  href: 'https://finance-web-finance.apps.lab.lan'
+  href: 'https://finance-web-finance.apps.lab.jkeam.org'
   location: ApplicationMenu
   text: Finance
   applicationMenu:
