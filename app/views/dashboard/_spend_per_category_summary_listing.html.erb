@@ -7,6 +7,7 @@
       <tr>
         <th><abbr title="Category">Category</abbr></th>
         <th><abbr title="Mean">Mean</abbr></th>
+        <th><abbr title="Median">Median</abbr></th>
         <th><abbr title="Max">Max</abbr></th>
         <th><abbr title="Min">Min</abbr></th>
       </tr>
@@ -19,6 +20,9 @@
         </td>
         <td>
           <%= Money.from_cents(s[:mean] * 100).format %>
+        </td>
+        <td>
+          <%= Money.from_cents(s[:median] * 100).format %>
         </td>
         <td>
           <%= Money.from_cents(s[:max] * 100).format %>
@@ -37,6 +41,11 @@
         </td>
         <td>
           <strong>
+            <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:median] }.inject(&:+) * 100).format %>
+          </strong>
+        </td>
+        <td>
+          <strong>
             <%= Money.from_cents(spending_by_category_per_month.map { |c| c[:max] }.inject(&:+) * 100).format %>
           </strong>
         </td>
@@ -51,6 +60,7 @@
       <tr>
         <th><abbr title="Category">Category</abbr></th>
         <th><abbr title="Mean">Mean</abbr></th>
+        <th><abbr title="Median">Median</abbr></th>
         <th><abbr title="Max">Max</abbr></th>
         <th><abbr title="Min">Min</abbr></th>
       </tr>

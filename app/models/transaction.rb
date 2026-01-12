@@ -125,13 +125,25 @@ class Transaction < ApplicationRecord
 
     spending_by_category_per_month = categories.map do |category|
       data = spending_category_by_month(all_transactions, startdate, enddate, category)
+      sorted = data.values.reject{|v| v.nil? || v == 0}.sort
+      # median start
+      len = sorted.length
+      if sorted
+        if len.odd?
+          median = sorted[len / 2]
+        elsif len > 0
+          median = (sorted[len / 2] + sorted[(len / 2) - 1]) / 2
+        end
+      end
+      # median end
       {
         name: pretty_print_category(category),
         category: category,
         data: data,
-        min: data.values.reject{|v| v == 0}.min || 0,
-        max: data.values.max,
-        mean: data.values.inject(&:+) / data.values.size
+        min: sorted[0] || 0,
+        max: sorted[-1] || 0,
+        mean: (data.values.inject(&:+) / data.values.size) || 0,
+        median: median || 0
       }
     end
     spending_by_category_per_month
