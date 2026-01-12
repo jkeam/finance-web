@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: db
-          image: registry.redhat.io/rhel9/postgresql-16:9.6-1760420746
+          image: registry.redhat.io/rhel9/postgresql-16:9.7-1767745541
           resources:
             requests:
               memory: "128Mi"
