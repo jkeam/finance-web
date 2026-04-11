@@ -1,4 +1,4 @@
-FROM quay.io/fedora/ruby-33:20260112
+FROM quay.io/fedora/ruby-33:20260408
 
 # Install lib
 USER 0

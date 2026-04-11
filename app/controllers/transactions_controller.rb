@@ -13,7 +13,7 @@ class TransactionsController < ApplicationController
     if @enddate != nil
       transactions = transactions.where("transaction_date <= ?", @enddate)
     end
-    @pagy, @transactions = pagy(transactions.order(:transaction_date))
+    @pagy, @transactions = pagy(transactions.order(transaction_date: :desc))
   end
 
   # GET /transactions/
