@@ -54,3 +54,4 @@
 /openshift/*
 /import/*
 /jon/*
+.ruby-version
