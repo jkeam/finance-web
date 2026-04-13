@@ -11,6 +11,7 @@
 .github/
 
 .DS_Store
+.env
 
 ignore/*
 jon/*
