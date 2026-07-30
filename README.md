@@ -4,7 +4,7 @@ The way I'm doing forensics on my spending.
 
 ## Prerequisites
 
-1. Ruby 3.4.5+
+1. Ruby 3.3+
 
 ## Running
 
