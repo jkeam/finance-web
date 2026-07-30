@@ -94,6 +94,8 @@ def main(debug, csv_files, banks, budgets)
   end
 
   # Process each file
+  #   filename must have bank name (lower cased)
+  #   and also account name if the bank has more than 1
   csv_files.each do |file_path|
     matched_bank = false
     matched_account = false
@@ -103,17 +105,22 @@ def main(debug, csv_files, banks, budgets)
         matched_bank = true
         accounts = bank_name_to_accounts[bank.name]
         if filename.include?("balances")
+          # accepts "balances" file (no transactions)
           create_balance(file_path, accounts)
           break
         elsif accounts.size == 0
+          # no bank or no accounts for that bank
           puts "No accounts found for bank #{bank.name}"
           break
         elsif accounts.size == 1
+          # matching bank and that bank only has 1 account
           matched_account = true
           create_transaction(file_path, accounts[0])
           break
         else
+          # matching bank and that bank has more than 1 account
           accounts.each do |cur_account|
+            # find the right account by looking at the name
             if filename.include?(cur_account.name.downcase)
               matched_account = true
               create_transaction(file_path, cur_account)
