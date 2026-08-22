@@ -29,11 +29,14 @@
   <h2 class="subtitle">
     Income and spending
   </h2>
-  <%= line_chart @income_and_spending %>
+  <%= area_chart @income_and_spending %>
   <h2 class="subtitle">
     Net
   </h2>
-  <%= column_chart @net_per_month %>
+
+  <%= render partial: 'dashboard/income_spending_net_listing', locals: {income_spend_net: @income_spend_net} %>
+
+  <%= area_chart @net_per_month %>
   <h2 class="subtitle">
     Balance
   </h2>

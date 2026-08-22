@@ -1,0 +1,65 @@
+<h2 class="subtitle">
+  Income &amp; Spending Net
+</h2>
+<div class="table-container">
+  <table class="table is-fullwidth is-hoverable is-striped">
+    <thead>
+      <tr>
+        <th><abbr title="Net">Net</abbr></th>
+        <th><abbr title="Income">Income</abbr></th>
+        <th><abbr title="Spending">Spending</abbr></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%- income_spend_net.each do |obj| %>
+      <tr>
+        <td>
+          <p class="<%= (obj[:net]).positive? ? 'has-text-success' : 'has-text-danger' %>">
+            <%= Money.from_cents(obj[:net] * 100).format %>
+          </p>
+        </td>
+        <td>
+          <%= Money.from_cents(obj[:income] * 100).format %>
+        </td>
+        <td>
+          <%= Money.from_cents(obj[:spend] * 100).format %>
+        </td>
+      </tr>
+      <%- end %>
+      <tr>
+        <td>
+          <strong>
+            Avg Net&colon;
+            <% avg_net = income_spend_net.sum{|h| h[:net]} / income_spend_net.length %>
+            <p class="<%= avg_net.positive? ? 'has-text-success' : 'has-text-danger' %>">
+              <%= Money.from_cents(avg_net * 100).format %>
+            </p>
+          </strong>
+        </td>
+        <td>
+          <strong>
+            Avg Income&colon;
+            <p>
+              <%= Money.from_cents(income_spend_net.sum{|h| h[:income]} / income_spend_net.length * 100).format %>
+            </p>
+          </strong>
+        </td>
+        <td>
+          <strong>
+            Avg Spend&colon;
+            <p>
+              <%= Money.from_cents(income_spend_net.sum{|h| h[:spend]} / income_spend_net.length * 100).format %>
+            </p>
+          </strong>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th><abbr title="Net">Net</abbr></th>
+        <th><abbr title="Income">Income</abbr></th>
+        <th><abbr title="Spending">Spending</abbr></th>
+      </tr>
+    </tfoot>
+  </table>
+</div>

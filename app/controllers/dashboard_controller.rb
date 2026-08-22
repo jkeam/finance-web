@@ -118,6 +118,15 @@ class DashboardController < ApplicationController
       { name: "Spend", data: @spend_per_month }
     ]
     @net_per_month = @income_per_month.map { |k, v| [ k, v - @spend_per_month[k] ] }.to_h
+    @income_spend_net = @income_per_month.map do |month, income|
+      spend = @spend_per_month[month]
+      {
+        month:,
+        income:,
+        spend:,
+        net: income - spend
+      }
+    end
 
     # balances
     @balances = []
