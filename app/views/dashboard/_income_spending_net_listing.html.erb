@@ -1,6 +1,3 @@
-<h2 class="subtitle">
-  Income &amp; Spending Net
-</h2>
 <div class="table-container">
   <table class="table is-fullwidth is-hoverable is-striped">
     <thead>
@@ -34,34 +31,66 @@
         <td>
           <strong>
             Avg Net&colon;
-            <% avg_net = income_spend_net.sum{|h| h[:net]} / income_spend_net.length %>
-            <p class="<%= avg_net.positive? ? 'has-text-success' : 'has-text-danger' %>">
-              <%= Money.from_cents(avg_net * 100).format %>
-            </p>
           </strong>
+          <% avg_net = income_spend_net.sum{|h| h[:net]} / income_spend_net.length %>
+          <p class="<%= avg_net.positive? ? 'has-text-success' : 'has-text-danger' %>">
+            <%= Money.from_cents(avg_net * 100).format %>
+          </p>
         </td>
         <td>
           <strong>
             Avg Income&colon;
-            <p>
-              <%= Money.from_cents(income_spend_net.sum{|h| h[:income]} / income_spend_net.length * 100).format %>
-            </p>
           </strong>
+          <p>
+            <%= Money.from_cents(income_spend_net.sum{|h| h[:income]} / income_spend_net.length * 100).format %>
+          </p>
         </td>
         <td>
           <strong>
             Avg Spend&colon;
-            <p>
-              <%= Money.from_cents(income_spend_net.sum{|h| h[:spend]} / income_spend_net.length * 100).format %>
-            </p>
           </strong>
+          <p>
+            <%= Money.from_cents(income_spend_net.sum{|h| h[:spend]} / income_spend_net.length * 100).format %>
+          </p>
+        </td>
+        <td>
+          <p>
+            &mdash;
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>
+            Sum Net&colon;
+          </strong>
+          <% sum_net = income_spend_net.sum{|h| h[:net]} %>
+          <p>
+            <%= Money.from_cents(sum_net * 100).format %>
+          </p>
         </td>
         <td>
           <strong>
-            <p>
-              &mdash;
-            </p>
+            Sum Income&colon;
           </strong>
+          <% sum_income = income_spend_net.sum{|h| h[:income]} %>
+          <p>
+            <%= Money.from_cents(sum_income * 100).format %>
+          </p>
+        </td>
+        <td>
+          <strong>
+            Sum Spending&colon;
+          </strong>
+          <% sum_spending = income_spend_net.sum{|h| h[:spend]} %>
+          <p>
+            <%= Money.from_cents(sum_spending * 100).format %>
+          </p>
+        </td>
+        <td>
+          <p>
+            &mdash;
+          </p>
         </td>
       </tr>
     </tbody>
