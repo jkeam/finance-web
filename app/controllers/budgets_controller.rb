@@ -11,7 +11,8 @@ class BudgetsController < ApplicationController
   def show
     @budget = Budget.where(id: params.expect(:id)).includes(:budget_transaction_categories).first
     @budget_transaction_categories = BudgetTransactionCategory.all.group(:transaction_category).sum(:amount_cents)
-    @budget_transaction_categories.transform_keys! { |key| Transaction.pretty_print_category(Transaction.categories.key(key)) }
+      .transform_keys { |key| Transaction.pretty_print_category(Transaction.categories.key(key)) }
+      .transform_values { |value| value / 100 }
 
     @spending_by_category_per_month = Transaction.spending_per_category_per_month(
       Date.current.months_ago(6).beginning_of_month,
