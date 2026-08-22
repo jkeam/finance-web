@@ -102,7 +102,8 @@ class DashboardController < ApplicationController
     end
     @income_per_month_by_merchant.reject! do |merchant|
       value = merchant[:data]
-      value.nil? || value.keys().size.zero?
+      sum = value.values.sum()
+      value.nil? || value.keys().size.zero? || sum < 200
     end
 
     # spend per month
@@ -111,6 +112,11 @@ class DashboardController < ApplicationController
       .sum(:amount_cents)
     @spend_per_month.each { |k, v| @spend_per_month[k] = v / 100 }
     @spending_by_category_per_month = Transaction.spending_per_category_per_month(@startdate, @enddate)
+    @spending_by_category_per_month.reject! do |element|
+      value = element[:data]
+      sum = value.values.sum()
+      sum.zero? || sum < 200
+    end
 
     # income and spending
     @income_and_spending = [
@@ -131,11 +137,12 @@ class DashboardController < ApplicationController
     # balances
     @balances = []
     Account.where(id: all_balances.select(:account_id).distinct.pluck(:account_id)).each do |account|
-      @balances << {
-        name: account.name,
-        data: all_balances.where(account_id: account.id)
+      data = all_balances.where(account_id: account.id)
         .group_by_month(:date, range: @startdate...@enddate, expand_range: true)
         .sum(:amount_cents)
+      @balances << {
+        name: account.name,
+        data: data.transform_values { |value| value / 100 }
       }
     end
   end
