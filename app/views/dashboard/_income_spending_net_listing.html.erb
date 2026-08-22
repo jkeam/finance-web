@@ -8,6 +8,7 @@
         <th><abbr title="Net">Net</abbr></th>
         <th><abbr title="Income">Income</abbr></th>
         <th><abbr title="Spending">Spending</abbr></th>
+        <th><abbr title="Month">Month</abbr></th>
       </tr>
     </thead>
     <tbody>
@@ -23,6 +24,9 @@
         </td>
         <td>
           <%= Money.from_cents(obj[:spend] * 100).format %>
+        </td>
+        <td>
+          <%= obj[:month] %>
         </td>
       </tr>
       <%- end %>
@@ -52,6 +56,13 @@
             </p>
           </strong>
         </td>
+        <td>
+          <strong>
+            <p>
+              &mdash;
+            </p>
+          </strong>
+        </td>
       </tr>
     </tbody>
     <tfoot>
@@ -59,6 +70,7 @@
         <th><abbr title="Net">Net</abbr></th>
         <th><abbr title="Income">Income</abbr></th>
         <th><abbr title="Spending">Spending</abbr></th>
+        <th><abbr title="Month">Month</abbr></th>
       </tr>
     </tfoot>
   </table>
