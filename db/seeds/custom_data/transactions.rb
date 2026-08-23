@@ -51,6 +51,7 @@ def create_balance(file_path, accounts)
     date = row['date']
     amount = row['amount']
     if account.nil?
+      STDERR.puts "Missing account from balance file"
       next
     end
     accounts.each do |cur_account|
@@ -113,7 +114,7 @@ def main(debug, csv_files, banks, budgets)
           break
         elsif accounts.size == 0
           # no bank or no accounts for that bank
-          puts "No accounts found for bank #{bank.name}"
+          STDERR.puts "No accounts found for bank #{bank.name}"
           break
         elsif accounts.size == 1
           # matching bank and that bank only has 1 account
