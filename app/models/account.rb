@@ -18,4 +18,8 @@ class Account < ApplicationRecord
   def commercial?
     self.savings? || self.checking? || self.money_market?
   end
+
+  def to_s
+    "Name: #{name}, Category: #{category}, Bank: #{bank}"
+  end
 end

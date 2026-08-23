@@ -50,6 +50,9 @@ def create_balance(file_path, accounts)
     account = row['account']
     date = row['date']
     amount = row['amount']
+    if account.nil?
+      next
+    end
     accounts.each do |cur_account|
       if account.downcase.include?(cur_account.name.downcase)
         Balance.create(
@@ -101,7 +104,7 @@ def main(debug, csv_files, banks, budgets)
     matched_account = false
     filename = file_path.downcase
     name_to_bank.each do |name, bank|
-      if filename.include?(name.downcase)
+      if filename.include?("#{name.downcase}-")
         matched_bank = true
         accounts = bank_name_to_accounts[bank.name]
         if filename.include?("balances")
