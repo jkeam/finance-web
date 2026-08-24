@@ -28,7 +28,10 @@ class Transaction < ApplicationRecord
     category_rent: 22,
     category_rental_property: 23,
     category_significant_other: 24,
-    category_software: 25
+    category_software: 25,
+    category_tax: 26,
+    category_accounting: 27,
+    category_insurance: 28
   }
   enum :transaction_type, {
     type_purchase: 0,
