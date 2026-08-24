@@ -82,6 +82,9 @@ class Transaction < ApplicationRecord
     category_rent
     category_rental_property
     category_interest
+    category_tax
+    category_accounting
+    category_insurance
   ]
   def self.get_needs_categories
     @@needs_categories
@@ -124,6 +127,9 @@ class Transaction < ApplicationRecord
       category_other
       category_rent
       category_rental_property
+      category_tax
+      category_accounting
+      category_insurance
     ]
 
     spending_by_category_per_month = categories.map do |category|
