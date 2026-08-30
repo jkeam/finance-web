@@ -12,29 +12,43 @@
     <%= @transaction.transaction_date %>
   </h2>
 
-  Account: <%= link_to @transaction.account.name, transaction_path(@transaction) %>
-  <br />
-  Bank: <%= link_to @transaction.account.bank.name, bank_path(@transaction.account.bank) %>
-  <br />
-  Transaction Date: <%= @transaction.transaction_date %>
-  <br />
-  Cleared Date: <%= @transaction.clearing_date %>
-  <br />
-  Amount: <%= Money.from_cents(@transaction.amount_cents).format %>
-  <br />
-  Merchant: <%= @transaction.merchant %>
-  <br />
-  Description: <%= @transaction.description %>
-  <br />
-  Category: <%= Transaction.pretty_print_category(@transaction.category) %>
-  <br />
-  Type: <%= Transaction.pretty_print_type(@transaction.transaction_type) %>
-  <br />
-  Purchased By: <%= @transaction.purchased_by %>
-  <br />
-  Positive: <%= @transaction.positive %>
-  <br />
-  Notes: <%= @transaction.notes %>
+  <dl class="detail-list">
+    <dt>Account</dt>
+    <dd><%= link_to @transaction.account.name, transaction_path(@transaction) %></dd>
+
+    <dt>Bank</dt>
+    <dd><%= link_to @transaction.account.bank.name, bank_path(@transaction.account.bank) %></dd>
+
+    <dt>Transaction Date</dt>
+    <dd><%= @transaction.transaction_date %></dd>
+
+    <dt>Cleared Date</dt>
+    <dd><%= @transaction.clearing_date %></dd>
+
+    <dt>Amount</dt>
+    <dd><%= Money.from_cents(@transaction.amount_cents).format %></dd>
+
+    <dt>Merchant</dt>
+    <dd><%= @transaction.merchant %></dd>
+
+    <dt>Description</dt>
+    <dd><%= @transaction.description %></dd>
+
+    <dt>Category</dt>
+    <dd><%= Transaction.pretty_print_category(@transaction.category) %></dd>
+
+    <dt>Type</dt>
+    <dd><%= Transaction.pretty_print_type(@transaction.transaction_type) %></dd>
+
+    <dt>Purchased By</dt>
+    <dd><%= @transaction.purchased_by %></dd>
+
+    <dt>Positive</dt>
+    <dd><%= @transaction.positive %></dd>
+
+    <dt>Notes</dt>
+    <dd><%= @transaction.notes %></dd>
+  </dl>
 </section>
 
 <%= link_to 'All Transactions', transactions_path %>

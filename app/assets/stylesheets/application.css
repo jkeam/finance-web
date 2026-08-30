@@ -8,31 +8,315 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
-/* Styling for all pagy navigation links */
-.pagy.nav a {
+
+/* ==========================================================================
+   Theme tokens — retint Bulma 1.x via its CSS custom properties.
+   Primary was Bulma's default teal while the hero/pagy already used the
+   default link indigo (hsl(233,100%,63%) === rgb(66,88,255)); unifying
+   primary onto that same hue removes the two-accent clash.
+
+   Dark mode uses Bulma's own built-in [data-theme] theming (bulma.min.css
+   ships full "dark" and "light" variable sets keyed off that attribute).
+   The app defaults to dark (html[data-theme="dark"] set in the layout);
+   the navbar toggle flips it to "light" and remembers the choice.
+   ========================================================================== */
+:root {
+  --bulma-family-primary: "Inter", "SF Pro", "Segoe UI", Roboto, Oxygen, Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --bulma-primary-h: 233deg;
+  --bulma-primary-s: 89%;
+  --bulma-primary-l: 63%;
+  --bulma-link-l: 63%;
+
+  --bulma-radius-small: 0.375rem;
+  --bulma-radius: 0.5rem;
+  --bulma-radius-large: 1rem;
+
+  /* Alpha overlays of the primary hue — theme-agnostic by construction,
+     so hover/selected washes never need separate light/dark values. */
+  --app-primary-wash: hsla(var(--bulma-primary-h), var(--bulma-primary-s), var(--bulma-primary-l), 0.14);
+  --app-primary-wash-strong: hsla(var(--bulma-primary-h), var(--bulma-primary-s), var(--bulma-primary-l), 0.3);
+  --app-primary-border: hsla(var(--bulma-primary-h), var(--bulma-primary-s), var(--bulma-primary-l), 0.45);
+
+  --app-shadow-color: hsla(var(--bulma-shadow-h), var(--bulma-shadow-s), var(--bulma-shadow-l), 0.1);
+  --app-shadow-color-strong: hsla(var(--bulma-shadow-h), var(--bulma-shadow-s), var(--bulma-shadow-l), 0.2);
+
+  /* App-specific surfaces: dark by default (this app now defaults to dark
+     mode), overridden under [data-theme="light"] below. */
+  color-scheme: dark;
+  --app-page-bg: hsl(var(--bulma-scheme-h), 22%, 7%);
+  --app-surface-bg: hsl(var(--bulma-scheme-h), 20%, 11%);
+  --app-border: hsl(var(--bulma-scheme-h), 16%, 20%);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --app-page-bg: hsl(var(--bulma-scheme-h), 35%, 96.5%);
+  --app-surface-bg: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), 100%);
+  --app-border: hsl(var(--bulma-scheme-h), 20%, 90%);
+}
+
+html {
+  background-color: var(--app-page-bg);
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--app-page-bg);
+}
+
+a {
+  transition: color 0.15s ease;
+}
+
+/* ==========================================================================
+   App shell — boxed navbar + content "paper" on a soft page background.
+   ========================================================================== */
+.app-shell {
+  padding: 1.5rem 1rem 3rem;
+}
+
+.app-navbar {
+  background-color: var(--app-surface-bg);
+  border-radius: var(--bulma-radius-large);
+  box-shadow: 0 1px 2px var(--app-shadow-color), 0 8px 24px -12px var(--app-shadow-color-strong);
+  padding: 0.25rem 0.75rem;
+  margin-bottom: 1.75rem;
+  position: sticky;
+  top: 1rem;
+  z-index: 30;
+}
+
+.app-navbar,
+.app-navbar .navbar-menu,
+.app-navbar .navbar-dropdown {
+  background-color: var(--app-surface-bg);
+}
+
+.app-navbar .navbar-brand .navbar-item:first-child {
+  font-size: 1.5rem;
+  border-radius: var(--bulma-radius);
+}
+
+.app-navbar .navbar-item,
+.app-navbar .navbar-link {
+  font-weight: 500;
+  border-radius: var(--bulma-radius);
+}
+
+.app-navbar .navbar-item.is-selected,
+.app-navbar .navbar-dropdown a.navbar-item.is-active {
+  color: var(--bulma-primary);
+  background-color: var(--app-primary-wash);
+  font-weight: 600;
+}
+
+.app-navbar .navbar-dropdown {
+  border-radius: var(--bulma-radius);
+  box-shadow: 0 4px 16px var(--app-shadow-color-strong);
+  border-top-color: var(--bulma-primary);
+  overflow: hidden;
+}
+
+.theme-toggle {
+  border-radius: var(--bulma-radius-rounded);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.app-content {
+  background-color: var(--app-surface-bg);
+  border-radius: var(--bulma-radius-large);
+  box-shadow: 0 1px 2px var(--app-shadow-color), 0 8px 24px -12px var(--app-shadow-color-strong);
+  padding: 0.25rem 0.5rem 1.5rem;
+}
+
+/* Bulma's default .section padding is oversized once content already sits
+   inside the boxed .app-content card. */
+.app-content > .section {
+  padding: 1.75rem 1.5rem;
+}
+
+.app-content > .section + .section {
+  border-top: 1px solid var(--app-border);
+}
+
+/* ==========================================================================
+   Page header (shared/_header partial)
+   ========================================================================== */
+.hero.is-link {
+  background: linear-gradient(135deg, var(--bulma-primary) 0%, var(--bulma-link) 100%);
+  border-radius: var(--bulma-radius-large) var(--bulma-radius-large) 0 0;
+  margin: -0.25rem -0.5rem 0;
+}
+
+.hero.is-link .title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.hero.is-link .subtitle {
+  opacity: 0.88;
+}
+
+.hero.is-link .subtitle:empty {
+  display: none;
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+.table-container {
+  border-radius: var(--bulma-radius);
+  box-shadow: 0 0 0 1px var(--app-border);
+  overflow: hidden;
+}
+
+.table {
   background-color: transparent;
-  color: rgb(245, 246, 255);
-  padding: 8px 7px;
-  border: 1px solid rgb(66, 88, 255);
-  border-radius: 6px;
-  text-decoration: none;
-  margin: 0 4px;
-  min-width: 40px;
 }
 
-/* Styling for the active page button */
-.pagy.nav a.current {
-  background-color: rgb(66, 88, 255);
+.table thead th {
+  background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-ter-l));
+  color: var(--bulma-text);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  border-width: 0 0 1px;
+  border-color: var(--app-border);
 }
 
-/* Hover effect for pagy links */
-.pagy.nav a:hover {
-  background-color: rgb(66, 88, 255);
+.table tfoot th {
+  border-color: var(--app-border);
+  color: var(--bulma-text-light);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
+.table td,
+.table th {
+  border-color: var(--app-border);
+  vertical-align: middle;
+}
+
+.table.is-striped tbody tr:not(.is-selected):nth-child(even) {
+  background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-bis-l));
+}
+
+.table.is-hoverable tbody tr:not(.is-selected):hover {
+  background-color: var(--app-primary-wash);
+}
+
+/* ==========================================================================
+   Buttons, inputs & focus states
+   ========================================================================== */
+.button {
+  font-weight: 500;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.button:not(.is-text):not([disabled]):hover {
+  box-shadow: 0 2px 8px var(--app-shadow-color-strong);
+}
+
+.button:not(.is-text):not([disabled]):active {
+  transform: translateY(1px);
+}
+
+.input,
+.textarea,
+.select select {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ==========================================================================
+   Notifications / flash
+   ========================================================================== */
+.notification {
+  border-radius: var(--bulma-radius);
+  border: 1px solid var(--app-border);
+  box-shadow: 0 1px 2px var(--app-shadow-color);
+}
+
+.notification.is-success {
+  border-left: 4px solid var(--bulma-success);
+}
+
+.notification.is-danger {
+  border-left: 4px solid var(--bulma-danger);
+}
+
+/* ==========================================================================
+   Filter panel (shared/_date_filter partial)
+   ========================================================================== */
+.filter-toggle {
+  margin-top: 0.75rem;
+}
+
+.filter-panel {
+  background-color: hsl(var(--bulma-scheme-h), var(--bulma-scheme-s), var(--bulma-scheme-main-ter-l));
+  border: 1px solid var(--app-border);
+  border-radius: var(--bulma-radius);
+  padding: 1.25rem 1.5rem !important;
+}
+
+/* ==========================================================================
+   Detail field lists (show pages)
+   ========================================================================== */
+.detail-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.6rem 1.5rem;
+  padding: 0.25rem 0 1rem;
+}
+
+.detail-list dt {
+  color: var(--bulma-text-light);
+  font-weight: 500;
+}
+
+.detail-list dd {
+  color: var(--bulma-text-strong);
+}
+
+/* ==========================================================================
+   Chart section spacing (dashboard reports)
+   ========================================================================== */
 .chart h1 {
   padding-bottom: 0rem;
 }
+
 .chart h2 {
   padding-top: 2rem;
+}
+
+/* ==========================================================================
+   Pagy navigation — themed off the same CSS variables as everything else.
+   ========================================================================== */
+.pagy.nav {
+  margin-top: 1.5rem;
+}
+
+.pagy.nav a {
+  background-color: transparent;
+  color: var(--bulma-primary);
+  padding: 8px 7px;
+  border: 1px solid var(--app-primary-border);
+  border-radius: var(--bulma-radius-small);
+  text-decoration: none;
+  margin: 0 4px;
+  min-width: 40px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.pagy.nav a.current {
+  background-color: var(--bulma-primary);
+  color: var(--bulma-primary-invert);
+}
+
+.pagy.nav a:hover {
+  background-color: var(--bulma-primary);
+  color: var(--bulma-primary-invert);
 }

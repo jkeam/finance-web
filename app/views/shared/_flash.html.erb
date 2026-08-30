@@ -1,25 +1,21 @@
 <% if !notice.nil? %>
-  <div class="notification">
+  <div class="notification is-success is-light">
     <button class="delete"></button>
-    <span class="has-text-success">
-      <%= notice %>
-    </span>
+    <%= notice %>
   </div>
 <% end %>
 <% if !errors.nil? && errors.count > 0 %>
-  <div class="notification">
+  <div class="notification is-danger is-light">
     <button class="delete"></button>
-    <span class="has-text-danger">
-      <h2>
-        <%= pluralize(errors.count, "error") %> prohibited this budget from being saved:
-      </h2>
+    <h2>
+      <%= pluralize(errors.count, "error") %> prohibited this budget from being saved:
+    </h2>
 
-      <ul>
-        <% errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </span>
+    <ul>
+      <% errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
   </div>
 <% end %>
 

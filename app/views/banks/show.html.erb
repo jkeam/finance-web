@@ -8,8 +8,6 @@
     ID <%= @bank.id %>
   </h2>
 
-  <br />
-  
   <h3 class="title is-4">Accounts</h3>
   <%= render partial: 'accounts/listing', locals: { accounts: @bank.accounts } %>
 </section>
