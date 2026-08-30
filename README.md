@@ -10,6 +10,38 @@ The way I'm doing forensics on my spending.
 
 After building the container, you need to pass in the environment variable of `SECRET_KEY_BASE`
 
+## Testing
+
+These are the same checks run in CI (see `.github/workflows/ci.yml`).
+
+### Unit and integration tests
+
+```shell
+bin/rails test
+```
+
+### System tests
+
+Requires Chrome/Chromium to be installed locally.
+
+```shell
+bin/rails test:system
+```
+
+### Lint
+
+```shell
+bin/rubocop
+```
+
+Add `-A` to auto-correct fixable offenses.
+
+### Security scan
+
+```shell
+bin/brakeman
+```
+
 ## Data
 
 ### Format
