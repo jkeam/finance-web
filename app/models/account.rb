@@ -8,7 +8,8 @@ class Account < ApplicationRecord
     savings: 0,
     checking: 1,
     money_market: 2,
-    credit_card: 3
+    credit_card: 3,
+    investment: 4
   }
 
   def self.commercial_categories

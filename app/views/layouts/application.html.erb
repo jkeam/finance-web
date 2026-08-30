@@ -52,6 +52,7 @@
                 <%= link_to 'Monthly', dashboard_monthly_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_monthly_path)}] %>
                 <%= link_to 'Spending', dashboard_spending_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_spending_path)}] %>
                 <%= link_to 'Trends', dashboard_trends_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_trends_path)}] %>
+                <%= link_to 'Retirement', dashboard_retirement_path, class: ['navbar-item', {"is-active" => current_page?(dashboard_retirement_path)}] %>
                 </a>
               </div>
             </div>
@@ -66,6 +67,8 @@
                 <%= link_to 'Transactions', transactions_path, class: ['navbar-item', {"is-active" => current_page?(transactions_path)}] %>
                 <hr class="navbar-divider">
                 <%= link_to 'Budgets', budgets_path, class: ['navbar-item', {"is-active" => current_page?(budgets_path)}] %>
+                <%= link_to 'Retirement Assumptions', edit_retirement_assumption_path, class: ['navbar-item', {"is-active" => current_page?(edit_retirement_assumption_path)}] %>
+                <%= link_to 'Log Balance', new_balance_path, class: ['navbar-item', {"is-active" => current_page?(new_balance_path)}] %>
                 </a>
               </div>
             </div>

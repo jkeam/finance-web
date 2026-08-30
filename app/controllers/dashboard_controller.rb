@@ -147,6 +147,60 @@ class DashboardController < ApplicationController
     end
   end
 
+  # GET /dashboard/retirement
+  def retirement
+    @assumption = RetirementAssumption.current
+
+    @spending_baseline = Transaction.spending_baseline(@startdate, @enddate)
+
+    months = [ (@enddate.year * 12 + @enddate.month) - (@startdate.year * 12 + @startdate.month), 1 ].max
+    income_cents_total = Transaction.income.between_dates(@startdate, @enddate).sum(:amount_cents) * -1
+    @income_baseline_annual_cents = (income_cents_total.to_f / months * 12).round
+
+    @savings_rate = @income_baseline_annual_cents.zero? ? 0 :
+      (((@income_baseline_annual_cents - @spending_baseline[:annual_cents]).to_f / @income_baseline_annual_cents) * 100).round(1)
+
+    investment_account_ids = Account.investment.pluck(:id)
+    @current_net_worth_cents = investment_account_ids.sum do |account_id|
+      Balance.where(account_id: account_id).order(date: :desc).limit(1).pick(:amount_cents) || 0
+    end
+
+    @fi_number_cents = @assumption.safe_withdrawal_rate.to_f.zero? ? 0 :
+      (@spending_baseline[:annual_cents] / @assumption.safe_withdrawal_rate.to_f).round
+    @monthly_contribution_cents = ((@income_baseline_annual_cents - @spending_baseline[:annual_cents]) / 12.0).round
+
+    @projection = RetirementProjection.new(
+      fi_number: @fi_number_cents / 100.0,
+      current_net_worth: @current_net_worth_cents / 100.0,
+      monthly_contribution: @monthly_contribution_cents / 100.0,
+      annual_return: @assumption.expected_annual_return.to_f
+    ).call
+    @retirement_age = @assumption.age_on(@projection[:target_date]) if @projection[:reached]
+
+    projected_net_worth = @projection[:monthly_series].map do |point|
+      [ Date.current.beginning_of_month >> point[:month], point[:balance].round(2) ]
+    end.to_h
+    fi_number_dollars = @fi_number_cents / 100.0
+    fi_number_line = projected_net_worth.keys.map { |date| [ date, fi_number_dollars ] }.to_h
+    @net_worth_projection = [
+      { name: "Projected Net Worth", data: projected_net_worth },
+      { name: "FI Number", data: fi_number_line }
+    ]
+
+    @savings_rate_by_month = Transaction.income_and_spending_by_month(@startdate, @enddate)[:savings_rate_by_month]
+
+    @sensitivity = RetirementProjection.sensitivity_grid(
+      fi_number: fi_number_dollars,
+      current_net_worth: @current_net_worth_cents / 100.0,
+      monthly_contribution: @monthly_contribution_cents / 100.0
+    )
+    @sensitivity.each do |row|
+      row[:results].each do |cell|
+        cell[:age] = @assumption.age_on(cell[:target_date]) if cell[:reached]
+      end
+    end
+  end
+
   # GET /dashboard/trends
   def trends
     create_spending = lambda do |thestart, theend|

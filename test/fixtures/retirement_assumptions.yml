@@ -1,0 +1,5 @@
+one:
+  safe_withdrawal_rate: 0.04
+  expected_annual_return: 0.07
+  target_retirement_age: 55
+  birthdate: 1990-06-15

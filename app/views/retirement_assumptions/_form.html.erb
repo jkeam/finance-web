@@ -1,0 +1,37 @@
+<%= form_with(model: retirement_assumption, url: retirement_assumption_path, method: :patch, class: 'form') do |form| %>
+  <%= render partial: 'shared/flash', locals: { notice: notice, errors: retirement_assumption.errors } %>
+
+  <div class="field">
+    <%= form.label :safe_withdrawal_rate, "Safe Withdrawal Rate (e.g. 0.04 for 4%)", class: "label" %>
+    <div class="control">
+      <%= form.number_field :safe_withdrawal_rate, step: 0.0001, class: "input" %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :expected_annual_return, "Expected Annual Return (e.g. 0.07 for 7%)", class: "label" %>
+    <div class="control">
+      <%= form.number_field :expected_annual_return, step: 0.0001, class: "input" %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :target_retirement_age, "Target Retirement Age (optional)", class: "label" %>
+    <div class="control">
+      <%= form.number_field :target_retirement_age, class: "input" %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :birthdate, "Birthdate (optional, used to show retirement age)", class: "label" %>
+    <div class="control">
+      <%= form.date_field :birthdate, class: "input" %>
+    </div>
+  </div>
+
+  <div class="field is-grouped" style="padding-top: 2rem;">
+    <div class="control">
+      <%= form.submit "Save", class: "button is-link" %>
+    </div>
+  </div>
+<% end %>

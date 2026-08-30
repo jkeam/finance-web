@@ -17,3 +17,8 @@ four:
   name: Savings
   bank: two
   category: 0
+
+five:
+  name: Brokerage
+  bank: two
+  category: 4
