@@ -1,0 +1,28 @@
+<div class="block table-container">
+  <table class="table is-fullwidth is-hoverable is-striped">
+    <thead>
+      <tr>
+        <th>Annual Return</th>
+        <% sensitivity.first[:results].each do |cell| %>
+          <th><%= (cell[:contribution_delta] * 100).round %>% contribution</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% sensitivity.each do |row| %>
+        <tr>
+          <td><%= (row[:annual_return] * 100).round(1) %>%</td>
+          <% row[:results].each do |cell| %>
+            <td>
+              <% if cell[:reached] %>
+                <%= cell[:target_date].strftime('%b %Y') %><% if cell[:age] %> (age <%= cell[:age] %>)<% end %>
+              <% else %>
+                &gt; 50 years
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

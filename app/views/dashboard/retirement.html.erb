@@ -1,0 +1,73 @@
+<%= render partial: 'shared/header', locals: { title: 'Reports', subtitle: 'Retirement' } %>
+<%= render partial: 'shared/date_filter', locals: {startdate: @startdate, enddate: @enddate} %>
+
+<section class="section chart">
+  <h1 class="title">
+    Summary
+  </h1>
+  <h2 class="subtitle">
+    At a Glance
+  </h2>
+  <div class="block table-container">
+    <table class="table is-fullwidth is-hoverable is-striped">
+      <tbody>
+        <tr>
+          <td>Annualized Spending</td>
+          <td><%= Money.from_cents(@spending_baseline[:annual_cents]).format %></td>
+        </tr>
+        <tr>
+          <td>Annualized Income</td>
+          <td><%= Money.from_cents(@income_baseline_annual_cents).format %></td>
+        </tr>
+        <tr>
+          <td>Savings Rate</td>
+          <td><%= @savings_rate %>%</td>
+        </tr>
+        <tr>
+          <td>Monthly Contribution</td>
+          <td><%= Money.from_cents(@monthly_contribution_cents).format %></td>
+        </tr>
+        <tr>
+          <td>Current Invested Net Worth</td>
+          <td><%= Money.from_cents(@current_net_worth_cents).format %></td>
+        </tr>
+        <tr>
+          <td>FI Number (<%= (@assumption.safe_withdrawal_rate.to_f * 100).round(1) %>% withdrawal rate)</td>
+          <td><%= Money.from_cents(@fi_number_cents).format %></td>
+        </tr>
+        <tr>
+          <td>Assumed Annual Return</td>
+          <td><%= (@assumption.expected_annual_return.to_f * 100).round(1) %>%</td>
+        </tr>
+        <tr>
+          <td>Projected Financial Independence Date</td>
+          <td>
+            <% if @projection[:reached] %>
+              <%= @projection[:target_date].strftime('%B %Y') %>
+              (<%= @projection[:months] %> months from now<% if @retirement_age %>, age <%= @retirement_age %><% end %>)
+            <% else %>
+              Not reached within 50 years at current assumptions
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <%= link_to 'Edit assumptions', edit_retirement_assumption_path, class: 'button is-link is-light' %>
+  <%= link_to 'Log an investment balance', new_balance_path, class: 'button is-link is-light' %>
+
+  <h2 class="subtitle">
+    Projected Net Worth vs. FI Number
+  </h2>
+  <%= line_chart @net_worth_projection %>
+
+  <h2 class="subtitle">
+    Savings Rate by Month
+  </h2>
+  <%= area_chart @savings_rate_by_month %>
+
+  <h2 class="subtitle">
+    Sensitivity: Months to Financial Independence
+  </h2>
+  <%= render partial: 'dashboard/retirement_sensitivity_table', locals: { sensitivity: @sensitivity } %>
+</section>

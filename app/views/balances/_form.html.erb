@@ -1,0 +1,32 @@
+<%= form_with(model: balance, url: balances_path, class: 'form') do |form| %>
+  <%= render partial: 'shared/flash', locals: { notice: notice, errors: balance.errors } %>
+
+  <div class="field">
+    <%= form.label :account_id, "Account", class: "label" %>
+    <div class="control">
+      <div class="select is-fullwidth">
+        <%= form.collection_select :account_id, Account.order(:name), :id, :to_s, prompt: true %>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :date, class: "label" %>
+    <div class="control">
+      <%= form.date_field :date, class: "input" %>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :amount, class: "label" %>
+    <div class="control">
+      <%= form.number_field :amount, step: 0.01, class: "input" %>
+    </div>
+  </div>
+
+  <div class="field is-grouped" style="padding-top: 2rem;">
+    <div class="control">
+      <%= form.submit "Save", class: "button is-link" %>
+    </div>
+  </div>
+<% end %>

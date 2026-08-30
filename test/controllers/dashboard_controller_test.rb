@@ -25,4 +25,9 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_trends_url
     assert_response :success
   end
+
+  test "should get retirement" do
+    get dashboard_retirement_url
+    assert_response :success
+  end
 end
