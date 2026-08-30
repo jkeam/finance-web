@@ -1,6 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="dark">
   <head>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("finance-web-theme");
+          if (stored === "dark" || stored === "light") {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <title><%= content_for(:title) || "Finance Web" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,6 +26,10 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%2210 0 100 100%22><text y=%22.90em%22 font-size=%2290%22>🏔</text></svg>"></link>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
@@ -22,8 +37,8 @@
   </head>
 
   <body>
-    <div class="container">
-      <nav class="navbar" role="navigation" aria-label="main navigation" data-controller="navbar">
+    <div class="app-shell">
+      <nav class="navbar app-navbar" role="navigation" aria-label="main navigation" data-controller="navbar">
         <div class="navbar-brand">
           <a class="navbar-item" href="/">
             &#128507;
@@ -70,11 +85,20 @@
               </div>
             </div>
           </div>
+
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <button type="button" class="button is-ghost theme-toggle" data-controller="theme" data-action="click->theme#toggle" data-theme-target="icon" aria-label="Toggle dark mode">
+                🌙
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
 
-      <%= yield %>
-
+      <main class="app-content">
+        <%= yield %>
+      </main>
     </div>
   </body>
 </html>

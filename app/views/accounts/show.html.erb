@@ -8,10 +8,13 @@
     ID <%= @account.id %>
   </h2>
 
-  Category: <%= @account.category.to_s.titleize %>
-  <br />
-  Bank: <%= link_to @account.bank.name, @account.bank %>
+  <dl class="detail-list">
+    <dt>Category</dt>
+    <dd><%= @account.category.to_s.titleize %></dd>
 
+    <dt>Bank</dt>
+    <dd><%= link_to @account.bank.name, @account.bank %></dd>
+  </dl>
 </section>
 
 <%= link_to 'All Accounts', accounts_path %>
