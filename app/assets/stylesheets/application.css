@@ -71,9 +71,11 @@ a {
 
 /* ==========================================================================
    App shell — boxed navbar + content "paper" on a soft page background.
+   Full-bleed: no max-width cap, just breathing room that scales with the
+   viewport so wide monitors don't glue the table edges to the screen edge.
    ========================================================================== */
 .app-shell {
-  padding: 1.5rem 1rem 3rem;
+  padding: 1.5rem clamp(1rem, 3vw, 3rem) 3rem;
 }
 
 .app-navbar {
