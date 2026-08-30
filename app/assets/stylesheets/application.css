@@ -260,6 +260,36 @@ a {
   border: 1px solid var(--app-border);
   border-radius: var(--bulma-radius);
   padding: 1.25rem 1.5rem !important;
+  margin-top: 0.75rem;
+}
+
+/* Grid-rows trick: animates to/from an unknown content height, which a
+   max-height transition can't do without guessing a value. */
+.filter-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.filter-collapse.is-open {
+  grid-template-rows: 1fr;
+}
+
+.filter-collapse-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.filter-collapse .filter-panel {
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.filter-collapse.is-open .filter-panel {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.05s;
 }
 
 /* ==========================================================================
