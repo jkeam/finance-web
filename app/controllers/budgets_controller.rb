@@ -74,6 +74,6 @@ class BudgetsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def budget_params
-      params.expect(budget: [ :name, budget_transaction_categories_attributes: [[ :id, :amount, :transaction_category, :_destroy ]]])
+      params.expect(budget: [ :name, budget_transaction_categories_attributes: [ [ :id, :amount, :transaction_category, :_destroy ] ] ])
     end
 end

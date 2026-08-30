@@ -1,15 +1,15 @@
 module Filterable
   extend ActiveSupport::Concern
 
-  def set_filter_params()
+  def set_filter_params
     @startdate = nil
-    if ((params[:startdate] || '').strip != '')
+    if (params[:startdate] || "").strip != ""
       @startdate = Date.strptime(params[:startdate], "%Y-%m-%d")
     end
     @startdate ||= Date.current.months_ago(12).beginning_of_month
 
     @endddate = nil
-    if ((params[:enddate] || '').strip != '')
+    if (params[:enddate] || "").strip != ""
       @enddate = Date.strptime(params[:enddate], "%Y-%m-%d")
     end
     @enddate ||= Date.current.beginning_of_month

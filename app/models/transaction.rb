@@ -44,19 +44,19 @@ class Transaction < ApplicationRecord
   }
 
   # CC:
-    # - (ignore, should match bank tranfer) Payment: is a transfer from a bank
-    # - (income) Credit: Refund
-    # - (spend) Installment: Big Purchase
-    # - (spend) Debit: Deduction
-    # - (spend) Interest: Late payment
-    # - (spend) Purchase: Buying stuff
+  # - (ignore, should match bank tranfer) Payment: is a transfer from a bank
+  # - (income) Credit: Refund
+  # - (spend) Installment: Big Purchase
+  # - (spend) Debit: Deduction
+  # - (spend) Interest: Late payment
+  # - (spend) Purchase: Buying stuff
   # Bank:
-    # - (income) Credit: Being paid
-    # - (spend) Debit: ATM cash withdrawl
-    # - (ignore, covered by CC transactions) Transfer: Paying CC
-    #   - except rental_property since that's not synced here
-    # - (spend) Purchase: Buying stuff
-    # - (spend) Payment: Bills
+  # - (income) Credit: Being paid
+  # - (spend) Debit: ATM cash withdrawl
+  # - (ignore, covered by CC transactions) Transfer: Paying CC
+  #   - except rental_property since that's not synced here
+  # - (spend) Purchase: Buying stuff
+  # - (spend) Payment: Bills
   scope :spending, -> {
     joins(:account)
       .where(account: { category: Account.commercial_categories() },
@@ -91,11 +91,11 @@ class Transaction < ApplicationRecord
   end
 
   def self.pretty_print_category(category)
-    (category || '').to_s.gsub('category_', '').titleize
+    (category || "").to_s.gsub("category_", "").titleize
   end
 
   def self.pretty_print_type(type)
-    (type || '').gsub('type_', '').titleize
+    (type || "").gsub("type_", "").titleize
   end
 
   def self.spending_category_by_month(transactions, startdate, enddate, category)
@@ -134,7 +134,7 @@ class Transaction < ApplicationRecord
 
     spending_by_category_per_month = categories.map do |category|
       data = spending_category_by_month(all_transactions, startdate, enddate, category)
-      sorted = data.values.reject{|v| v.nil? || v == 0}.sort
+      sorted = data.values.reject { |v| v.nil? || v == 0 }.sort
       # median start
       len = sorted.length
       if sorted

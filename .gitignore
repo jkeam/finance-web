@@ -6,9 +6,6 @@
  
 # Ignore deployment configs
 .kamal/
- 
-# Ignore personal GitHub configs (if applicable)
-.github/
 
 .DS_Store
 .env

@@ -34,7 +34,7 @@ module FinanceWeb
     # in config/environments, which are processed later.
     #
     # config.eager_load_paths << Rails.root.join("extras")
-    config.time_zone = 'Eastern Time (US & Canada)'
+    config.time_zone = "Eastern Time (US & Canada)"
     config.default_currency = :usd
     Money.locale_backend = :i18n
     Money.rounding_mode = BigDecimal::ROUND_HALF_UP
