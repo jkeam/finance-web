@@ -8,7 +8,7 @@
     </div>
   </div>
 
-  <h2 class="is-size-4" style="padding-top: 2rem;">Categories</h2>
+  <h2 class="is-size-4 section-gap-top">Categories</h2>
 
   <div data-budget-transaction-category-target="links">
     <% budget.budget_transaction_categories.each do |btc| %>
@@ -20,8 +20,8 @@
     <%= render 'budget_transaction_category_form', form: form, budget_transaction_category: BudgetTransactionCategory.new %>
   </template>
 
-  <div class="field is-grouped" style="padding-top: 2rem;">
-    <%= link_to 'Add Category', '#', data: { action: 'budget-transaction-category#add_association' }, class: "button is-info", style: "" %>
+  <div class="field is-grouped section-gap-top">
+    <%= link_to 'Add Category', '#', data: { action: 'budget-transaction-category#add_association' }, class: "button is-info" %>
 
     <div class="control">
       <%= form.submit "Submit", class: "button is-link" %>

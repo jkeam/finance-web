@@ -1,56 +1,39 @@
-<section class="filter-toggle">
-  <button class="button is-primary is-light" id="togglefilterbutton" aria-expanded="false" aria-controls="contenttohide">Toggle Filter</button>
-</section>
+<div data-controller="date-filter">
+  <section class="filter-toggle">
+    <button class="button is-primary is-light" aria-expanded="false" aria-controls="contenttohide" data-action="click->date-filter#toggle" data-date-filter-target="toggleButton">Toggle Filter</button>
+  </section>
 
-<div class="filter-collapse" id="contenttohide">
-  <div class="filter-collapse-inner">
-    <section class="section filter-panel">
-      <h1 class="title">
-        Filter
-      </h1>
-      <form method="GET">
-        <div class="field">
-          <label for="startdate" class="label">Start Date</label>
-          <div class="control">
-            <input class="input" type="date" name="startdate" value="<%= startdate.to_s %>">
+  <div class="filter-collapse" id="contenttohide" data-date-filter-target="content">
+    <div class="filter-collapse-inner">
+      <section class="section filter-panel">
+        <h1 class="title">
+          Filter
+        </h1>
+        <form method="GET">
+          <div class="field">
+            <label for="startdate" class="label">Start Date</label>
+            <div class="control">
+              <input class="input" type="date" name="startdate" value="<%= startdate.to_s %>" data-date-filter-target="startDate">
+            </div>
           </div>
-        </div>
 
-        <div class="field">
-          <label for="enddate" class="label">End Date</label>
-          <div class="control">
-            <input class="input" type="date" name="enddate" value="<%= enddate.to_s %>">
+          <div class="field">
+            <label for="enddate" class="label">End Date</label>
+            <div class="control">
+              <input class="input" type="date" name="enddate" value="<%= enddate.to_s %>" data-date-filter-target="endDate">
+            </div>
           </div>
-        </div>
 
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-link" type="submit">Submit</button>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-link" type="submit">Submit</button>
+            </div>
+            <div class="control">
+              <button class="button is-link is-light" type="button" data-action="click->date-filter#clear">Clear</button>
+            </div>
           </div>
-          <div class="control">
-            <button class="button is-link is-light" type="button" id="clearbutton">Clear</button>
-          </div>
-        </div>
-      </form>
-    </section>
+        </form>
+      </section>
+    </div>
   </div>
 </div>
-<script>
-  document.getElementById('clearbutton').addEventListener('click', () => {
-    try {
-      document.getElementsByName('startdate')[0].value = '';
-      document.getElementsByName('enddate')[0].value = '';
-    } catch(e) {
-      console.error(e);
-    }
-  });
-  document.getElementById('togglefilterbutton').addEventListener('click', (event) => {
-    try {
-      const contentToToggle = document.getElementById('contenttohide');
-      const isOpen = contentToToggle.classList.toggle('is-open');
-      event.currentTarget.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    } catch (e) {
-      console.error(e);
-    }
-  });
-</script>

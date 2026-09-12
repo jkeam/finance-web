@@ -1,9 +1,9 @@
-<div class="budget-transaction-category" style="padding-top: 2rem;">
+<div class="budget-transaction-category section-gap-top">
   <%= form.fields_for(:budget_transaction_categories, budget_transaction_category, child_index: (budget_transaction_category.id || 'NEW_RECORD')) do |category_form| %>
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <%= category_form.label :transaction_category, style: "display: block", class: "label" %>
+        <%= category_form.label :transaction_category, class: "label label-block" %>
       </div>
       <div class="field-body">
         <div class="field is-narrow">
@@ -18,7 +18,7 @@
 
     <div class="field is-horizontal">
       <div class="field-label is-normal">
-        <%= category_form.label :amount, style: "", class: "label" %>
+        <%= category_form.label :amount, class: "label" %>
       </div>
       <div class="field-body">
         <div class="field">

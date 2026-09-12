@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html data-theme="dark">
   <head>
-    <script>
+    <%= javascript_tag nonce: true do %>
       (function () {
         try {
           var stored = localStorage.getItem("finance-web-theme");
@@ -10,7 +10,7 @@
           }
         } catch (e) {}
       })();
-    </script>
+    <% end %>
 
     <title><%= content_for(:title) || "Finance Web" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
