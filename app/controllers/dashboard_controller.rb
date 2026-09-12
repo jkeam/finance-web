@@ -167,7 +167,9 @@ class DashboardController < ApplicationController
 
     @fi_number_cents = @assumption.safe_withdrawal_rate.to_f.zero? ? 0 :
       (@spending_baseline[:annual_cents] / @assumption.safe_withdrawal_rate.to_f).round
-    @monthly_contribution_cents = ((@income_baseline_annual_cents - @spending_baseline[:annual_cents]) / 12.0).round
+    @cash_savings_monthly_contribution_cents = ((@income_baseline_annual_cents - @spending_baseline[:annual_cents]) / 12.0).round
+    @account_monthly_contribution_cents = Account.investment.sum(:monthly_contribution_cents)
+    @monthly_contribution_cents = @cash_savings_monthly_contribution_cents + @account_monthly_contribution_cents
 
     @projection = RetirementProjection.new(
       fi_number: @fi_number_cents / 100.0,

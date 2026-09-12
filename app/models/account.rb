@@ -1,4 +1,6 @@
 class Account < ApplicationRecord
+  monetize :monthly_contribution_cents, allow_nil: false
+
   validates :name, uniqueness: true
   validates :category, presence: true
   belongs_to :bank, inverse_of: :accounts

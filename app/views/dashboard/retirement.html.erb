@@ -24,7 +24,15 @@
           <td><%= @savings_rate %>%</td>
         </tr>
         <tr>
-          <td>Monthly Contribution</td>
+          <td>Monthly Contribution (cash savings)</td>
+          <td><%= Money.from_cents(@cash_savings_monthly_contribution_cents).format %></td>
+        </tr>
+        <tr>
+          <td>Monthly Contribution (401k/investment accounts)</td>
+          <td><%= Money.from_cents(@account_monthly_contribution_cents).format %></td>
+        </tr>
+        <tr>
+          <td>Monthly Contribution (total)</td>
           <td><%= Money.from_cents(@monthly_contribution_cents).format %></td>
         </tr>
         <tr>
