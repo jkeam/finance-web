@@ -1,6 +1,6 @@
 one:
-  transaction_date: 2025-08-29
-  clearing_date: 2025-08-29
+  transaction_date: <%= 1.month.ago.to_date %>
+  clearing_date: <%= 1.month.ago.to_date %>
   description: Costco
   merchant: Costco
   category: 11
@@ -11,8 +11,8 @@ one:
   account: one
 
 two:
-  transaction_date: 2025-08-29
-  clearing_date: 2025-08-29
+  transaction_date: <%= 1.month.ago.to_date %>
+  clearing_date: <%= 1.month.ago.to_date %>
   description: Taco Bell
   merchant: Taco Bell
   category: 9
@@ -23,8 +23,8 @@ two:
   account: two
 
 three:
-  transaction_date: 2025-08-29
-  clearing_date: 2025-08-29
+  transaction_date: <%= 1.month.ago.to_date %>
+  clearing_date: <%= 1.month.ago.to_date %>
   description: Red Hat
   merchant: Red Hat
   category: 9
