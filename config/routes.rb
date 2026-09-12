@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   resources :banks, only: %i[index show]
   resources :transactions, only: %i[index show]
   resources :accounts, only: %i[index show]
-  resources :balances, only: %i[new create]
   get "dashboard/index"
   get "dashboard/spending"
   get "dashboard/yearly"
