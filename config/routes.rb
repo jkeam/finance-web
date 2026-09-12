@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   resources :transactions, only: %i[index show]
   resources :accounts, only: %i[index show]
   resources :balances, only: %i[new create]
-  resource :retirement_assumption, only: %i[edit update]
   get "dashboard/index"
   get "dashboard/spending"
   get "dashboard/yearly"
