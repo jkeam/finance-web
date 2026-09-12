@@ -1,4 +1,6 @@
 class Account < ApplicationRecord
+  monetize :monthly_contribution_cents, allow_nil: false
+
   validates :name, uniqueness: true
   validates :category, presence: true
   belongs_to :bank, inverse_of: :accounts
@@ -8,7 +10,8 @@ class Account < ApplicationRecord
     savings: 0,
     checking: 1,
     money_market: 2,
-    credit_card: 3
+    credit_card: 3,
+    investment: 4
   }
 
   def self.commercial_categories

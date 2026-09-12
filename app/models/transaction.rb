@@ -109,6 +109,50 @@ class Transaction < ApplicationRecord
     tmp
   end
 
+  def self.spending_baseline(startdate, enddate)
+    spending_transactions = spending().between_dates(startdate, enddate)
+    months = ((enddate.year * 12 + enddate.month) - (startdate.year * 12 + startdate.month))
+    months = 1 if months < 1
+
+    total_cents = spending_transactions.sum(:amount_cents)
+    needs_cents = spending_transactions.where(category: get_needs_categories()).sum(:amount_cents)
+    wants_cents = total_cents - needs_cents
+
+    {
+      annual_cents: (total_cents.to_f / months * 12).round,
+      needs_annual_cents: (needs_cents.to_f / months * 12).round,
+      wants_annual_cents: (wants_cents.to_f / months * 12).round,
+      monthly_avg_cents: (total_cents.to_f / months).round
+    }
+  end
+
+  def self.income_and_spending_by_month(startdate, enddate)
+    income_transactions = income().between_dates(startdate, enddate)
+    spending_transactions = spending().between_dates(startdate, enddate)
+
+    income_per_month = income_transactions
+      .group_by_month(:transaction_date, range: startdate...enddate, expand_range: true)
+      .sum(:amount_cents)
+    income_per_month.each { |k, v| income_per_month[k] = (v * -1) / 100 }
+
+    spend_per_month = spending_transactions
+      .group_by_month(:transaction_date, range: startdate...enddate, expand_range: true)
+      .sum(:amount_cents)
+    spend_per_month.each { |k, v| spend_per_month[k] = v / 100 }
+
+    savings_rate_by_month = income_per_month.map do |month, income|
+      spend = spend_per_month[month] || 0
+      rate = income.zero? ? 0 : ((income - spend).to_f / income * 100).round(1)
+      [ month, rate ]
+    end.to_h
+
+    {
+      income_per_month: income_per_month,
+      spend_per_month: spend_per_month,
+      savings_rate_by_month: savings_rate_by_month
+    }
+  end
+
   def self.spending_per_category_per_month(startdate, enddate)
     all_transactions = between_dates(startdate, enddate)
     categories = %i[

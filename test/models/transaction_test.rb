@@ -30,4 +30,26 @@ class TransactionTest < ActiveSupport::TestCase
     assert 1, transactions.size()
     assert :type_credit, transactions[0].transaction_type
   end
+
+  test "spending baseline annualizes spend over the date range" do
+    startdate = 1.month.ago.beginning_of_month.to_date
+    enddate = Date.current.beginning_of_month
+    baseline = Transaction.spending_baseline(startdate, enddate)
+
+    assert_equal 1_440_000, baseline[:annual_cents]
+    assert_equal 0, baseline[:needs_annual_cents]
+    assert_equal 1_440_000, baseline[:wants_annual_cents]
+    assert_equal 120_000, baseline[:monthly_avg_cents]
+  end
+
+  test "income and spending by month includes a savings rate series" do
+    startdate = 1.month.ago.beginning_of_month.to_date
+    enddate = Date.current.beginning_of_month
+    result = Transaction.income_and_spending_by_month(startdate, enddate)
+
+    month_key = startdate
+    assert_equal(-20_000, result[:income_per_month][month_key])
+    assert_equal 1_200, result[:spend_per_month][month_key]
+    assert_equal 106.0, result[:savings_rate_by_month][month_key]
+  end
 end

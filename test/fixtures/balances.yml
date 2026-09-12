@@ -1,9 +1,14 @@
 one:
   amount_cents: 100000
-  date: 2025-08-29
+  date: <%= 1.month.ago.to_date %>
   account: three
 
 two:
   amount_cents: 10000000
-  date: 2025-08-29
+  date: <%= 1.month.ago.to_date %>
   account: four
+
+three:
+  amount_cents: 50000000
+  date: <%= 1.month.ago.to_date %>
+  account: five

@@ -10,11 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_09_17_222655) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_12_064847) do
   create_table "accounts", force: :cascade do |t|
     t.integer "bank_id", null: false
     t.integer "category", null: false
     t.datetime "created_at", null: false
+    t.integer "monthly_contribution_cents", default: 0, null: false
+    t.string "monthly_contribution_currency", default: "USD", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["bank_id"], name: "index_accounts_on_bank_id"
@@ -52,6 +54,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_09_17_222655) do
   create_table "budgets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", limit: 255, null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "retirement_assumptions", force: :cascade do |t|
+    t.date "birthdate"
+    t.datetime "created_at", null: false
+    t.decimal "expected_annual_return", precision: 5, scale: 4, default: "0.07", null: false
+    t.decimal "safe_withdrawal_rate", precision: 5, scale: 4, default: "0.04", null: false
+    t.integer "target_retirement_age"
     t.datetime "updated_at", null: false
   end
 

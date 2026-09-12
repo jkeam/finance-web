@@ -93,7 +93,11 @@ def main(debug, csv_files, banks, budgets)
         name: account_input['name'],
         bank: bank,
         category: account_input['type'].to_s
-      )
+      ).tap do |account|
+        account.update!(
+          monthly_contribution: Monetize.parse(account_input.fetch('monthly_contribution', 0))
+        )
+      end
     end
   end
 
