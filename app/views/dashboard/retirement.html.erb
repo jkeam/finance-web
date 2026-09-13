@@ -1,79 +1,242 @@
 <%= render partial: 'shared/header', locals: { title: 'Reports', subtitle: 'Retirement' } %>
 <%= render partial: 'shared/date_filter', locals: {startdate: @startdate, enddate: @enddate} %>
 
+<%
+  current_age = @assumption.age_on(Date.current) || 18
+  age_display = @solve_for == "age" ? (@retirement_age || @age_value) : @age_value
+  salary_display = (@solve_for == "salary" && @solver_result && @solver_result[:feasible]) ? @solver_result[:min_annual_salary_cents] : @salary_value
+  spending_display = (@solve_for == "spending" && @solver_result && @solver_result[:feasible]) ? @solver_result[:max_annual_spending_cents] : @spending_value
+%>
+
 <section class="section chart">
   <h1 class="title">
-    Summary
+    What If?
   </h1>
   <h2 class="subtitle">
-    At a Glance
+    Pick two of age, salary, and spending to fix - the third is solved for
   </h2>
-  <div class="block table-container">
-    <table class="table is-fullwidth is-hoverable is-striped">
-      <tbody>
-        <tr>
-          <td>Annualized Spending</td>
-          <td><%= Money.from_cents(@spending_baseline[:annual_cents]).format %></td>
-        </tr>
-        <tr>
-          <td>Annualized Income</td>
-          <td><%= Money.from_cents(@income_baseline_annual_cents).format %></td>
-        </tr>
-        <tr>
-          <td>Savings Rate</td>
-          <td><%= @savings_rate %>%</td>
-        </tr>
-        <tr>
-          <td>Monthly Contribution (cash savings)</td>
-          <td><%= Money.from_cents(@cash_savings_monthly_contribution_cents).format %></td>
-        </tr>
-        <tr>
-          <td>Monthly Contribution (401k/investment accounts)</td>
-          <td><%= Money.from_cents(@account_monthly_contribution_cents).format %></td>
-        </tr>
-        <tr>
-          <td>Monthly Contribution (total)</td>
-          <td><%= Money.from_cents(@monthly_contribution_cents).format %></td>
-        </tr>
-        <tr>
-          <td>Current Invested Net Worth</td>
-          <td><%= Money.from_cents(@current_net_worth_cents).format %></td>
-        </tr>
-        <tr>
-          <td>FI Number (<%= (@assumption.safe_withdrawal_rate.to_f * 100).round(1) %>% withdrawal rate)</td>
-          <td><%= Money.from_cents(@fi_number_cents).format %></td>
-        </tr>
-        <tr>
-          <td>Assumed Annual Return</td>
-          <td><%= (@assumption.expected_annual_return.to_f * 100).round(1) %>%</td>
-        </tr>
-        <tr>
-          <td>Projected Financial Independence Date</td>
-          <td>
-            <% if @projection[:reached] %>
-              <%= @projection[:target_date].strftime('%B %Y') %>
-              (<%= @projection[:months] %> months from now<% if @retirement_age %>, age <%= @retirement_age %><% end %>)
-            <% else %>
-              Not reached within 50 years at current assumptions
-            <% end %>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 
-  <h2 class="subtitle">
-    Projected Net Worth vs. FI Number
-  </h2>
-  <%= line_chart @net_worth_projection %>
+  <div data-controller="whatif">
+  <%= form_with url: dashboard_retirement_path, method: :get, data: { whatif_target: "form", turbo_frame: "retirement_whatif" } do %>
+    <input type="hidden" name="startdate" value="<%= @startdate %>">
+    <input type="hidden" name="enddate" value="<%= @enddate %>">
+
+    <div class="field">
+      <label class="label">Solve for:</label>
+      <div class="control">
+        <label class="radio">
+          <%= radio_button_tag :solve_for, "age", @solve_for == "age", data: { action: "change->whatif#solveForChanged" } %>
+          Age
+        </label>
+        <label class="radio">
+          <%= radio_button_tag :solve_for, "salary", @solve_for == "salary", data: { action: "change->whatif#solveForChanged" } %>
+          Salary
+        </label>
+        <label class="radio">
+          <%= radio_button_tag :solve_for, "spending", @solve_for == "spending", data: { action: "change->whatif#solveForChanged" } %>
+          Spending
+        </label>
+      </div>
+      <p class="help">The variable selected here becomes a computed readout below; the other two are yours to drag.</p>
+    </div>
+
+    <div class="field">
+      <label class="label">
+        Target Retirement Age<%= @solve_for == "age" ? " (computed)" : "" %>:
+        <span data-whatif-target="ageValue"><%= age_display %></span>
+      </label>
+      <div class="control">
+        <input
+          type="range"
+          class="slider is-fullwidth"
+          min="<%= current_age + 1 %>"
+          max="90"
+          step="1"
+          value="<%= [ [ age_display, current_age + 1 ].max, 90 ].min %>"
+          data-whatif-target="age"
+          data-action="input->whatif#ageChanged"
+          <%= "disabled" if @solve_for == "age" %>>
+      </div>
+      <%# The range input above intentionally has no name - it's UI-only. It lives outside the
+          turbo frame (so dragging isn't interrupted by frame swaps), so this hidden field is the
+          one actually submitted, kept in sync with the slider (or with the server's computed
+          value, when this field is the one being solved for) entirely via JS. %>
+      <%= hidden_field_tag :age_override, age_display, data: { whatif_target: "ageHidden" } %>
+    </div>
+
+    <div class="field">
+      <label class="label">
+        Annual Salary<%= @solve_for == "salary" ? " (computed)" : "" %>:
+        <span data-whatif-target="salaryValue"><%= Money.from_cents(salary_display).format %></span>
+      </label>
+      <div class="control">
+        <input
+          type="range"
+          class="slider is-fullwidth"
+          min="0"
+          max="<%= [ @salary_slider_max_cents, salary_display ].max %>"
+          step="50000"
+          value="<%= salary_display %>"
+          data-whatif-target="salary"
+          data-action="input->whatif#salaryChanged"
+          <%= "disabled" if @solve_for == "salary" %>>
+      </div>
+      <%= hidden_field_tag :salary_override_cents, salary_display, data: { whatif_target: "salaryHidden" } %>
+    </div>
+
+    <div class="field">
+      <label class="label">
+        Annual Spending<%= @solve_for == "spending" ? " (computed)" : "" %>:
+        <span data-whatif-target="spendingValue"><%= Money.from_cents(spending_display).format %></span>
+      </label>
+      <div class="control">
+        <input
+          type="range"
+          class="slider is-fullwidth"
+          min="0"
+          max="<%= [ @spending_slider_max_cents, spending_display ].max %>"
+          step="50000"
+          value="<%= spending_display %>"
+          data-whatif-target="spending"
+          data-action="input->whatif#spendingChanged"
+          <%= "disabled" if @solve_for == "spending" %>>
+      </div>
+      <%= hidden_field_tag :spending_override_cents, spending_display, data: { whatif_target: "spendingHidden" } %>
+    </div>
+  <% end %>
+
+  <%= turbo_frame_tag "retirement_whatif", data: { action: "turbo:frame-load->whatif#frameLoaded" } do %>
+    <div hidden
+         data-whatif-target="computed"
+         data-solve-for="<%= @solve_for %>"
+         data-age="<%= age_display %>"
+         data-salary-cents="<%= salary_display %>"
+         data-spending-cents="<%= spending_display %>"
+         data-chart-data="<%= @net_worth_projection_json %>"></div>
+
+    <% if @solve_for != "age" && @solver_result %>
+      <div class="notification <%= @solver_result[:feasible] ? 'is-success' : 'is-danger' %> is-light">
+        <% if @solve_for == "salary" %>
+          <% if !@solver_result[:feasible] %>
+            Not achievable by age <%= @age_value %> spending <%= Money.from_cents(@spending_value).format %>/year
+            under current assumptions - no salary is high enough within that time.
+          <% elsif @solver_result[:no_income_needed] %>
+            You don't need any income at all to retire by age <%= @age_value %> spending
+            <%= Money.from_cents(@spending_value).format %>/year - your net worth already gets there on its own.
+          <% else %>
+            To retire by age <%= @age_value %> spending <%= Money.from_cents(@spending_value).format %>/year,
+            you need a salary of at least
+            <strong><%= Money.from_cents(@solver_result[:min_annual_salary_cents]).format %></strong>/year.
+          <% end %>
+        <% else %>
+          <% if !@solver_result[:feasible] %>
+            Not achievable by age <%= @age_value %> on a <%= Money.from_cents(@salary_value).format %> salary
+            under current assumptions, even spending nothing.
+          <% elsif @solver_result[:unconstrained] %>
+            You could spend all of your <%= Money.from_cents(@salary_value).format %> salary
+            and still retire by age <%= @age_value %>.
+          <% else %>
+            To retire by age <%= @age_value %> on a <%= Money.from_cents(@salary_value).format %> salary,
+            you can spend at most
+            <strong><%= Money.from_cents(@solver_result[:max_annual_spending_cents]).format %></strong> per year
+            (<%= Money.from_cents(@solver_result[:max_annual_spending_cents] / 12).format %>/month).
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <h2 class="subtitle">
+      Summary
+    </h2>
+    <div class="block table-container">
+      <table class="table is-fullwidth is-hoverable is-striped">
+        <tbody>
+          <tr>
+            <td>Annualized Spending (actual, trailing 12mo)</td>
+            <td><%= Money.from_cents(@spending_baseline[:annual_cents]).format %></td>
+          </tr>
+          <tr>
+            <td>Annualized Income (actual, trailing 12mo)</td>
+            <td><%= Money.from_cents(@income_baseline_annual_cents).format %></td>
+          </tr>
+          <tr>
+            <td>Savings Rate (actual)</td>
+            <td><%= @savings_rate %>%</td>
+          </tr>
+          <tr>
+            <td>Monthly Contribution (cash savings, what-if)</td>
+            <td><%= Money.from_cents(@cash_savings_monthly_contribution_cents).format %></td>
+          </tr>
+          <tr>
+            <td>Monthly Contribution (401k/investment accounts)</td>
+            <td><%= Money.from_cents(@account_monthly_contribution_cents).format %></td>
+          </tr>
+          <tr>
+            <td>Monthly Contribution (total, after-tax)</td>
+            <td><%= Money.from_cents(@after_tax_monthly_contribution_cents).format %></td>
+          </tr>
+          <tr>
+            <td>Current Invested Net Worth</td>
+            <td><%= Money.from_cents(@current_net_worth_cents).format %></td>
+          </tr>
+          <tr>
+            <td>Effective Tax Haircut</td>
+            <td><%= @tax_haircut_pct %>%</td>
+          </tr>
+          <tr>
+            <td>After-Tax Net Worth (spendable)</td>
+            <td><%= Money.from_cents(@after_tax_net_worth_cents).format %></td>
+          </tr>
+          <tr>
+            <td>FI Number (<%= (@assumption.safe_withdrawal_rate.to_f * 100).round(1) %>% withdrawal rate)</td>
+            <td><%= Money.from_cents(@fi_number_cents).format %></td>
+          </tr>
+          <tr>
+            <td>Assumed Annual Return (nominal / real after inflation)</td>
+            <td>
+              <%= (@assumption.expected_annual_return.to_f * 100).round(1) %>% /
+              <%= (@real_annual_return * 100).round(1) %>%
+              (inflation <%= (@assumption.inflation_rate.to_f * 100).round(1) %>%)
+            </td>
+          </tr>
+          <tr>
+            <td>Projected Financial Independence Date</td>
+            <td>
+              <% if @projection[:reached] %>
+                <%= @projection[:target_date].strftime('%B %Y') %>
+                (<%= @projection[:months] %> months from now<% if @retirement_age %>, age <%= @retirement_age %><% end %>)
+              <% else %>
+                Not reached within 50 years at current what-if assumptions
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="subtitle">
+      Projected Net Worth vs. FI Number
+    </h2>
+    <%# Turbo's own script-reactivation on frame updates (activateScriptElement) has a real bug:
+        it correctly sets a fresh CSP nonce on the recreated script, then unconditionally copies
+        every attribute from the old (already-inserted) script over it via copyElementAttributes -
+        including "nonce", whose value the browser deliberately blanks once a script is in the DOM
+        for security. That blank clobbers the nonce it just set, so CSP always rejects it. We don't
+        need this script to run past the first load anyway (updateChart() in whatif_controller.js
+        handles redraws via Chartkick's own JS API), so data-turbo-eval="false" tells Turbo to
+        leave it alone entirely instead of hitting this. %>
+    <%= line_chart(@net_worth_projection, id: "retirement-projection-chart")
+          .sub("<script", '<script data-turbo-eval="false"').html_safe %>
+
+    <h2 class="subtitle">
+      Sensitivity: Months to Financial Independence
+    </h2>
+    <%= render partial: 'dashboard/retirement_sensitivity_table', locals: { sensitivity: @sensitivity } %>
+  <% end %>
+  </div>
 
   <h2 class="subtitle">
     Savings Rate by Month
   </h2>
   <%= area_chart @savings_rate_by_month %>
-
-  <h2 class="subtitle">
-    Sensitivity: Months to Financial Independence
-  </h2>
-  <%= render partial: 'dashboard/retirement_sensitivity_table', locals: { sensitivity: @sensitivity } %>
 </section>

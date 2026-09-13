@@ -12,6 +12,7 @@
 
 ignore/*
 jon/*
+data/*
 
 storage/test.sqlite3
 storage/development.sqlite3

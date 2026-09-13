@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_12_064847) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_12_070100) do
   create_table "accounts", force: :cascade do |t|
     t.integer "bank_id", null: false
     t.integer "category", null: false
@@ -18,9 +18,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_064847) do
     t.integer "monthly_contribution_cents", default: 0, null: false
     t.string "monthly_contribution_currency", default: "USD", null: false
     t.string "name", null: false
+    t.integer "tax_treatment"
     t.datetime "updated_at", null: false
     t.index ["bank_id"], name: "index_accounts_on_bank_id"
     t.index ["category"], name: "index_accounts_on_category"
+    t.index ["tax_treatment"], name: "index_accounts_on_tax_treatment"
   end
 
   create_table "balances", force: :cascade do |t|
@@ -59,8 +61,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_12_064847) do
 
   create_table "retirement_assumptions", force: :cascade do |t|
     t.date "birthdate"
+    t.decimal "capital_gains_tax_rate", precision: 5, scale: 4, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.decimal "expected_annual_return", precision: 5, scale: 4, default: "0.07", null: false
+    t.decimal "inflation_rate", precision: 5, scale: 4, default: "0.03", null: false
+    t.decimal "pretax_effective_tax_rate", precision: 5, scale: 4, default: "0.0", null: false
     t.decimal "safe_withdrawal_rate", precision: 5, scale: 4, default: "0.04", null: false
     t.integer "target_retirement_age"
     t.datetime "updated_at", null: false

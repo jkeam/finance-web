@@ -57,4 +57,24 @@ class RetirementProjection
       { annual_return: return_rate, results: row }
     end
   end
+
+  # Shared by the salary/spending solvers: how many months to reach FI given a
+  # salary and spending level (fi_number and contribution capacity both derive
+  # from those two numbers). Returns MAX_MONTHS + 1 (never MAX_MONTHS itself) when
+  # not reached, so callers can compare against a target without a nil check.
+  def self.months_to_reach(spending_annual_cents:, salary_annual_cents:, current_net_worth_cents:,
+                            fixed_monthly_contribution_cents:, annual_return:, safe_withdrawal_rate:, tax_multiplier: 1.0)
+    fi_number = spending_annual_cents / safe_withdrawal_rate
+    cash_monthly_cents = (salary_annual_cents - spending_annual_cents) / 12.0
+    total_monthly_cents = (cash_monthly_cents + fixed_monthly_contribution_cents) * tax_multiplier
+
+    result = new(
+      fi_number: fi_number / 100.0,
+      current_net_worth: current_net_worth_cents / 100.0,
+      monthly_contribution: total_monthly_cents / 100.0,
+      annual_return: annual_return
+    ).call
+
+    result[:reached] ? result[:months] : MAX_MONTHS + 1
+  end
 end

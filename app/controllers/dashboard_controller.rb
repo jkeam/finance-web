@@ -150,6 +150,7 @@ class DashboardController < ApplicationController
   # GET /dashboard/retirement
   def retirement
     @assumption = RetirementAssumption.current
+    @real_annual_return = @assumption.real_annual_return
 
     @spending_baseline = Transaction.spending_baseline(@startdate, @enddate)
 
@@ -160,22 +161,75 @@ class DashboardController < ApplicationController
     @savings_rate = @income_baseline_annual_cents.zero? ? 0 :
       (((@income_baseline_annual_cents - @spending_baseline[:annual_cents]).to_f / @income_baseline_annual_cents) * 100).round(1)
 
-    investment_account_ids = Account.investment.pluck(:id)
-    @current_net_worth_cents = investment_account_ids.sum do |account_id|
-      Balance.where(account_id: account_id).order(date: :desc).limit(1).pick(:amount_cents) || 0
+    # "What if?" calculator: three knobs (age, salary, spending). Whichever one is
+    # named by solve_for is treated as the unknown and solved for; the other two are
+    # read from overrides (falling back to YAML/transaction-derived defaults) and held
+    # fixed. Once all three are resolved, one projection run drives the whole page -
+    # summary, chart, and sensitivity grid - the same way regardless of which mode.
+    @solve_for = params[:solve_for].presence_in(%w[age salary spending]) || "age"
+    @age_value = (params[:age_override].presence || @assumption.target_retirement_age || 65).to_i
+    @salary_value = (params[:salary_override_cents].presence || @income_baseline_annual_cents).to_i
+    @spending_value = (params[:spending_override_cents].presence || @spending_baseline[:annual_cents]).to_i
+    @spending_slider_max_cents = [ @spending_baseline[:annual_cents] * 2, 1_000_000 ].max
+    @salary_slider_max_cents = [ @income_baseline_annual_cents * 2, 1_000_000 ].max
+
+    tax_summary = Account.after_tax_investment_summary(
+      pretax_rate: @assumption.pretax_effective_tax_rate,
+      capital_gains_rate: @assumption.capital_gains_tax_rate
+    )
+    @current_net_worth_cents = tax_summary[:gross_cents]
+    @after_tax_net_worth_cents = tax_summary[:after_tax_cents]
+    @tax_haircut_pct = (tax_summary[:blended_haircut] * 100).round(1)
+    tax_multiplier = 1 - tax_summary[:blended_haircut]
+    @account_monthly_contribution_cents = Account.investment.sum(:monthly_contribution_cents)
+
+    target_date_goal = @assumption.birthdate.present? ? @assumption.birthdate + @age_value.years : nil
+    target_months = target_date_goal.present? ?
+      ((target_date_goal.year - Date.current.year) * 12) + (target_date_goal.month - Date.current.month) : nil
+
+    resolved_salary_cents = @salary_value
+    resolved_spending_cents = @spending_value
+    @solver_result = nil
+
+    case @solve_for
+    when "salary"
+      @solver_result = RetirementSalarySolver.new(
+        target_months: target_months,
+        fixed_spending_annual_cents: @spending_value,
+        current_net_worth_cents: @after_tax_net_worth_cents,
+        fixed_monthly_contribution_cents: @account_monthly_contribution_cents,
+        annual_return: @real_annual_return,
+        safe_withdrawal_rate: @assumption.safe_withdrawal_rate.to_f,
+        tax_multiplier: tax_multiplier
+      ).call
+      resolved_salary_cents = @solver_result[:min_annual_salary_cents] if @solver_result[:feasible]
+    when "spending"
+      @solver_result = RetirementSpendingSolver.new(
+        target_months: target_months,
+        target_annual_income_cents: @salary_value,
+        current_net_worth_cents: @after_tax_net_worth_cents,
+        fixed_monthly_contribution_cents: @account_monthly_contribution_cents,
+        annual_return: @real_annual_return,
+        safe_withdrawal_rate: @assumption.safe_withdrawal_rate.to_f,
+        tax_multiplier: tax_multiplier
+      ).call
+      resolved_spending_cents = @solver_result[:max_annual_spending_cents] if @solver_result[:feasible]
     end
 
+    @savings_rate = @income_baseline_annual_cents.zero? ? 0 :
+      (((@income_baseline_annual_cents - @spending_baseline[:annual_cents]).to_f / @income_baseline_annual_cents) * 100).round(1)
+
     @fi_number_cents = @assumption.safe_withdrawal_rate.to_f.zero? ? 0 :
-      (@spending_baseline[:annual_cents] / @assumption.safe_withdrawal_rate.to_f).round
-    @cash_savings_monthly_contribution_cents = ((@income_baseline_annual_cents - @spending_baseline[:annual_cents]) / 12.0).round
-    @account_monthly_contribution_cents = Account.investment.sum(:monthly_contribution_cents)
+      (resolved_spending_cents / @assumption.safe_withdrawal_rate.to_f).round
+    @cash_savings_monthly_contribution_cents = ((resolved_salary_cents - resolved_spending_cents) / 12.0).round
     @monthly_contribution_cents = @cash_savings_monthly_contribution_cents + @account_monthly_contribution_cents
+    @after_tax_monthly_contribution_cents = (@monthly_contribution_cents * tax_multiplier).round
 
     @projection = RetirementProjection.new(
       fi_number: @fi_number_cents / 100.0,
-      current_net_worth: @current_net_worth_cents / 100.0,
-      monthly_contribution: @monthly_contribution_cents / 100.0,
-      annual_return: @assumption.expected_annual_return.to_f
+      current_net_worth: @after_tax_net_worth_cents / 100.0,
+      monthly_contribution: @after_tax_monthly_contribution_cents / 100.0,
+      annual_return: @real_annual_return
     ).call
     @retirement_age = @assumption.age_on(@projection[:target_date]) if @projection[:reached]
 
@@ -185,16 +239,21 @@ class DashboardController < ApplicationController
     fi_number_dollars = @fi_number_cents / 100.0
     fi_number_line = projected_net_worth.keys.map { |date| [ date, fi_number_dollars ] }.to_h
     @net_worth_projection = [
-      { name: "Projected Net Worth", data: projected_net_worth },
+      { name: "Projected Net Worth (after-tax)", data: projected_net_worth },
       { name: "FI Number", data: fi_number_line }
     ]
+    # Chartkick's own line_chart helper flattens each series' data Hash to an array of
+    # [x, y] pairs before rendering - its JS (formatSeriesData) indexes data[i][0]/data[i][1]
+    # and doesn't understand a plain object. Matching that shape here is what lets
+    # whatif_controller.js hand this straight to chart.updateData() after a what-if change.
+    @net_worth_projection_json = @net_worth_projection.map { |series| { name: series[:name], data: series[:data].to_a } }.to_json
 
     @savings_rate_by_month = Transaction.income_and_spending_by_month(@startdate, @enddate)[:savings_rate_by_month]
 
     @sensitivity = RetirementProjection.sensitivity_grid(
       fi_number: fi_number_dollars,
-      current_net_worth: @current_net_worth_cents / 100.0,
-      monthly_contribution: @monthly_contribution_cents / 100.0
+      current_net_worth: @after_tax_net_worth_cents / 100.0,
+      monthly_contribution: @after_tax_monthly_contribution_cents / 100.0
     )
     @sensitivity.each do |row|
       row[:results].each do |cell|

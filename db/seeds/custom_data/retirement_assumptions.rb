@@ -13,6 +13,9 @@ if retirement_file.exist?
     assumption = RetirementAssumption.current
     assumption.safe_withdrawal_rate = input["safe_withdrawal_rate"] if input.key?("safe_withdrawal_rate")
     assumption.expected_annual_return = input["expected_annual_return"] if input.key?("expected_annual_return")
+    assumption.inflation_rate = input["inflation_rate"] if input.key?("inflation_rate")
+    assumption.pretax_effective_tax_rate = input["pretax_effective_tax_rate"] if input.key?("pretax_effective_tax_rate")
+    assumption.capital_gains_tax_rate = input["capital_gains_tax_rate"] if input.key?("capital_gains_tax_rate")
     assumption.target_retirement_age = input["target_retirement_age"] if input.key?("target_retirement_age")
     assumption.birthdate = Date.parse(input["birthdate"].to_s) if input.key?("birthdate")
     assumption.save!
