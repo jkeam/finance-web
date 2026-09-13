@@ -133,6 +133,7 @@ class DashboardController < ApplicationController
         net: income - spend
       }
     end
+    @savings_rate_by_month = Transaction.income_and_spending_by_month(@startdate, @enddate)[:savings_rate_by_month]
 
     # balances
     @balances = []
@@ -247,8 +248,6 @@ class DashboardController < ApplicationController
     # and doesn't understand a plain object. Matching that shape here is what lets
     # whatif_controller.js hand this straight to chart.updateData() after a what-if change.
     @net_worth_projection_json = @net_worth_projection.map { |series| { name: series[:name], data: series[:data].to_a } }.to_json
-
-    @savings_rate_by_month = Transaction.income_and_spending_by_month(@startdate, @enddate)[:savings_rate_by_month]
 
     @sensitivity = RetirementProjection.sensitivity_grid(
       fi_number: fi_number_dollars,
