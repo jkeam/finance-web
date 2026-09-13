@@ -336,6 +336,29 @@ a {
 }
 
 /* ==========================================================================
+   What-if slider + number input rows (dashboard/retirement)
+   Bulma's has-addons only glues bordered controls (.input/.button/.select)
+   together via a -1px overlap; a borderless <input type="range"> doesn't
+   benefit from that, and its shorter intrinsic height (vs. the boxed number
+   input next to it) left visible dead space in the row without an explicit
+   vertical alignment.
+   ========================================================================== */
+.field.has-addons {
+  align-items: center;
+  gap: 0.5rem;
+  /* The slider's control is .is-expanded (flex-grow:1) so it fills whatever
+     space is left in the row - on a wide monitor that row is the full width
+     of the page, stretching the slider edge-to-edge and shoving the number
+     input off to the far right. Capping the row itself keeps the pair
+     together at a fixed, readable width regardless of screen size. */
+  max-width: 32rem;
+}
+
+.field.has-addons .control:not(:last-child) {
+  margin-inline-end: 0;
+}
+
+/* ==========================================================================
    Pagy navigation — themed off the same CSS variables as everything else.
    ========================================================================== */
 .pagy.nav {

@@ -6,16 +6,16 @@ import { Controller } from "@hotwired/stimulus"
 // The form lives outside the turbo frame on purpose (so a frame swap never
 // interrupts an in-progress drag), which means nothing about it - which slider
 // is disabled, what value it holds - can be updated by the server re-rendering
-// the frame. This controller owns all of that client-side instead: each slider
-// is a UI-only control (no name attribute) paired with a hidden field that
-// actually submits, and both the disabled state and the values are reconciled
-// here on every radio change and every frame load.
+// the frame. This controller owns all of that client-side instead: each field
+// is a slider + a number input (both UI-only, no name attribute) paired with a
+// hidden field that actually submits, and all three are reconciled here on
+// every edit, every radio change, and every frame load.
 export default class extends Controller {
   static targets = [
     "form", "computed",
-    "age", "ageValue", "ageHidden",
-    "spending", "spendingValue", "spendingHidden",
-    "salary", "salaryValue", "salaryHidden"
+    "age", "ageValue", "ageNumber", "ageHidden",
+    "spending", "spendingValue", "spendingNumber", "spendingHidden",
+    "salary", "salaryValue", "salaryNumber", "salaryHidden"
   ];
   static values = { delay: { type: Number, default: 400 } };
 
@@ -36,38 +36,68 @@ export default class extends Controller {
   }
 
   applyDisabled(solveFor) {
-    if (this.hasAgeTarget) this.ageTarget.disabled = solveFor === "age";
-    if (this.hasSalaryTarget) this.salaryTarget.disabled = solveFor === "salary";
-    if (this.hasSpendingTarget) this.spendingTarget.disabled = solveFor === "spending";
+    const ageDisabled = solveFor === "age";
+    const salaryDisabled = solveFor === "salary";
+    const spendingDisabled = solveFor === "spending";
+
+    if (this.hasAgeTarget) this.ageTarget.disabled = ageDisabled;
+    if (this.hasAgeNumberTarget) this.ageNumberTarget.disabled = ageDisabled;
+    if (this.hasSalaryTarget) this.salaryTarget.disabled = salaryDisabled;
+    if (this.hasSalaryNumberTarget) this.salaryNumberTarget.disabled = salaryDisabled;
+    if (this.hasSpendingTarget) this.spendingTarget.disabled = spendingDisabled;
+    if (this.hasSpendingNumberTarget) this.spendingNumberTarget.disabled = spendingDisabled;
   }
 
+  // Age is a plain integer, shared as-is between the slider, the number input, and the hidden field.
+
   ageChanged() {
-    if (this.hasAgeValueTarget && this.hasAgeTarget) {
-      this.ageValueTarget.textContent = this.ageTarget.value;
-    }
-    if (this.hasAgeHiddenTarget && this.hasAgeTarget) {
-      this.ageHiddenTarget.value = this.ageTarget.value;
-    }
+    this.setAge(this.ageTarget.value);
+  }
+
+  ageNumberChanged() {
+    this.setAge(this.ageNumberTarget.value);
+  }
+
+  setAge(value) {
+    if (this.hasAgeTarget) this.ageTarget.value = value;
+    if (this.hasAgeNumberTarget) this.ageNumberTarget.value = value;
+    if (this.hasAgeValueTarget) this.ageValueTarget.textContent = value;
+    if (this.hasAgeHiddenTarget) this.ageHiddenTarget.value = value;
     this.scheduleSubmit();
   }
 
+  // Salary/spending sliders and hidden fields work in cents; their number inputs show whole
+  // dollars (matching the formatted currency readout), so every edit needs a unit conversion.
+
   spendingChanged() {
-    if (this.hasSpendingValueTarget && this.hasSpendingTarget) {
-      this.spendingValueTarget.textContent = this.formatCurrency(this.spendingTarget.value);
-    }
-    if (this.hasSpendingHiddenTarget && this.hasSpendingTarget) {
-      this.spendingHiddenTarget.value = this.spendingTarget.value;
-    }
+    this.setSpendingCents(this.spendingTarget.value);
+  }
+
+  spendingNumberChanged() {
+    this.setSpendingCents(Math.round(Number(this.spendingNumberTarget.value) * 100));
+  }
+
+  setSpendingCents(cents) {
+    if (this.hasSpendingTarget) this.spendingTarget.value = cents;
+    if (this.hasSpendingNumberTarget) this.spendingNumberTarget.value = (Number(cents) / 100).toFixed(2);
+    if (this.hasSpendingValueTarget) this.spendingValueTarget.textContent = this.formatCurrency(cents);
+    if (this.hasSpendingHiddenTarget) this.spendingHiddenTarget.value = cents;
     this.scheduleSubmit();
   }
 
   salaryChanged() {
-    if (this.hasSalaryValueTarget && this.hasSalaryTarget) {
-      this.salaryValueTarget.textContent = this.formatCurrency(this.salaryTarget.value);
-    }
-    if (this.hasSalaryHiddenTarget && this.hasSalaryTarget) {
-      this.salaryHiddenTarget.value = this.salaryTarget.value;
-    }
+    this.setSalaryCents(this.salaryTarget.value);
+  }
+
+  salaryNumberChanged() {
+    this.setSalaryCents(Math.round(Number(this.salaryNumberTarget.value) * 100));
+  }
+
+  setSalaryCents(cents) {
+    if (this.hasSalaryTarget) this.salaryTarget.value = cents;
+    if (this.hasSalaryNumberTarget) this.salaryNumberTarget.value = (Number(cents) / 100).toFixed(2);
+    if (this.hasSalaryValueTarget) this.salaryValueTarget.textContent = this.formatCurrency(cents);
+    if (this.hasSalaryHiddenTarget) this.salaryHiddenTarget.value = cents;
     this.scheduleSubmit();
   }
 
@@ -80,29 +110,26 @@ export default class extends Controller {
 
   // Fires on the turbo-frame element once its new content has been loaded.
   // Reconciles the (persistent, never-reloaded) form against what the server
-  // just computed: which field is disabled, and every slider/hidden field's value.
+  // just computed: which field is disabled, and every slider/number/hidden value.
   frameLoaded() {
     if (this.hasComputedTarget) {
       const data = this.computedTarget.dataset;
 
       this.applyDisabled(data.solveFor);
 
-      if (this.hasAgeTarget) {
-        this.ageTarget.value = data.age;
-        if (this.hasAgeValueTarget) this.ageValueTarget.textContent = data.age;
-      }
+      if (this.hasAgeTarget) this.ageTarget.value = data.age;
+      if (this.hasAgeNumberTarget) this.ageNumberTarget.value = data.age;
+      if (this.hasAgeValueTarget) this.ageValueTarget.textContent = data.age;
       if (this.hasAgeHiddenTarget) this.ageHiddenTarget.value = data.age;
 
-      if (this.hasSalaryTarget) {
-        this.salaryTarget.value = data.salaryCents;
-        if (this.hasSalaryValueTarget) this.salaryValueTarget.textContent = this.formatCurrency(data.salaryCents);
-      }
+      if (this.hasSalaryTarget) this.salaryTarget.value = data.salaryCents;
+      if (this.hasSalaryNumberTarget) this.salaryNumberTarget.value = (Number(data.salaryCents) / 100).toFixed(2);
+      if (this.hasSalaryValueTarget) this.salaryValueTarget.textContent = this.formatCurrency(data.salaryCents);
       if (this.hasSalaryHiddenTarget) this.salaryHiddenTarget.value = data.salaryCents;
 
-      if (this.hasSpendingTarget) {
-        this.spendingTarget.value = data.spendingCents;
-        if (this.hasSpendingValueTarget) this.spendingValueTarget.textContent = this.formatCurrency(data.spendingCents);
-      }
+      if (this.hasSpendingTarget) this.spendingTarget.value = data.spendingCents;
+      if (this.hasSpendingNumberTarget) this.spendingNumberTarget.value = (Number(data.spendingCents) / 100).toFixed(2);
+      if (this.hasSpendingValueTarget) this.spendingValueTarget.textContent = this.formatCurrency(data.spendingCents);
       if (this.hasSpendingHiddenTarget) this.spendingHiddenTarget.value = data.spendingCents;
 
       this.updateChart(data.chartData);
