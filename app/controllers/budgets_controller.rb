@@ -16,7 +16,7 @@ class BudgetsController < ApplicationController
 
     @spending_by_category_per_month = Transaction.spending_per_category_per_month(
       Date.current.months_ago(6).beginning_of_month,
-      Date.current.beginning_of_month
+      Date.current.months_ago(1).beginning_of_month
     )
   end
 

@@ -178,7 +178,7 @@ class Transaction < ApplicationRecord
 
     spending_by_category_per_month = categories.map do |category|
       data = spending_category_by_month(all_transactions, startdate, enddate, category)
-      sorted = data.values.reject { |v| v.nil? || v == 0 }.sort
+      sorted = data.values.compact.sort
       # median start
       len = sorted.length
       if sorted
