@@ -171,7 +171,13 @@ a {
 .table-container {
   border-radius: var(--bulma-radius);
   box-shadow: 0 0 0 1px var(--app-border);
-  overflow: hidden;
+  /* Bulma's own default is `overflow: auto; overflow-y: hidden` so wide
+     tables can scroll horizontally on narrow screens - a plain
+     `overflow: hidden` here would clobber that and make columns that don't
+     fit (e.g. the sensitivity table's 3rd contribution column on mobile)
+     permanently unreachable rather than just scrollable. */
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .table {
@@ -209,6 +215,75 @@ a {
 
 .table.is-hoverable tbody tr:not(.is-selected):hover {
   background-color: var(--app-primary-wash);
+}
+
+.transactions-table .col-label-short {
+  display: none;
+}
+
+/* Transactions listing (transactions/index) - at 10 columns wide this table
+   forced every cell to wrap into unreadable multi-line text on phones
+   instead of just scrolling, and pushed Amount/Category off past the fold.
+   Below Bulma's own tablet breakpoint, drop the lower-priority columns so
+   Date/Description/Category/Amount (the ones worth a glance) fit without
+   scrolling; every column - hidden or not - is still on the linked
+   transaction's own detail page. */
+@media screen and (max-width: 768px) {
+  .transactions-table .is-hidden-mobile-table {
+    display: none;
+  }
+
+  /* "Transaction Date"/"Description"/"Category"/"Amount" are single
+     unbreakable header words once uppercased - each one alone was wide
+     enough to force its column past the data it holds. Swap in a short
+     label instead of just letting them wrap. */
+  .transactions-table .col-label-short {
+    display: inline;
+  }
+
+  .transactions-table .col-label-full {
+    display: none;
+  }
+
+  /* Description is free text of unbounded length - left to wrap naturally
+     it claims however much width it wants and pushes Category/Amount back
+     off-screen even with the columns above hidden. Truncating it to one
+     line frees that width; the full text is a tap away on the transaction's
+     own detail page. */
+  .transactions-table td.transactions-table-description {
+    max-width: 5.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Bulma's default cell padding (0.75em sides) adds up fast across five
+     columns on a 390px phone - tightening it buys back real width without
+     shrinking tap targets (rows are still full-height). */
+  .transactions-table th,
+  .transactions-table td {
+    white-space: normal;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+  }
+
+  /* Category names (e.g. "Significant Other", "Rental Property") are one
+     unbreakable word/phrase each - without a cap the longest one in the
+     whole table (not just this row) sets the column's width. Truncate the
+     same way as Description. */
+  .transactions-table td.transactions-table-category {
+    max-width: 4.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ISO dates ("2026-09-01") read badly split mid-word at the hyphen - but
+     only the data needs that, not the "Transaction Date" header above it,
+     which is free to wrap onto two lines instead of stretching the column. */
+  .transactions-table td:nth-child(2) {
+    white-space: nowrap;
+  }
 }
 
 /* ==========================================================================

@@ -10,34 +10,40 @@
   </h2>
 
   <div class="table-container">
-    <table class="table is-fullwidth is-hoverable is-striped">
+    <table class="table is-fullwidth is-hoverable is-striped transactions-table">
+      <% header_cells = capture do %>
+        <th><abbr title="ID">ID</abbr></th>
+        <th>
+          <abbr title="Transaction Date">
+            <span class="col-label-full">Transaction Date</span><span class="col-label-short">Date</span>
+          </abbr>
+        </th>
+        <th class="is-hidden-mobile-table"><abbr title="Cleared Date">Cleared Date</abbr></th>
+        <th class="transactions-table-description">
+          <abbr title="Description">
+            <span class="col-label-full">Description</span><span class="col-label-short">Desc</span>
+          </abbr>
+        </th>
+        <th class="is-hidden-mobile-table"><abbr title="Merchant">Merchant</abbr></th>
+        <th class="transactions-table-category">
+          <abbr title="Category">
+            <span class="col-label-full">Category</span><span class="col-label-short">Cat</span>
+          </abbr>
+        </th>
+        <th class="is-hidden-mobile-table"><abbr title="Type">Type</abbr></th>
+        <th>
+          <abbr title="Amount">
+            <span class="col-label-full">Amount</span><span class="col-label-short">Amt</span>
+          </abbr>
+        </th>
+        <th class="is-hidden-mobile-table"><abbr title="Purchased By">Purchased By</abbr></th>
+        <th class="is-hidden-mobile-table"><abbr title="Account">Account</abbr></th>
+      <% end %>
       <thead>
-        <tr>
-          <th><abbr title="ID">ID</abbr></th>
-          <th><abbr title="Transaction Date">Transaction Date</abbr></th>
-          <th><abbr title="Cleared Date">Cleared Date</abbr></th>
-          <th><abbr title="Description">Description</abbr></th>
-          <th><abbr title="Merchant">Merchant</abbr></th>
-          <th><abbr title="Category">Category</abbr></th>
-          <th><abbr title="Type">Type</abbr></th>
-          <th><abbr title="Amount">Amount</abbr></th>
-          <th><abbr title="Purchased By">Purchased By</abbr></th>
-          <th><abbr title="Account">Account</abbr></th>
-        </tr>
+        <tr><%= header_cells %></tr>
       </thead>
       <tfoot>
-        <tr>
-          <th><abbr title="Id">Id</abbr></th>
-          <th><abbr title="Transaction Date">Transaction Date</abbr></th>
-          <th><abbr title="Cleared Date">Cleared Date</abbr></th>
-          <th><abbr title="Description">Description</abbr></th>
-          <th><abbr title="Merchant">Merchant</abbr></th>
-          <th><abbr title="Category">Category</abbr></th>
-          <th><abbr title="Type">Type</abbr></th>
-          <th><abbr title="Amount">Amount</abbr></th>
-          <th><abbr title="Purchased By">Purchased By</abbr></th>
-          <th><abbr title="Account">Account</abbr></th>
-        </tr>
+        <tr><%= header_cells %></tr>
       </tfoot>
       <tbody>
         <%- @transactions.each do |transaction| %>
@@ -46,28 +52,28 @@
           <td>
             <%= transaction.transaction_date %>
           </td>
-          <td>
+          <td class="is-hidden-mobile-table">
             <%= transaction.clearing_date %>
           </td>
-          <td>
+          <td class="transactions-table-description">
             <%= transaction.description %>
           </td>
-          <td>
+          <td class="is-hidden-mobile-table">
             <%= transaction.merchant %>
           </td>
-          <td>
+          <td class="transactions-table-category">
             <%= Transaction.pretty_print_category(transaction.category) %>
           </td>
-          <td>
+          <td class="is-hidden-mobile-table">
             <%= Transaction.pretty_print_type(transaction.transaction_type) %>
           </td>
           <td>
             <%= Money.from_cents(transaction.amount).format %>
           </td>
-          <td>
+          <td class="is-hidden-mobile-table">
             <%= transaction.purchased_by %>
           </td>
-          <td>
+          <td class="is-hidden-mobile-table">
             <%= link_to transaction.account.name, bank_path(transaction) %>
           </td>
         </tr>
