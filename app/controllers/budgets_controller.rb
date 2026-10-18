@@ -9,8 +9,7 @@ class BudgetsController < ApplicationController
 
   # GET /budgets/1
   def show
-    @budget = Budget.where(id: params.expect(:id)).includes(:budget_transaction_categories).first
-    @budget_transaction_categories = BudgetTransactionCategory.all.group(:transaction_category).sum(:amount_cents)
+    @budget_transaction_categories = @budget.budget_transaction_categories.group(:transaction_category).sum(:amount_cents)
       .transform_keys { |key| Transaction.pretty_print_category(Transaction.categories.key(key)) }
       .transform_values { |value| value / 100 }
 
@@ -69,7 +68,7 @@ class BudgetsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_budget
-      @budget = Budget.find(params.expect(:id))
+      @budget = Budget.includes(:budget_transaction_categories).find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.
