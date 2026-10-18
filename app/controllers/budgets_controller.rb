@@ -9,7 +9,11 @@ class BudgetsController < ApplicationController
 
   # GET /budgets/1
   def show
-    @budget_transaction_categories = @budget.budget_transaction_categories.group(:transaction_category).sum(:amount_cents)
+    @budget_transaction_categories = @budget.budget_transaction_categories
+      .reorder(nil)
+      .group(:transaction_category)
+      .order(Arel.sql("SUM(amount_cents) DESC"))
+      .sum(:amount_cents)
       .transform_keys { |key| Transaction.pretty_print_category(Transaction.categories.key(key)) }
       .transform_values { |value| value / 100 }
 
