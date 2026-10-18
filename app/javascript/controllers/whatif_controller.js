@@ -13,7 +13,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "form", "computed",
-    "age", "ageValue", "ageNumber", "ageHidden",
+    "age", "ageNumber", "ageHidden",
     "spending", "spendingValue", "spendingNumber", "spendingHidden",
     "salary", "salaryValue", "salaryNumber", "salaryHidden"
   ];
@@ -61,7 +61,6 @@ export default class extends Controller {
   setAge(value) {
     if (this.hasAgeTarget) this.ageTarget.value = value;
     if (this.hasAgeNumberTarget) this.ageNumberTarget.value = value;
-    if (this.hasAgeValueTarget) this.ageValueTarget.textContent = value;
     if (this.hasAgeHiddenTarget) this.ageHiddenTarget.value = value;
     this.scheduleSubmit();
   }
@@ -101,6 +100,27 @@ export default class extends Controller {
     this.scheduleSubmit();
   }
 
+  // Fills salary and/or spending from a historical year's actuals. A field that is
+  // currently being solved for is disabled, so it is left alone.
+  useActual(event) {
+    const { salaryCents, spendingCents } = event.currentTarget.dataset;
+    if (this.hasSalaryTarget && !this.salaryTarget.disabled && salaryCents !== undefined) {
+      this.raiseMax(this.salaryTarget, this.hasSalaryNumberTarget ? this.salaryNumberTarget : null, salaryCents);
+      this.setSalaryCents(salaryCents);
+    }
+    if (this.hasSpendingTarget && !this.spendingTarget.disabled && spendingCents !== undefined) {
+      this.raiseMax(this.spendingTarget, this.hasSpendingNumberTarget ? this.spendingNumberTarget : null, spendingCents);
+      this.setSpendingCents(spendingCents);
+    }
+  }
+
+  raiseMax(slider, numberInput, cents) {
+    if (Number(cents) > Number(slider.max)) {
+      slider.max = cents;
+      if (numberInput) numberInput.max = Number(cents) / 100;
+    }
+  }
+
   scheduleSubmit() {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
@@ -119,7 +139,6 @@ export default class extends Controller {
 
       if (this.hasAgeTarget) this.ageTarget.value = data.age;
       if (this.hasAgeNumberTarget) this.ageNumberTarget.value = data.age;
-      if (this.hasAgeValueTarget) this.ageValueTarget.textContent = data.age;
       if (this.hasAgeHiddenTarget) this.ageHiddenTarget.value = data.age;
 
       if (this.hasSalaryTarget) this.salaryTarget.value = data.salaryCents;

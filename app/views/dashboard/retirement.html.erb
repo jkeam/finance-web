@@ -42,8 +42,7 @@
 
     <div class="field">
       <label class="label">
-        Target Retirement Age<%= @solve_for == "age" ? " (computed)" : "" %>:
-        <span data-whatif-target="ageValue"><%= age_display %></span>
+        Target Retirement Age
       </label>
       <div class="field has-addons">
         <div class="control is-expanded">
@@ -147,6 +146,55 @@
         </div>
       </div>
       <%= hidden_field_tag :spending_override_cents, spending_display, data: { whatif_target: "spendingHidden" } %>
+    </div>
+  <% end %>
+
+  <% if @annual_history.any? %>
+    <%# Static reference data (not affected by the date filter), so it lives outside the turbo frame. %>
+    <h2 class="subtitle">Your Actuals by Year</h2>
+    <p class="help">Use these to pick realistic salary and spending numbers. Partial years are scaled up to 12 months.</p>
+    <div class="block table-container">
+      <table class="table is-fullwidth is-hoverable is-striped">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Income</th>
+            <th>Spending</th>
+            <th>Savings Rate</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @annual_history_average %>
+            <tr>
+              <td><strong>Average</strong> (<%= @annual_history_average[:months] %> months of data)</td>
+              <td><%= Money.from_cents(@annual_history_average[:income_cents]).format %></td>
+              <td><%= Money.from_cents(@annual_history_average[:spending_cents]).format %></td>
+              <td><%= @annual_history_average[:savings_rate] %>%</td>
+              <td>
+                <button type="button" class="button is-small is-link"
+                        data-action="click->whatif#useActual"
+                        data-salary-cents="<%= @annual_history_average[:income_cents] %>"
+                        data-spending-cents="<%= @annual_history_average[:spending_cents] %>">Use as salary &amp; spending</button>
+              </td>
+            </tr>
+          <% end %>
+          <% @annual_history.reverse_each do |y| %>
+            <tr>
+              <td><%= y[:year] %><%= " (#{y[:months]} mo, annualized)" if y[:partial] %></td>
+              <td><%= Money.from_cents(y[:income_cents]).format %></td>
+              <td><%= Money.from_cents(y[:spending_cents]).format %></td>
+              <td><%= y[:savings_rate] %>%</td>
+              <td>
+                <button type="button" class="button is-small"
+                        data-action="click->whatif#useActual"
+                        data-salary-cents="<%= y[:income_cents] %>"
+                        data-spending-cents="<%= y[:spending_cents] %>">Use as salary &amp; spending</button>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   <% end %>
 

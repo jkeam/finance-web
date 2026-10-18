@@ -126,6 +126,60 @@ class Transaction < ApplicationRecord
     }
   end
 
+  # Annualized income and spending per calendar year across all history, ignoring any
+  # date filter. Years with fewer than 12 complete months of data (first/last year) are scaled up
+  # from the months they do have, and flagged as partial.
+  def self.annual_history
+    # Future-dated transactions are never counted.
+    past = where("transaction_date <= ?", Date.current)
+    first = past.minimum(:transaction_date)
+    last = past.maximum(:transaction_date)
+    return [] if first.nil?
+
+    # Only whole months: a first month that starts mid-month, or a last/current month that
+    # hasn't finished, would otherwise read as a tiny "full" month and wildly skew the
+    # annualized figures.
+    start_month = first.day == 1 ? first.beginning_of_month : first.next_month.beginning_of_month
+    last_complete = Date.current.beginning_of_month - 1.day
+    last = last.prev_month.end_of_month unless last == last.end_of_month
+    end_month = [ last, last_complete ].min.end_of_month
+    return [] if start_month > end_month
+
+    range = start_month..end_month
+    income = income().group_by_month(:transaction_date, range: range).sum(:amount_cents)
+    spend = spending().group_by_month(:transaction_date, range: range).sum(:amount_cents)
+
+    income.keys.group_by(&:year).sort.map do |year, months|
+      count = months.size
+      income_cents = (months.sum { |m| income[m] } * -1.0 / count * 12).round
+      spending_cents = (months.sum { |m| spend[m] || 0 }.to_f / count * 12).round
+      {
+        year: year,
+        months: count,
+        partial: count < 12,
+        income_cents: income_cents,
+        spending_cents: spending_cents,
+        savings_rate: income_cents.zero? ? 0 : ((income_cents - spending_cents).to_f / income_cents * 100).round(1)
+      }
+    end
+  end
+
+  # Month-weighted average of annual_history rows, so a one-month year counts for one
+  # month's worth of data rather than as much as a full year.
+  def self.annual_history_average(history)
+    total_months = history.sum { |y| y[:months] }
+    return nil if total_months.zero?
+
+    income_cents = (history.sum { |y| y[:income_cents] * y[:months] }.to_f / total_months).round
+    spending_cents = (history.sum { |y| y[:spending_cents] * y[:months] }.to_f / total_months).round
+    {
+      months: total_months,
+      income_cents: income_cents,
+      spending_cents: spending_cents,
+      savings_rate: income_cents.zero? ? 0 : ((income_cents - spending_cents).to_f / income_cents * 100).round(1)
+    }
+  end
+
   def self.income_and_spending_by_month(startdate, enddate)
     income_transactions = income().between_dates(startdate, enddate)
     spending_transactions = spending().between_dates(startdate, enddate)

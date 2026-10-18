@@ -170,8 +170,12 @@ class DashboardController < ApplicationController
     @age_value = (params[:age_override].presence || @assumption.target_retirement_age || 65).to_i
     @salary_value = (params[:salary_override_cents].presence || @income_baseline_annual_cents).to_i
     @spending_value = (params[:spending_override_cents].presence || @spending_baseline[:annual_cents]).to_i
-    @spending_slider_max_cents = [ @spending_baseline[:annual_cents] * 2, 1_000_000 ].max
-    @salary_slider_max_cents = [ @income_baseline_annual_cents * 2, 1_000_000 ].max
+    @annual_history = Transaction.annual_history
+    @annual_history_average = Transaction.annual_history_average(@annual_history)
+    history_income = @annual_history.map { |y| y[:income_cents] }
+    history_spending = @annual_history.map { |y| y[:spending_cents] }
+    @spending_slider_max_cents = [ @spending_baseline[:annual_cents] * 2, history_spending.max.to_i * 2, 1_000_000 ].max
+    @salary_slider_max_cents = [ @income_baseline_annual_cents * 2, history_income.max.to_i * 2, 1_000_000 ].max
 
     tax_summary = Account.after_tax_investment_summary(
       pretax_rate: @assumption.pretax_effective_tax_rate,
