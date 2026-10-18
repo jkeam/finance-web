@@ -7,7 +7,6 @@ class DashboardController < ApplicationController
 
   # GET /dashboard/yearly
   def yearly
-    all_transactions = Transaction.between_dates(@startdate, @enddate)
     income_transactions = Transaction.income().between_dates(@startdate, @enddate)
     spending_transactions = Transaction.spending().between_dates(@startdate, @enddate)
 
@@ -33,7 +32,7 @@ class DashboardController < ApplicationController
     # budget
     @summary_income = (income_transactions.sum(:amount_cents) * -1) || 0
     @summary_spending = (spending_transactions.sum(:amount_cents)) || 0
-    budget_spending_needs = all_transactions.where(category: Transaction.get_needs_categories()).sum(:amount_cents) || 0
+    budget_spending_needs = spending_transactions.where(category: Transaction.get_needs_categories()).sum(:amount_cents) || 0
     budget_spending_wants = @summary_spending - budget_spending_needs || 0
     @budget_savings = @summary_income - @summary_spending
     @budget_spending = {
@@ -43,7 +42,7 @@ class DashboardController < ApplicationController
     }
 
     # info at top
-    @number_of_months = (@enddate.year * 12 + @enddate.month) - (@startdate.year * 12 + @startdate.month)
+    @number_of_months = [ (@enddate.year * 12 + @enddate.month) - (@startdate.year * 12 + @startdate.month), 1 ].max
   end
 
   # GET /dashboard/spending

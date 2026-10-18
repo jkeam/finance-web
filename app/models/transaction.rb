@@ -69,8 +69,8 @@ class Transaction < ApplicationRecord
   scope :income, -> { where(transaction_type: :type_credit) }
   scope :between_dates, ->(startdate, enddate) {
     query = self
-    query = where("transaction_date >= ?", startdate) if startdate != nil
-    query = where("transaction_date <= ?", enddate) if enddate != nil
+    query = query.where("transaction_date >= ?", startdate) if startdate != nil
+    query = query.where("transaction_date <= ?", enddate) if enddate != nil
     query
   }
 
