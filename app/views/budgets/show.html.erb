@@ -13,6 +13,29 @@
     <%= pie_chart @budget_transaction_categories %>
   </div>
 
+  <% budget_sum_cents = @budget.budget_transaction_categories.sum(&:amount_cents) %>
+  <% left_over_cents = @income_stats[:mean] * 100 - budget_sum_cents %>
+  <nav class="level">
+    <div class="level-item has-text-centered">
+      <div>
+        <p class="heading">Budget Total</p>
+        <p class="title"><%= Money.from_cents(budget_sum_cents).format %></p>
+      </div>
+    </div>
+    <div class="level-item has-text-centered">
+      <div>
+        <p class="heading">Avg Income</p>
+        <p class="title"><%= Money.from_cents(@income_stats[:mean] * 100).format %></p>
+      </div>
+    </div>
+    <div class="level-item has-text-centered">
+      <div>
+        <p class="heading">Avg Left Over</p>
+        <p class="title <%= left_over_cents < 0 ? 'has-text-danger' : 'has-text-success' %>"><%= Money.from_cents(left_over_cents).format %></p>
+      </div>
+    </div>
+  </nav>
+
   <div class="table-container">
     <table class="table is-fullwidth is-hoverable is-striped">
       <thead>
@@ -50,12 +73,26 @@
             </td>
           </tr>
         <% end %>
-        <tr>
+        <tr class="budget-summary-row budget-summary-start">
           <td><strong>Sum</strong></td>
           <td><strong><%= Money.from_cents(@budget.budget_transaction_categories.map{|c|c.amount_cents}.inject(&:+)).format %></strong></td>
           <td><strong><%= Money.from_cents(@spending_by_category_per_month.map { |c| c[:mean] }.inject(&:+) * 100).format %></strong></td>
           <td><strong><%= Money.from_cents(@spending_by_category_per_month.map { |c| c[:max] }.inject(&:+) * 100).format %></strong></td>
           <td><strong><%= Money.from_cents(@spending_by_category_per_month.map { |c| c[:min] }.inject(&:+) * 100).format %></strong></td>
+        </tr>
+        <tr class="budget-summary-row">
+          <td><strong>Income</strong></td>
+          <td><strong><%= Money.from_cents(@income_stats[:mean] * 100).format %></strong></td>
+          <td><strong><%= Money.from_cents(@income_stats[:mean] * 100).format %></strong></td>
+          <td><strong><%= Money.from_cents(@income_stats[:max] * 100).format %></strong></td>
+          <td><strong><%= Money.from_cents(@income_stats[:min] * 100).format %></strong></td>
+        </tr>
+        <tr class="budget-summary-row">
+          <td><strong>Left Over</strong></td>
+          <td class="<%= (@income_stats[:mean] * 100 - budget_sum_cents) < 0 ? 'has-text-danger' : 'has-text-success' %>"><strong><%= Money.from_cents(@income_stats[:mean] * 100 - budget_sum_cents).format %></strong></td>
+          <td class="<%= (@left_over_stats[:mean] * 100) < 0 ? 'has-text-danger' : 'has-text-success' %>"><strong><%= Money.from_cents(@left_over_stats[:mean] * 100).format %></strong></td>
+          <td class="<%= (@left_over_stats[:max] * 100) < 0 ? 'has-text-danger' : 'has-text-success' %>"><strong><%= Money.from_cents(@left_over_stats[:max] * 100).format %></strong></td>
+          <td class="<%= (@left_over_stats[:min] * 100) < 0 ? 'has-text-danger' : 'has-text-success' %>"><strong><%= Money.from_cents(@left_over_stats[:min] * 100).format %></strong></td>
         </tr>
       </tbody>
     </table>
@@ -68,6 +105,9 @@
       Past Reference Data
     </h1>
     <%= render partial: 'dashboard/spend_per_category_listing', locals: {spending_by_category_per_month: @spending_by_category_per_month} %>
+
+    <h2 class="subtitle">Income vs. Spending</h2>
+    <%= render partial: 'budgets/income_listing', locals: {income_per_month: @income_per_month, spend_per_month: @spend_per_month} %>
   </div>
 </section>
 

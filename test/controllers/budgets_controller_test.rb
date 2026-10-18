@@ -29,6 +29,26 @@ class BudgetsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show displays income summary tiles and rows" do
+    get budget_url(@budget)
+    assert_response :success
+
+    assert_select "nav.level .heading", text: "Budget Total"
+    assert_select "nav.level .heading", text: "Avg Income"
+    assert_select "nav.level .heading", text: "Avg Left Over"
+    assert_select "tr.budget-summary-row td strong", text: "Income"
+    assert_select "tr.budget-summary-row td strong", text: "Left Over"
+    assert_select "h2.subtitle", text: "Income vs. Spending"
+  end
+
+  test "show colors left over red when negative and green otherwise" do
+    get budget_url(@budget)
+
+    # Left Over tile and table cells use exactly one of the two sign colors
+    assert_select "nav.level p.title.has-text-danger, nav.level p.title.has-text-success", count: 1
+    assert_select "tr.budget-summary-row:last-child td.has-text-danger, tr.budget-summary-row:last-child td.has-text-success", count: 4
+  end
+
   test "should get edit" do
     get edit_budget_url(@budget)
     assert_response :success

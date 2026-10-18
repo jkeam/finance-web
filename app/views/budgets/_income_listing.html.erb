@@ -1,0 +1,38 @@
+<div class="table-container">
+  <table class="table is-fullwidth is-hoverable is-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <%- income_per_month.keys.each do |month| %>
+          <th><abbr title="<%= month %>"><%= month %></abbr></th>
+        <%- end %>
+        <th>Mean</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Income</td>
+        <%- income_per_month.values.each do |value| %>
+          <td><%= Money.from_cents(value * 100).format %></td>
+        <%- end %>
+        <td><%= Money.from_cents(income_per_month.values.sum * 100 / [ income_per_month.size, 1 ].max).format %></td>
+      </tr>
+      <tr>
+        <td>Spending</td>
+        <%- income_per_month.keys.each do |month| %>
+          <td><%= Money.from_cents((spend_per_month[month] || 0) * 100).format %></td>
+        <%- end %>
+        <td><%= Money.from_cents(spend_per_month.values.sum * 100 / [ spend_per_month.size, 1 ].max).format %></td>
+      </tr>
+      <tr>
+        <td><strong>Left Over</strong></td>
+        <%- income_per_month.each do |month, income| %>
+          <% left_over = income - (spend_per_month[month] || 0) %>
+          <td><strong class="<%= left_over < 0 ? 'has-text-danger' : 'has-text-success' %>"><%= Money.from_cents(left_over * 100).format %></strong></td>
+        <%- end %>
+        <% mean_left_over = (income_per_month.values.sum - spend_per_month.values.sum) / [ income_per_month.size, 1 ].max %>
+        <td><strong class="<%= mean_left_over < 0 ? 'has-text-danger' : 'has-text-success' %>"><%= Money.from_cents(mean_left_over * 100).format %></strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

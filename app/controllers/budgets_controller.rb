@@ -21,6 +21,29 @@ class BudgetsController < ApplicationController
       Date.current.months_ago(6).beginning_of_month,
       Date.current.months_ago(1).beginning_of_month
     )
+
+    income_and_spending = Transaction.income_and_spending_by_month(
+      Date.current.months_ago(6).beginning_of_month,
+      Date.current.months_ago(1).beginning_of_month
+    )
+    @income_per_month = income_and_spending[:income_per_month]
+    @spend_per_month = income_and_spending[:spend_per_month]
+    incomes = @income_per_month.values
+    @income_stats = {
+      mean: incomes.empty? ? 0 : incomes.sum / incomes.size,
+      max: incomes.max || 0,
+      min: incomes.min || 0
+    }
+
+    # Per-month income minus category spending, so max/min are the best/worst actual months
+    left_over = @income_per_month.map do |month, income|
+      income - @spending_by_category_per_month.sum { |c| c[:data][month] || 0 }
+    end
+    @left_over_stats = {
+      mean: left_over.empty? ? 0 : left_over.sum / left_over.size,
+      max: left_over.max || 0,
+      min: left_over.min || 0
+    }
   end
 
   # GET /budgets/new

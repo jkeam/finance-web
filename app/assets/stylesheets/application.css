@@ -461,3 +461,17 @@ a {
   background-color: var(--bulma-primary);
   color: var(--bulma-primary-invert);
 }
+
+.table tr.budget-summary-row td {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.table tr.budget-summary-start td {
+  border-top: 3px solid var(--bulma-text);
+}
+
+/* Bulma gives <strong> its own color, which would hide the has-text-* color on the cell */
+.table tr.budget-summary-row strong {
+  color: inherit;
+}
